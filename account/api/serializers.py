@@ -1,9 +1,15 @@
+from datetime import date 
 from rest_framework import serializers
 from account.models import User
+from TunePal import settings
 
+  
+def calculateAge(birthDate): 
+    today = date.today() 
+    age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day)) 
+    return age 
 
-
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserSignupSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(
         required=True,
@@ -16,11 +22,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         style={'input_type': 'password'}
     )
 
-    password_2 = serializers.CharField(
-        required=True,
-        label="Confirm Password",
-        style={'input_type': 'password'}
-    )
+    # password_2 = serializers.CharField(
+    #     required=True,
+    #     label="Confirm Password",
+    #     style={'input_type': 'password'}
+    # ) 
 
     first_name = serializers.CharField(
         required=True
@@ -30,13 +36,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         required=True
     )
 
-    invite_code = serializers.CharField(
-        required=False
+    birthdate = serializers.DateField(
+        required=True
     )
 
     class Meta(object):
         model = User
-        fields = ['username', 'email', 'password', 'password_2', 'first_name', 'last_name', 'invite_code']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'birthdate', 'gender']
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
@@ -50,31 +56,36 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             )
         return value
 
-    def validate_password_2(self, value):
-        data = self.get_initial()
-        password = data.get('password')
-        if password != value:
-            raise serializers.ValidationError("Passwords doesn't match.")
-        return value
+    # def validate_password_2(self, value):
+    #     data = self.get_initial()
+    #     password = data.get('password')
+    #     if password != value:
+    #         raise serializers.ValidationError("Passwords doesn't match.")
+    #     return value
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("Email already exists.")
+            raise serializers.ValidationError("Username already exists.")
         return value
 
     def validate_birthdate(self, value):
-       pass
-
+        if calculateAge(value) < 18 :
+            raise serializers.ValidationError("You must be over 18 to continue.")
+        return value
+        
     def create(self, validated_data):
-        team = getattr(self, 'team', None)
 
-        user_data = {
-            'username': validated_data.get('username'),
-            'email': validated_data.get('email'),
-            'password': validated_data.get('password'),
-            'first_name': validated_data.get('first_name'),
-            'last_name': validated_data.get('last_name'),
-            'birthdate': validated_data.get('birthdate')
-        }
-
-        return validated_data
+        password1 = User.hash_password(validated_data.get('password')),
+         
+        user_data = User(
+            username = validated_data.get('username'),
+            email = validated_data.get('email'),
+            first_name= validated_data.get('first_name'),
+            last_name= validated_data.get('last_name'),
+            birthdate= validated_data.get('birthdate'),
+            gender = validated_data.get('gender'),
+            password = password1
+        )
+        password = validated_data.get('password'),
+        user_data.save()
+        return user_data
