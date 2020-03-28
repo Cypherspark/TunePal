@@ -79,14 +79,12 @@ class LoginView(APIView):
             if u is None:
                 return Response(
                     {
-                        #wrong_username
-                        'message': 'There is not any account with this username'
+                        'message': 'The username or password is wrong'
                     },
                     status=status.HTTP_404_NOT_FOUND
                 ) 
-            if u:#successful request
-                print(u)
-                print('here')
+            if u:
+                #successful request
                 login(request, u)
                 return Response(
                     {
@@ -101,8 +99,7 @@ class LoginView(APIView):
             else:
                 return Response(
                     {
-                        #wrong_pass
-                        'message': 'Your password is wrong'
+                        'message': 'The username or password is wrong'
                     },
                     status=status.HTTP_404_NOT_FOUND
                 )
