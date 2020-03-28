@@ -26,7 +26,7 @@ class CustomUser(AbstractUser):
     bio = models.CharField(_('biography'), max_length=150, blank=True, null=True)
     intersts = models.CharField(_('interests'), max_length=30, blank=True, null=True)
     user_avatar = models.ImageField(upload_to="images/", blank=True)
-    #spotify_details = 
+    spotify_token = models.CharField(_('spotify token'), max_length=220, blank=True, null=True)
     #location =
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['gender', 'email','password']
