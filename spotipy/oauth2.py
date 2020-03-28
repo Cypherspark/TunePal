@@ -223,7 +223,7 @@ class SpotifyOAuth(SpotifyAuthBase):
             try:
                 userr = CustomUser.objects.get(username=request.user)
                 token_info_string = userr.spotify_token
-                print('---',token_info_string)
+                # print('---',token_info_string)
                 # f = open(self.cache_path)
                 # token_info_string = f.read()
                 # f.close()

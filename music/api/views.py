@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from account.models import CustomUser
+from django.views.decorators.csrf import csrf_exempt
+
 
 import os
 import json
@@ -34,9 +36,11 @@ def getSPOauthURI():
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
 
+
+
 class SpotifyView(APIView):
 
-    
+    @csrf_exempt
     def get(self, request):
         if request.user.is_authenticated :
             access_token = ""
@@ -63,7 +67,8 @@ class SpotifyView(APIView):
             else:
                 return getSPOauthURI()
         else:
-            Response( { 
+            # print("here")
+            return  Response( { 
                'message': 'Your are not logged in'
             },
                 status=status.HTTP_400_BAD_REQUEST

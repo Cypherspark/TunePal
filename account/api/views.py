@@ -1,4 +1,4 @@
-
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 
 from rest_framework.decorators import api_view
@@ -50,10 +50,12 @@ class SignupView(APIView):
         ,responses={200: user_response,400:user_response2}
      )
     # @swagger_auto_schema(request_body=UserSignupSerializer, tags=['Users'],responses={200: user_response,400:user_response2})
+    @csrf_exempt
     def post(self, request):
         serializer = UserSignupSerializer(data=request.data)
         if serializer.is_valid():
             u = serializer.save()
+            login(request, u)
             info = UserInfoSerializer(u)
             print(u)
             return Response({
@@ -69,6 +71,7 @@ class SignupView(APIView):
 class LoginView(APIView):
     
     @swagger_auto_schema(request_body=RequestLoginSerializer, tags=['Users'],responses={200: user_response1,400:user_response2})
+    @csrf_exempt
     def post(self, request):
         serializer = RequestLoginSerializer(data=request.data)
         if serializer.is_valid():
