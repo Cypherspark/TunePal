@@ -18,4 +18,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('account/', include('account.api.urls')),
+    path('spotify/', include('music.api.urls')),
+    path('accounts/', include('rest_framework.urls'))
 ]
