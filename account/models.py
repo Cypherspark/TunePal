@@ -4,6 +4,14 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 
+class UserLocation(models.Model):
+    lat = models.IntegerField(null=True, blank=True)
+    lng = models.IntegerField(null=True, blank=True)
+    country = models.CharField(max_length=30, blank=True, unique=False)
+    city = models.CharField(max_length=30, blank=True, unique=False)
+    neighbourhood = models.CharField(max_length=30, blank=True, unique=False)
+
+
 class CustomUser(AbstractUser):
     first_name = None
     last_name = None
@@ -27,6 +35,7 @@ class CustomUser(AbstractUser):
     intersts = models.CharField(_('interests'), max_length=30, blank=True, null=True)
     user_avatar = models.ImageField(upload_to="images/", blank=True)
     spotify_token = models.CharField(_('spotify token'), max_length=220, blank=True, null=True)
-    #location =
+    location = models.OneToOneField(UserLocation, verbose_name=_("location"), on_delete=models.CASCADE)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['gender', 'email','password']
+

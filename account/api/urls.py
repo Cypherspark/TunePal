@@ -11,6 +11,11 @@ urlpatterns = [
 
     url(r'^sign_up/$',
         views.SignupView.as_view(),
-        name='register')
+        name='register'),
+    
+    url(r'^get_location/$',
+        views.UserLocationView.as_view(),
+        name='location')
+    
 
 ]

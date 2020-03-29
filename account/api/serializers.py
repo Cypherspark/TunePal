@@ -1,6 +1,7 @@
 from datetime import date 
 from rest_framework import serializers
 from account.models import CustomUser as User
+from account.models import UserLocation
 from TunePal import settings
 
 
@@ -94,3 +95,20 @@ class RequestLoginSerializer(serializers.Serializer):
     password = serializers.CharField(
         required=True, max_length=128, allow_blank=False 
     )
+
+class UserLocationSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = User
+        fields = ['location']
+    def update(self, validated_data, instance):
+        ulocation = UserLocation(
+            lat = validated_data.get("latitude"),
+            lng = validated_data.get("longitude"),
+            country = validated_data.get("country"),
+            city = validated_data.get("province"),
+            neighbourhood = validated_data.get("neighbourhood")
+        )
+        ulocation.save()
+        instance.location = ulocation
+        instance.save()
+        return instance

@@ -14,7 +14,7 @@ import spotipy.util as util
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework.permissions import IsAuthenticated
 
 
 # os.environ['SPOTIPY_CLIENT_ID'] = cid
@@ -41,6 +41,7 @@ def getSPOauthURI():
 class SpotifyView(APIView):
 
     @csrf_exempt
+    @permission_classes([IsAuthenticated])
     def get(self, request):
         if request.user.is_authenticated :
             access_token = ""
@@ -71,21 +72,6 @@ class SpotifyView(APIView):
             return  Response( { 
                'message': 'Your are not logged in'
             },
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_401_UNAUTHORIZED
             )
    
-
-        # return Response(
-        #    {
-        #                 'message': 'Your are connected successfuly',
-        #                 'data': {
-        #                     'list_of_artist_names': list_of_artist_names,
-        #                 }
-        #             },
-        #             status=status.HTTP_200_OK
-        #         )
-
-    # @api_view(['GET'])    
-    # def respose_to_auth(self, request, userparameter=None):
-
-
