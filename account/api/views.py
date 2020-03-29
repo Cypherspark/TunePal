@@ -1,8 +1,8 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 
-from rest_framework.decorators import api_view
-from rest_framework import generics, permissions, status, views
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -57,7 +57,7 @@ class SignupView(APIView):
         if serializer.is_valid():
             u = serializer.save()
             login(request, u)
-            token, created = Token.objects.get_or_created(user=u)
+            token, created = Token.objects.get_or_create(user=u)
             info = UserInfoSerializer(u)
             print(u)
             return Response({
@@ -73,7 +73,6 @@ class SignupView(APIView):
 
 
 class LoginView(APIView):
-    
     @swagger_auto_schema(request_body=RequestLoginSerializer, tags=['Users'],responses={200: user_response1,400:user_response2})
     @csrf_exempt
     def post(self, request):
@@ -93,7 +92,7 @@ class LoginView(APIView):
             if u:
                 #successful request
                 login(request, u)
-                token, created = Token.objects.get_or_created(user=u)
+                token, created = Token.objects.get_or_create(user=u)
                 return Response(
                     {
                         'message': 'Your account info is correct',
@@ -117,3 +116,23 @@ class LoginView(APIView):
             )
 
 
+class UserLocationView(APIView):
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        instance = request.user
+        serializer = UserLocationSerializer(instance,data=request.data)
+        if serializer.is_valid():
+            u = serializer.save()
+            return Response(
+                        {
+                            'message': 'user location has been saved',
+                            'data': {
+                                'token': token.key
+                            }
+                        }
+                    )
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )

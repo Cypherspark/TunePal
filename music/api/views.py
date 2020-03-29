@@ -1,20 +1,20 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from account.models import CustomUser
 from django.views.decorators.csrf import csrf_exempt
-
 
 import os
 import json
 import sys
+from account.models import CustomUser
 import spotipy
 from spotipy import oauth2
 import spotipy.util as util
 
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework.permissions import IsAuthenticated
 
 
 # os.environ['SPOTIPY_CLIENT_ID'] = cid
@@ -41,8 +41,8 @@ def getSPOauthURI():
 class SpotifyView(APIView):
 
     @csrf_exempt
+    @permission_classes([IsAuthenticated])
     def get(self, request):
-        if request.user.is_authenticated :
             access_token = ""
             
             token_info = sp_oauth.get_cached_token(request)
@@ -66,26 +66,4 @@ class SpotifyView(APIView):
 
             else:
                 return getSPOauthURI()
-        else:
-            # print("here")
-            return  Response( { 
-               'message': 'Your are not logged in'
-            },
-                status=status.HTTP_400_BAD_REQUEST
-            )
    
-
-        # return Response(
-        #    {
-        #                 'message': 'Your are connected successfuly',
-        #                 'data': {
-        #                     'list_of_artist_names': list_of_artist_names,
-        #                 }
-        #             },
-        #             status=status.HTTP_200_OK
-        #         )
-
-    # @api_view(['GET'])    
-    # def respose_to_auth(self, request, userparameter=None):
-
-
