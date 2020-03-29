@@ -7,6 +7,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 
 from account.models import *
 from account.api.serializers import *
@@ -56,11 +57,14 @@ class SignupView(APIView):
         if serializer.is_valid():
             u = serializer.save()
             login(request, u)
+            token, created = Token.objects.get_or_created(user=u)
             info = UserInfoSerializer(u)
             print(u)
             return Response({
                 'message': 'your account have been created successfuly',
-                'data': info.data
+                'data': {
+                'token': token.key
+                }
             })
         return Response(
             serializer.errors,
@@ -89,12 +93,12 @@ class LoginView(APIView):
             if u:
                 #successful request
                 login(request, u)
+                token, created = Token.objects.get_or_created(user=u)
                 return Response(
                     {
                         'message': 'Your account info is correct',
                         'data': {
-                            'username': u.username,
-                            "id": u.id,
+                            'token': token.key
                         }
                     },
                     status=status.HTTP_200_OK
