@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -73,7 +73,6 @@ class SignupView(APIView):
 
 
 class LoginView(APIView):
-    
     @swagger_auto_schema(request_body=RequestLoginSerializer, tags=['Users'],responses={200: user_response1,400:user_response2})
     @csrf_exempt
     def post(self, request):
