@@ -96,19 +96,18 @@ class RequestLoginSerializer(serializers.Serializer):
         required=True, max_length=128, allow_blank=False 
     )
 
-class UserLocationSerializer(serializers.ModelSerializer):
+
+class LocationSerializer(serializers.ModelSerializer):
     class Meta(object):
-        model = User
-        fields = ['location']
-    def update(self, validated_data, instance):
+        model = UserLocation
+        fields = '__all__'
+    def create(self, validated_data):
         ulocation = UserLocation(
-            lat = validated_data.get("latitude"),
-            lng = validated_data.get("longitude"),
+            latitude = validated_data.get("latitude"),
+            longitude = validated_data.get("longitude"),
             country = validated_data.get("country"),
-            city = validated_data.get("province"),
+            province = validated_data.get("province"),
             neighbourhood = validated_data.get("neighbourhood")
         )
         ulocation.save()
-        instance.location = ulocation
-        instance.save()
-        return instance
+        return ulocation

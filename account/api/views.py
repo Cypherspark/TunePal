@@ -118,11 +118,13 @@ class LoginView(APIView):
 
 class UserLocationView(APIView):
     @permission_classes([IsAuthenticated])
-    def get(self, request):
+    def post(self, request):
         instance = request.user
-        serializer = UserLocationSerializer(instance,data=request.data)
+        serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
             u = serializer.save()
+            instance.location = u
+            instance.save()
             return Response(
                         {
                             'message': 'user location has been saved',
