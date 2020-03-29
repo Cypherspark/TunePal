@@ -5,11 +5,11 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 
 class UserLocation(models.Model):
-    lat = models.IntegerField(null=True, blank=True)
-    lng = models.IntegerField(null=True, blank=True)
-    country = models.CharField(max_length=30, blank=True, unique=False)
-    city = models.CharField(max_length=30, blank=True, unique=False)
-    neighbourhood = models.CharField(max_length=30, blank=True, unique=False)
+    latitude = models.FloatField(_("latitude"),null=True, blank=True)
+    longitude = models.FloatField(_("longitude"),null=True, blank=True)
+    country = models.CharField(_("country"),max_length=30, blank=True, unique=False)
+    province = models.CharField(_("province"),max_length=30, blank=True, unique=False)
+    neighbourhood = models.CharField(_("neighbourhood"),max_length=30, blank=True, unique=False)
 
 
 class CustomUser(AbstractUser):
