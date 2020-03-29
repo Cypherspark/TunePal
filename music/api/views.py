@@ -34,7 +34,10 @@ sp_oauth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY
 
 def getSPOauthURI():
     auth_url = sp_oauth.get_authorize_url()
-    return auth_url
+    return Response(
+        {"spotifyurl":auth_url},
+        status=status.HTTP_200_OK
+       )
 
 
 
