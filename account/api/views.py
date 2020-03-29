@@ -126,9 +126,6 @@ class UserLocationView(APIView):
             return Response(
                         {
                             'message': 'user location has been saved',
-                            'data': {
-                                'token': token.key
-                            }
                         }
                     )
         else:
