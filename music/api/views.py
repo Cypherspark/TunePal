@@ -22,9 +22,9 @@ from rest_framework.permissions import IsAuthenticated
 # os.environ['SPOTIPY_REDIRECT_URI'] = 'http://127.0.0.1:8000/spotify/auth/'
 
 
-SPOTIPY_CLIENT_ID = 'b086b316d65241c2b7a1ac4e2e797c91'
-SPOTIPY_CLIENT_SECRET = '36cbb32cfe8c4ecbba50083ce277b1ab'
-SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8000/spotify/auth/'
+SPOTIPY_CLIENT_ID = 'c42e107d3ae641e4af9e08e7d7a55b9b'
+SPOTIPY_CLIENT_SECRET = 'cd1e4e0aa3684e34ae12b313ebea1074'
+SPOTIPY_REDIRECT_URI = 'http://tunepal.pythonanywhere.com/spotify/auth/'
 SCOPE = 'user-top-read'
 CACHE = '.spotipyoauthcache'
 
