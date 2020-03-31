@@ -8,7 +8,7 @@ urlpatterns = [
         name='make-auth-uri'),
 
     url(r'^/get_url/$',
-        views.SpotifyUriView.as_view(),
+        views.SpotifyGetTokenView.as_view(),
         name='get-token-spotify')
 
 ]
