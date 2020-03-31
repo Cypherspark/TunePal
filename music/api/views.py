@@ -66,5 +66,5 @@ class SpotifyGetTokenView(APIView):
             print ("Access token available! Trying to get user information...")
             sp = spotipy.Spotify(access_token)
             results = sp.current_user()
-            return Response(results)
+            return Response({"url":"http://localhost:3000/spotifyresult/"})
    
