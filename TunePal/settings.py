@@ -25,7 +25,7 @@ SECRET_KEY = '-iwkyziqjy@__gfi+a#p1hg6vl4a#4z*wvshlisf!-0tw#73!('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tunepal.pythonanywhere.com','localhost', '127.0.0.1']
 
 
 # Application definition
