@@ -71,7 +71,7 @@ def matchoptions(request,id,sp):
                 music = Music.objects.create(music_name=Song,artist_name = Artist,album = Album)
                 user.assigned_id = music.id
                 user.save()
-
+                print(music.album)
 
 def friends(request,id,sp):
     matchoptions(request,id,sp)
@@ -91,7 +91,7 @@ def friends(request,id,sp):
                 a+=1
             persent = (a*100)/3
             if persent>30:
-                flag = Activeuser.objects.filter(username = user.username)
+                flag = Activeuser.friends.filter(username = user.username)
                 friends.friends.append(user.username)
                 if flag:
                     pass
