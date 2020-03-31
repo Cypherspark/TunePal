@@ -47,7 +47,7 @@ urlpatterns = [
     path('account/', include('account.api.urls')),
     path('spotify/', include('music.api.urls')),
     path('accounts/', include('rest_framework.urls'))
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,
