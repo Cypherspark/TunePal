@@ -112,4 +112,4 @@ class UserInfoSerializer(serializers.ModelSerializer):
     location = LocationSerializer(read_only =True)
     class Meta:
         model = User
-        exclude = ["password","is_staff","user_permissions","spotify_token]
+        exclude = ["password","is_staff","user_permissions","spotify_token"]
