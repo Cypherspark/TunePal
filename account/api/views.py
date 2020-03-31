@@ -141,8 +141,8 @@ class Logout(APIView):
     @permission_classes([IsAuthenticated])
     @csrf_exempt
     def get(self, request):
-
-        Token.objects.get(request.user)
+        logout(request)
+        Token.objects.get(request.user).delete()
         return Response(status=204)
 
 
@@ -152,6 +152,5 @@ class Logout(APIView):
 class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        logout(request)
         serializer = UserInfoSerializer(request.user)
         return Response(serializer.data) 
