@@ -21,5 +21,9 @@ urlpatterns = [
         views.UserInfoView.as_view(),
         name='user-info'),
     
+    url(r'^logout/$',
+        views.UserInfoView.as_view(),
+        name='logout'),
+    
 
 ]

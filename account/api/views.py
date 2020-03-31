@@ -136,6 +136,16 @@ class UserLocationView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+class Logout(APIView):
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        Token.objects.get(request.user)
+        return Response(status=204)
+
+
+
+
+
 class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
