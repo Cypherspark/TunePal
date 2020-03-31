@@ -153,5 +153,4 @@ class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         serializer = UserInfoSerializer(request.user)
-        serializer2 = LocationSerializer(request.user.location)
-        return Response({serializer.data,serializer2.data}) 
+        return Response(serializer.data)

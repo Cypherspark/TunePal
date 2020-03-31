@@ -5,10 +5,6 @@ from account.models import UserLocation
 from TunePal import settings
 
 
-class UserInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ["password","is_staff","user_permissions"]
 
 
 
@@ -111,3 +107,9 @@ class LocationSerializer(serializers.ModelSerializer):
         )
         ulocation.save()
         return ulocation
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    location = LocationSerializer(read_only =True)
+    class Meta:
+        model = User
+        exclude = ["password","is_staff","user_permissions","spotify_token]
