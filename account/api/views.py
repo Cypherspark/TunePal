@@ -141,9 +141,9 @@ class LogoutView(APIView):
     @permission_classes([IsAuthenticated])
     @csrf_exempt
     def get(self, request):
+        Token.objects.get(user=request.user).delete()
         logout(request)
-        Token.objects.get(request.user).delete()
-        return Response(status=204)
+        return Response({"message:logged out successfully"},status=204)
 
 
 
