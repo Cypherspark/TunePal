@@ -137,7 +137,7 @@ class UserLocationView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-class Logout(APIView):
+class LogoutView(APIView):
     @permission_classes([IsAuthenticated])
     @csrf_exempt
     def get(self, request):
@@ -153,4 +153,5 @@ class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         serializer = UserInfoSerializer(request.user)
-        return Response(serializer.data) 
+        serializer2 = LocationSerializer(request.user.location)
+        return Response({serializer.data,serializer2.data}) 

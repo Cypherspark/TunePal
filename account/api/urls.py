@@ -22,7 +22,7 @@ urlpatterns = [
         name='user-info'),
     
     url(r'^logout/$',
-        views.UserInfoView.as_view(),
+        views.LogoutView.as_view(),
         name='logout'),
     
 
