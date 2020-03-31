@@ -135,3 +135,9 @@ class UserLocationView(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+class UserInfoView(APIView):
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        serializer = UserInfoSerializer(request.user)
+        return Response(serializer.data) 

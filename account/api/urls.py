@@ -15,7 +15,11 @@ urlpatterns = [
     
     url(r'^get_location/$',
         views.UserLocationView.as_view(),
-        name='location')
+        name='location'),
+
+    url(r'^get_user_info/$',
+        views.UserInfoView.as_view(),
+        name='user-info'),
     
 
 ]

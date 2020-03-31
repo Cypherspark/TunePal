@@ -8,7 +8,7 @@ from TunePal import settings
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'is_active', 'gender']
+        exclude = ["password","is_staff","user_permissions"]
 
 
 
