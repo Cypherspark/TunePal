@@ -1,5 +1,5 @@
 import hashlib, binascii, os
-
+from music.models import User_top_music
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
@@ -38,6 +38,7 @@ class CustomUser(AbstractUser):
     spotify_token = models.CharField(_('spotify token'), max_length=220, blank=True, null=True)
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
     friends = models.ManyToManyField(Friends)
+    music = models.ManyToManyField(User_top_music)
 
 
     #location =
