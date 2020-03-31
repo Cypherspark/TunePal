@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login , logout
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -118,6 +118,7 @@ class LoginView(APIView):
 
 class UserLocationView(APIView):
     @permission_classes([IsAuthenticated])
+    @csrf_exempt
     def post(self, request):
         instance = request.user
         serializer = LocationSerializer(data=request.data)
@@ -138,7 +139,9 @@ class UserLocationView(APIView):
 
 class Logout(APIView):
     @permission_classes([IsAuthenticated])
+    @csrf_exempt
     def get(self, request):
+
         Token.objects.get(request.user)
         return Response(status=204)
 
@@ -149,5 +152,6 @@ class Logout(APIView):
 class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
+        logout(request)
         serializer = UserInfoSerializer(request.user)
         return Response(serializer.data) 
