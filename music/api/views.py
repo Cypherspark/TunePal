@@ -44,16 +44,18 @@ class SpotifyView(APIView):
 
         return getSPOauthURI()
 
-    def post(self, request):
+   
+class SpotifyGetTokenView(APIView):
+    def get(self, request):
         access_token = ""
         
-        token_info = sp_oauth.get_cached_token(request.data["url"])
+        token_info = sp_oauth.get_cached_token(request)
 
         if token_info:
             print ("Found cached token!")
             access_token = token_info['access_token']
         else:
-            url = request.data["url"].build_absolute_uri()
+            url = request.build_absolute_uri()
             code = sp_oauth.parse_response_code(url)
             if code:
                 print ("Found Spotify auth code in Request URL! Trying to get valid access token...")
