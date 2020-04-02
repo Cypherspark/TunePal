@@ -2,6 +2,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 from account.models import CustomUser,Music,Friends
 from django.http import HttpResponse
+from music.models import User_top_music
 import sys
 import spotipy
 import spotipy.util as util
@@ -54,24 +55,33 @@ def matchoptions(request,id,sp):
                 list_of_artist_names = []
                 list_of_song_names = []
                 list_of_albums = []
+                # search in fifty of top song
                 for result in list_of_results:
                     result["album"]
-                    list_of_artist_names.append( result["artists"][0]["name"])
                     list_of_song_names.append(result["name"])
                     list_of_albums.append(result["album"]["name"])
 
+                TopArtist = sp.current_user_top_artists(limit=20, offset=0, time_range='medium_term')
                 Album = counting(list_of_albums)
                 Song = counting(list_of_song_names)
-                Artist = counting(list_of_artist_names)
+                Artist = TopArtist['items'][0]['name']
+
                 musics = Music.objects.all()
                 user = get_object_or_404(CustomUser,id =id)
+                # give just 5 of top song
+                store_song = sp.current_user_top_tracks(
+                    limit=5, offset=0)
+                user.music.all().delete()
+                for song in store_song :
+                    song = User_top_music.objects.create(music_name=[result["name"]],artist_name = result["name"],album = result["album"]["name"],music_id = result['id'])
+                    user.music.add(song)
+
                 for music in musics:
                     if music.id == user.assigned_id:
                         Music.objects.filter(id=music.id).delete()
                 music = Music.objects.create(music_name=Song,artist_name = Artist,album = Album)
                 user.assigned_id = music.id
                 user.save()
-                print(music.album)
 
 def friends(request,id,sp):
     matchoptions(request,id,sp)
@@ -80,8 +90,10 @@ def friends(request,id,sp):
     task =Activeuser.assigned
 
     a=0
-    friends.friends=[]
+    friends.dataM = {}
+    friends.dataFE = {}
     for user in users:
+        if user.assigned != None and task !=None:
          if user.username != Activeuser.username:
             if task.music_name == user.assigned.music_name:
                 a+=1
@@ -91,15 +103,14 @@ def friends(request,id,sp):
                 a+=1
             persent = (a*100)/3
             if persent>30:
+                if user.gender == 'Male':
+                    friends.dataM[user.username] = user.nickname
+                else:
+                    friends.dataFE[user.username] = user.nickname
+                # check if a user is valid don't add again
                 flag = Activeuser.friends.filter(username = user.username)
-                friends.friends.append(user.username)
                 if flag:
                     pass
                 else:
-                     f= Friends.objects.create(username = user.username)
+                     f= Friends.objects.create(username = user.username,nickname = user.nickname,gender = user.gender,spotify_token = user.spotify_token)
                      Activeuser.friends.add(f)
-
-
-
-    data = [{'friends': friends.friends}]
-    return JsonResponse(data, safe=False)
