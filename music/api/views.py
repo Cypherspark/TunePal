@@ -18,12 +18,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from music.api.serializers import UserProfileSerializer
 
 SPOTIPY_CLIENT_ID = 'c42e107d3ae641e4af9e08e7d7a55b9b'
 SPOTIPY_CLIENT_SECRET = 'cd1e4e0aa3684e34ae12b313ebea1074'
 SPOTIPY_REDIRECT_URI = 'http://localhost:3000/spotifyresult/'
-COPE = 'user-top-read user-read-currently-playing user-read-playback-state user-library-read'
+SCOPE = 'user-top-read user-read-currently-playing user-read-playback-state user-library-read'
 CACHE = '.spotipyoauthcache'
 
 

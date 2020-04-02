@@ -51,8 +51,7 @@ class SignupView(APIView):
             },
         ),
         security=[],
-        tags=['Users']
-        ,responses={200: user_response,400:user_response2}
+        responses={200: user_response,400:user_response2}
      )
     # @swagger_auto_schema(request_body=UserSignupSerializer, tags=['Users'],responses={200: user_response,400:user_response2})
     @csrf_exempt
@@ -78,7 +77,7 @@ class SignupView(APIView):
 
 class LoginView(APIView):
 
-    @swagger_auto_schema(request_body=RequestLoginSerializer, tags=['Users'],responses={200: user_response1,400:user_response2})
+    @swagger_auto_schema(request_body=RequestLoginSerializer,responses={200: user_response1,400:user_response2})
     @csrf_exempt
     def post(self, request):
         print("fdsbioiobuiio")

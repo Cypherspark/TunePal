@@ -54,9 +54,6 @@ class CustomUser(AbstractUser):
     friends = models.ManyToManyField(Friends)
     music = models.ManyToManyField(User_top_music)
     status = models.CharField(blank = True,max_length = 10)
-
-
-    #location =
     
     location = models.OneToOneField(UserLocation,
                     blank=True,

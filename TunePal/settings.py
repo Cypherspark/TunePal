@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     'drf_yasg',
+    'music',
 ]
 
 
