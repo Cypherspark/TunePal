@@ -5,9 +5,21 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 
 
-# class Music(models.Model):
 class Friends(models.Model):
     username = models.CharField(_('username'), max_length=30, blank=True, unique=False)
+    nickname = models.CharField(_('nickname'), max_length=30, blank=True, unique=False)
+    FEMALE = 'Female'
+    MALE = 'Male'
+
+    TYPE_CHOICES = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+    )
+    spotify_token = models.CharField(_('spotify token'), max_length=220, blank=True, null=True)
+
+    gender = models.CharField(max_length=10,choices=TYPE_CHOICES,default=MALE)
+
+
 
 class CustomUser(AbstractUser):
     first_name = None
