@@ -1,4 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login , logout
 
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +8,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 
 from account.models import *
@@ -15,6 +17,8 @@ from account.api.serializers import *
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+
+from hashlib import sha256
 
 # @swagger_auto_schema(method='put', auto_schema=None)
 # @swagger_auto_schema(methods=['get'], ...)
@@ -73,9 +77,11 @@ class SignupView(APIView):
 
 
 class LoginView(APIView):
+
     @swagger_auto_schema(request_body=RequestLoginSerializer, tags=['Users'],responses={200: user_response1,400:user_response2})
     @csrf_exempt
     def post(self, request):
+        print("fdsbioiobuiio")
         serializer = RequestLoginSerializer(data=request.data)
         if serializer.is_valid():
             u = authenticate(
@@ -88,10 +94,13 @@ class LoginView(APIView):
                         'message': 'The username or password is wrong'
                     },
                     status=status.HTTP_404_NOT_FOUND
-                ) 
+                )
             if u:
                 #successful request
                 login(request, u)
+                user = CustomUser.object.get(id = u.id)
+                user.status = "online"
+                print(user.status)
                 token, created = Token.objects.get_or_create(user=u)
                 return Response(
                     {
@@ -101,6 +110,7 @@ class LoginView(APIView):
                         }
                     },
                     status=status.HTTP_200_OK
+
                 )
             else:
                 return Response(
