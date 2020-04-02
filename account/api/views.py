@@ -1,15 +1,15 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login , logout
 
-from rest_framework.decorators import api_view
-from rest_framework import generics, permissions, status, views
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
-
+from rest_framework.authtoken.models import Token
 
 from account.models import *
 from account.api.serializers import *
@@ -61,11 +61,14 @@ class SignupView(APIView):
         if serializer.is_valid():
             u = serializer.save()
             login(request, u)
+            token, created = Token.objects.get_or_create(user=u)
             info = UserInfoSerializer(u)
             print(u)
             return Response({
                 'message': 'your account have been created successfuly',
-                'data': info.data
+                'data': {
+                'token': token.key
+                }
             })
         return Response(
             serializer.errors,
@@ -98,12 +101,12 @@ class LoginView(APIView):
                 user = CustomUser.object.get(id = u.id)
                 user.status = "online"
                 print(user.status)
+                token, created = Token.objects.get_or_create(user=u)
                 return Response(
                     {
                         'message': 'Your account info is correct',
                         'data': {
-                            'username': u.username,
-                            "id": u.id,
+                            'token': token.key
                         }
                     },
                     status=status.HTTP_200_OK
@@ -121,4 +124,43 @@ class LoginView(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
-# user profile
+
+
+class UserLocationView(APIView):
+    @permission_classes([IsAuthenticated])
+    @csrf_exempt
+    def post(self, request):
+        instance = request.user
+        serializer = LocationSerializer(data=request.data)
+        if serializer.is_valid():
+            u = serializer.save()
+            instance.location = u
+            instance.save()
+            return Response(
+                        {
+                            'message': 'user location has been saved',
+                        }
+                    )
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+class LogoutView(APIView):
+    @permission_classes([IsAuthenticated])
+    @csrf_exempt
+    def get(self, request):
+        Token.objects.get(user=request.user).delete()
+        logout(request)
+        return Response({"message:logged out successfully"},status=204)
+
+
+
+
+
+class UserInfoView(APIView):
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        serializer = UserInfoSerializer(request.user)
+        return Response(serializer.data)

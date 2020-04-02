@@ -19,6 +19,12 @@ class Friends(models.Model):
 
     gender = models.CharField(max_length=10,choices=TYPE_CHOICES,default=MALE)
 
+class UserLocation(models.Model):
+    latitude = models.FloatField(_("latitude"),null=True, blank=True)
+    longitude = models.FloatField(_("longitude"),null=True, blank=True)
+    country = models.CharField(_("country"),max_length=30, blank=True, unique=False)
+    province = models.CharField(_("province"),max_length=30, blank=True, unique=False)
+    neighbourhood = models.CharField(_("neighbourhood"),max_length=30, blank=True, unique=False)
 
 
 class CustomUser(AbstractUser):
@@ -51,5 +57,14 @@ class CustomUser(AbstractUser):
 
 
     #location =
+    
+    location = models.OneToOneField(UserLocation,
+                    blank=True,
+                    null=True,
+                    verbose_name=_("location"),
+                    on_delete=models.CASCADE
+                    )
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['gender', 'email','password']
+

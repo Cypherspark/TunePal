@@ -221,8 +221,8 @@ class SpotifyOAuth(SpotifyAuthBase):
 
         if request != None:
             try:
-                userr = CustomUser.objects.get(username=request.user)
-                token_info_string = userr.spotify_token
+                instance = request.user
+                token_info_string = instance.spotify_token
                 # print('---',token_info_string)
                 # f = open(self.cache_path)
                 # token_info_string = f.read()
@@ -249,9 +249,9 @@ class SpotifyOAuth(SpotifyAuthBase):
         if True:
             try:
                 # f = open(self.cache_path, "w")
-                userr = CustomUser.objects.get(username=request.user)
-                userr.spotify_token = json.dumps(token_info)
-                userr.save()
+                instance = request.user
+                instance.spotify_token = json.dumps(token_info)
+                instance.save()
                 # f.close()
             except :
                 self._warn("couldn't write token cache to " + self.cache_path)

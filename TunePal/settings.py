@@ -25,7 +25,7 @@ SECRET_KEY = '-iwkyziqjy@__gfi+a#p1hg6vl4a#4z*wvshlisf!-0tw#73!('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tunepal.pythonanywhere.com','localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework.authtoken',
     'rest_framework',
     'account',
     'drf_yasg',
@@ -104,9 +105,12 @@ SWAGGER_SETTINGS = {
 
 REST_FRAMEWORK = {
 
-  'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
-}
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework.authentication.TokenAuthentication',
+        )
+}
 
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media') 
@@ -150,3 +154,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+STATIC_ROOT = "/var/www/tunepal.pythonanywhere.com/static/"

@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     url(r'^auth/$',
        views.SpotifyView.as_view(),
-        name='authorized'),
+        name='make-auth-uri'),
 
     url(r'^friends/$',
        views.Find_friends.as_view(),
@@ -16,6 +16,9 @@ urlpatterns = [
     # url(r'^/auth/$',
     #     views.SpotifyView.as_view(),
     #     name='spotify')
+    url(r'^get_url/$',
+        views.SpotifyGetTokenView.as_view(),
+        name='get-token-spotify')
 
 
 ]

@@ -1,14 +1,10 @@
 from datetime import date
 from rest_framework import serializers
 from account.models import CustomUser as User
+from account.models import UserLocation
 from TunePal import settings
 
 
-
-class UserInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'is_active', 'gender']
 
 
 
@@ -94,5 +90,27 @@ class RequestLoginSerializer(serializers.Serializer):
         required=True, max_length=30, allow_blank=False,
     )
     password = serializers.CharField(
-        required=True, max_length=128, allow_blank=False
+        required=True, max_length=128, allow_blank=False 
     )
+
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = UserLocation
+        fields = '__all__'
+    def create(self, validated_data):
+        ulocation = UserLocation(
+            latitude = validated_data.get("latitude"),
+            longitude = validated_data.get("longitude"),
+            country = validated_data.get("country"),
+            province = validated_data.get("province"),
+            neighbourhood = validated_data.get("neighbourhood")
+        )
+        ulocation.save()
+        return ulocation
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    location = LocationSerializer(read_only =True)
+    class Meta:
+        model = User
+        exclude = ["password","is_staff","user_permissions","spotify_token"]
