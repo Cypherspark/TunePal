@@ -2,7 +2,7 @@ from datetime import date
 from rest_framework import serializers
 from account.models import CustomUser as User
 from TunePal import settings
-from hashlib import sha256
+
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
@@ -96,14 +96,3 @@ class RequestLoginSerializer(serializers.Serializer):
     password = serializers.CharField(
         required=True, max_length=128, allow_blank=False
     )
-
-class UserProfileSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password', 'nickname','bio', 'birthdate', 'gender','status']
-
-class UpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password', 'nickname','bio', 'birthdate', 'gender']
