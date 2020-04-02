@@ -1,14 +1,10 @@
 import hashlib, binascii, os
-from music.models import User_top_music
+from music.models import User_top_music,Music
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 
-class Music(models.Model):
-    music_name = models.CharField(max_length=250)
-    artist_name = models.CharField(max_length=250)
-    genre = models.CharField(max_length=250)
-    album = models.CharField(max_length=250)
+
 # class Music(models.Model):
 class Friends(models.Model):
     username = models.CharField(_('username'), max_length=30, blank=True, unique=False)
@@ -39,6 +35,7 @@ class CustomUser(AbstractUser):
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
     friends = models.ManyToManyField(Friends)
     music = models.ManyToManyField(User_top_music)
+    status = models.CharField(blank = True,max_length = 10)
 
 
     #location =
