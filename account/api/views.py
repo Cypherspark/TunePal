@@ -25,9 +25,11 @@ from hashlib import sha256
 # @api_view(['GET', 'PUT'])
 
 # test_param = openapi.Parameter('test', openapi.IN_QUERY,description="test manual param", type=openapi.IN_BODY)
-user_response = openapi.Response('response description', UserSignupSerializer)
-user_response1 = openapi.Response('response description', RequestLoginSerializer)
+user_response = openapi.Response('ok', UserSignupSerializer)
+user_response1 = openapi.Response('ok', RequestLoginSerializer)
 user_response2 = openapi.Response('bad request')
+user_response3 = openapi.Response('ok')
+
 
 # @swagger_auto_schema(method='get', manual_parameters=[test_param], responses={200: user_response})
 
@@ -37,7 +39,7 @@ class SignupView(APIView):
     # @swagger_auto_schema(method='post', manual_parameters=[test_param], responses={200: user_response})
     # @api_view(['POST'])
     @swagger_auto_schema(
-    operation_description="apiview post description override",
+    operation_description="user signup",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             required=['password','username','gender','email','nickname'],
@@ -75,6 +77,45 @@ class SignupView(APIView):
         )
 
 
+
+    @swagger_auto_schema(
+    operation_description="user update info",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'username': openapi.Schema(type=openapi.TYPE_STRING),
+                'password': { "type": "string", "format": "password"},
+                'gender': openapi.Schema(type=openapi.TYPE_STRING),
+                'email': { "type": "string", "format": "email"},
+                'nickname': openapi.Schema(type=openapi.TYPE_STRING),
+                'birthdate': { "type": "string", "format": "date"},
+                'interests':openapi.Schema(type=openapi.TYPE_STRING),
+                'biography':openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ),
+        security=[],
+        responses={200: user_response3}
+     )
+    @permission_classes([IsAuthenticated])
+    @csrf_exempt
+    def put(self, request):
+        instance = request.user
+        serializer = UserSignupSerializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            u = serializer.save()
+            instance.save()
+            return Response(
+                        {
+                            'message': 'account info has been updated',
+                        },
+                        status=status.HTTP_200_OK
+                    )
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+
 class LoginView(APIView):
 
     @swagger_auto_schema(request_body=RequestLoginSerializer,responses={200: user_response1,400:user_response2})
@@ -97,7 +138,7 @@ class LoginView(APIView):
             if u:
                 #successful request
                 login(request, u)
-                user = CustomUser.object.get(id = u.id)
+                user = u
                 user.status = "online"
                 print(user.status)
                 token, created = Token.objects.get_or_create(user=u)
@@ -123,6 +164,7 @@ class LoginView(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
 
 
 class UserLocationView(APIView):

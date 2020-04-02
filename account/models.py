@@ -27,6 +27,11 @@ class UserLocation(models.Model):
     neighbourhood = models.CharField(_("neighbourhood"),max_length=30, blank=True, unique=False)
 
 
+# class Interests(models.Model):
+#     title = models.CharField(_('title'), max_length=30, blank=True, null=True)
+
+#     def __str__(self):
+#         return title
 class CustomUser(AbstractUser):
     first_name = None
     last_name = None
@@ -46,8 +51,8 @@ class CustomUser(AbstractUser):
     nickname = models.CharField(_('nickname'), max_length=30, blank=True, unique=False)
     email = models.EmailField(_('email address'), unique=True)
     birthdate = models.DateField(null=True)
-    bio = models.CharField(_('biography'), max_length=150, blank=True, null=True)
-    intersts = models.CharField(_('interests'), max_length=30, blank=True, null=True)
+    biography = models.CharField(_('biography'), max_length=150, blank=True, null=True)
+    interests = models.CharField(_('interests'), max_length=30, blank=True, null=True)
     user_avatar = models.ImageField(upload_to="images/", blank=True)
     spotify_token = models.CharField(_('spotify token'), max_length=220, blank=True, null=True)
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
@@ -64,4 +69,5 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['gender', 'email','password']
+
 

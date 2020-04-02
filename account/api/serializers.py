@@ -6,8 +6,6 @@ from TunePal import settings
 
 
 
-
-
 def calculateAge(birthDate):
     today = date.today()
     age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
@@ -46,7 +44,8 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname']
+        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname','biography','interests']
+        extra_kwargs = {'biography':  {'allow_null': True, 'required': False},'interests': {'allow_null': True, 'required': False}}
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -82,7 +81,17 @@ class UserSignupSerializer(serializers.ModelSerializer):
         user_data.set_password(validated_data['password'])
         user_data.save()
         return user_data
-        return user_data
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr == 'password':
+                instance.set_password(value)
+            else:
+                setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+
 
 
 class RequestLoginSerializer(serializers.Serializer):
@@ -110,7 +119,13 @@ class LocationSerializer(serializers.ModelSerializer):
         return ulocation
 
 class UserInfoSerializer(serializers.ModelSerializer):
+    # interest = UserInterestsSerializer(read_only =True)
     location = LocationSerializer(read_only =True)
     class Meta:
         model = User
         exclude = ["password","is_staff","user_permissions","spotify_token"]
+
+
+# class UserInterestsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Interests
