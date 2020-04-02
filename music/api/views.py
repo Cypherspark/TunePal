@@ -16,7 +16,6 @@ import spotipy.util as util
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import viewsets
 
 from music.api.serializers import UserProfileSerializer
 
@@ -63,9 +62,10 @@ class SpotifyView(APIView):
                     access_token = token_info['access_token']
 
             if access_token:
-                print ("Access token available! Trying to get user information...")
+                print ("Access token available! Trying to get user information...            "+ access_token)
                 sp = spotipy.Spotify(access_token)
                 results = sp.current_user()
+                print(access_token + " access_token    ")
                 return Response(results)
 
             else:
@@ -78,7 +78,7 @@ class SpotifyView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-class Match(APIView):
+class Find_friends(APIView):
     @csrf_exempt
     def get(self, request):
         if request.user.is_authenticated :
@@ -98,21 +98,18 @@ class Match(APIView):
                     access_token = token_info['access_token']
 
             if access_token:
-                print ("Access token available! Trying to get user information...")
+                print ("Access token available! Wating for find your friends...")
                 sp = spotipy.Spotify(access_token)
                 friends(request,request.user.id,sp)
-                data = {}
-                for friend in friends.friends:
-                    a=1
-                    data = [{ a : friend}]
-                    a+=1
-                return JsonResponse(data, safe=False)
+                total_dict = {}
+                total_dict["FEMALE"] = friends.dataFE
+                total_dict["MALE"] = friends.dataM
+                return JsonResponse(total_dict, safe=False)
 
 
             else:
                 return getSPOauthURI()
         else:
-            # print("here")
             return  Response( {
                'message': 'Your are not logged in'
             },
@@ -122,19 +119,20 @@ class Match(APIView):
 
 
 
+class Match(APIView):
+    @csrf_exempt
+    def get(self, request):
+                dataM = {}
+                dataFE = {}
+                activeuser = CustomUser.objects.get(id = request.user.id)
+                users = activeuser.friends.all()
+                for friend in users:
+                    if friend.gender == "Male":
+                        dataM[friend.username] = friend.nickname
+                    else:
+                        dataFE[user.username] = friend.nickname
 
-class UserViewSet(viewsets.ViewSet):
-    """
-    A simple ViewSet that for listing or retrieving users.
-    """
-    def list(self, request):
-        queryset = CustomUser.objects.all()
-        serializer = UserProfileSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = CustomUser.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = UserProfileSerializer(user)
-        return Response(serializer.data)
-        user_detail = UserViewSet.as_view({'get': 'retrieve'})
+                total_dict = {}
+                total_dict["FEMALE"] = dataFE
+                total_dict["MALE"] = dataM
+                return JsonResponse(total_dict, safe=False)
