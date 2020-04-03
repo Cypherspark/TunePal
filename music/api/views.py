@@ -12,6 +12,7 @@ import spotipy
 from spotipy import oauth2
 import spotipy.util as util
 from music.views import *
+from music.api.serializers import *
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
@@ -104,18 +105,19 @@ class Match(APIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
-                dataM = {}
-                dataFE = {}
-                activeuser = CustomUser.objects.get(id = request.user.id)
-                users = activeuser.friends.all()
-                for friend in users:
-                    if friend.gender == "Male":
-                        dataM[friend.username] = friend.nickname
-                    else:
-                        dataFE[user.username] = friend.nickname
+        dataM = []
+        dataFE = []
+        activeuser = CustomUser.objects.get(id = request.user.id)
+        users = activeuser.friends.all()
+        for friend in users:
+            friendserialized = FriendInfoSerializer(friend)
+            if friend.gender == "Male":
+                dataM.append(friendserialized.data)
+            else:
+                dataFE.append(friendserialized.data)
 
-                total_dict = {}
-                total_dict["FEMALE"] = dataFE
-                total_dict["MALE"] = dataM
-                return JsonResponse(total_dict, safe=False)
+        total_dict = {}
+        total_dict["FEMALE"] = dataFE
+        total_dict["MALE"] = dataM
+        return JsonResponse(total_dict, safe=False)
 
