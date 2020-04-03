@@ -11,6 +11,7 @@ from account.models import CustomUser
 import spotipy
 from spotipy import oauth2
 import spotipy.util as util
+from music.views import *
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
@@ -22,7 +23,7 @@ from rest_framework.permissions import IsAuthenticated
 SPOTIPY_CLIENT_ID = 'c42e107d3ae641e4af9e08e7d7a55b9b'
 SPOTIPY_CLIENT_SECRET = 'cd1e4e0aa3684e34ae12b313ebea1074'
 SPOTIPY_REDIRECT_URI = 'http://localhost:3000/spotifyresult/'
-SCOPE = 'user-top-read'
+SCOPE = 'user-top-read user-read-currently-playing user-read-playback-state user-library-read'
 CACHE = '.spotipyoauthcache'
 
 
