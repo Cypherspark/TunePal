@@ -111,10 +111,10 @@ class Match(APIView):
         users = activeuser.friends.all()
         for friend in users:
             friendserialized = FriendInfoSerializer(friend)
-            if friend.gender == "Male":
-                dataM.append(friendserialized.data)
-            else:
-                dataFE.append(friendserialized.data)
+            # if friend.gender == "Male":
+            dataM.append(friendserialized.data)
+            # else:
+                # dataFE.append(friendserialized.data)
 
         total_dict = {}
         total_dict["FEMALE"] = dataFE
