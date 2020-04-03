@@ -54,10 +54,10 @@ class CustomUser(AbstractUser):
     biography = models.CharField(_('biography'), max_length=150, blank=True, null=True)
     interests = models.CharField(_('interests'), max_length=30, blank=True, null=True)
     user_avatar = models.ImageField(upload_to="images/", blank=True)
-    spotify_token = models.CharField(_('spotify token'), blank=True, null=True)
+    spotify_token = models.CharField(_('spotify token'), max_length=500, blank=True, null=True)
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
-    friends = models.ManyToManyField(Friends, null=True,blank=True)
-    music = models.ManyToManyField(User_top_music, null=True,blank=True)
+    friends = models.ManyToManyField(Friends,blank=True)
+    music = models.ManyToManyField(User_top_music,blank=True)
     status = models.CharField(blank = True,max_length = 10)
     
     location = models.OneToOneField(UserLocation,
