@@ -56,8 +56,8 @@ class CustomUser(AbstractUser):
     user_avatar = models.ImageField(upload_to="images/", blank=True)
     spotify_token = models.CharField(_('spotify token'), max_length=220, blank=True, null=True)
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
-    friends = models.ManyToManyField(Friends)
-    music = models.ManyToManyField(User_top_music)
+    friends = models.ManyToManyField(Friends, null=True,blank=True)
+    music = models.ManyToManyField(User_top_music, null=True,blank=True)
     status = models.CharField(blank = True,max_length = 10)
     
     location = models.OneToOneField(UserLocation,
