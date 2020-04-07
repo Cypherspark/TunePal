@@ -121,7 +121,6 @@ class LoginView(APIView):
     @swagger_auto_schema(request_body=RequestLoginSerializer,responses={200: user_response1,400:user_response2})
     @csrf_exempt
     def post(self, request):
-        print("fdsbioiobuiio")
         serializer = RequestLoginSerializer(data=request.data)
         if serializer.is_valid():
             u = authenticate(
@@ -164,7 +163,7 @@ class LoginView(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
 
 
 class UserLocationView(APIView):
@@ -204,4 +203,34 @@ class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         serializer = UserInfoSerializer(request.user)
+        return Response(serializer.data)
+
+
+class UserProfileimage(GenericAPIView,UpdateModelMixin):
+
+    queryset = CustomUser.objects.all()
+    serializer_class = UserProfileImage
+    def put(self, request, *args, **kwargs):
+        question = get_object_or_404(CustomUser, pk=request.user.id)
+        serializer = UserProfileImage(question, data=request.data, partial=True)
+        if serializer.is_valid():
+            question = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self,request):
+        if request.method == 'GET':
+            queryset = CustomUser.objects.all()
+            serializer = UserProfileImage(queryset, many=True)
+            return Response(serializer.data)
+
+
+class User_Top_Music(GenericAPIView, UpdateModelMixin):
+
+    def get(self, request):
+        dict={}
+        queryset = CustomUser.objects.all()
+        user = get_object_or_404(queryset, pk=self.request.user.id)
+        serializer = UserTopSongserialize(user)
+        print(serializer.data)
+
         return Response(serializer.data)
