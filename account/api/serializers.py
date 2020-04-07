@@ -99,7 +99,7 @@ class RequestLoginSerializer(serializers.Serializer):
         required=True, max_length=30, allow_blank=False,
     )
     password = serializers.CharField(
-        required=True, max_length=128, allow_blank=False 
+        required=True, max_length=128, allow_blank=False
     )
 
 
@@ -125,7 +125,35 @@ class UserInfoSerializer(serializers.ModelSerializer):
         model = User
         exclude = ["password","is_staff","user_permissions","spotify_token"]
 
+class UserProfileImage(serializers.ModelSerializer):
 
+    class Meta:
+        model = User
+        fields = ['file']
+
+# update user profile
+
+# show top song
+class UserTopSongserialize(serializers.ModelSerializer):
+    topics_list = serializers.SerializerMethodField()
+
+    def get_topics_list(self, instance):
+        names = []
+        dict = {}
+        a = instance.music.get_queryset()
+        print()
+        for i in a:
+            temp = {}
+            song=  i.music_name.replace('[','')
+            song =song.replace("'",'')
+            song =song.replace("]",'')
+            temp['song_name'] = song
+            temp['artist_name'] = i.artist_name
+            names.append(temp)
+        return names
+    class Meta:
+        model = User
+        fields = ['topics_list']
 # class UserInterestsSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Interests
