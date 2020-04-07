@@ -1,21 +1,17 @@
-from datetime import date 
+from datetime import date
 from rest_framework import serializers
 from account.models import CustomUser as User
 from account.models import UserLocation
 from TunePal import settings
 
 
-class UserInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'is_active', 'gender']
 
 
 
-def calculateAge(birthDate): 
-    today = date.today() 
-    age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day)) 
-    return age 
+def calculateAge(birthDate):
+    today = date.today()
+    age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
+    return age
 
 class UserSignupSerializer(serializers.ModelSerializer):
 
@@ -44,14 +40,14 @@ class UserSignupSerializer(serializers.ModelSerializer):
         required=True
     )
     nickname = serializers.CharField(
-        label="Name",   
+        label="Name",
         required=True
     )
 
     class Meta(object):
         model = User
         fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname']
-    
+
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
             raise serializers.ValidationError("Username already exists.")
@@ -67,15 +63,15 @@ class UserSignupSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Password should be atleast %s characters long." % getattr(settings, 'PASSWORD_MIN_LENGTH', 8)
             )
-        return value 
+        return value
 
     def validate_birthdate(self, value):
         if calculateAge(value) < 18 :
             raise serializers.ValidationError("You must be over 18 to continue.")
         return value
-        
+
     def create(self, validated_data):
-         
+
         user_data = User(
             nickname = validated_data.get('nickname'),
             username = validated_data.get('username'),
@@ -85,6 +81,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         )
         user_data.set_password(validated_data['password'])
         user_data.save()
+        return user_data
         return user_data
 
 
@@ -111,3 +108,9 @@ class LocationSerializer(serializers.ModelSerializer):
         )
         ulocation.save()
         return ulocation
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    location = LocationSerializer(read_only =True)
+    class Meta:
+        model = User
+        exclude = ["password","is_staff","user_permissions","spotify_token"]
