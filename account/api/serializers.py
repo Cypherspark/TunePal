@@ -123,7 +123,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     location = LocationSerializer(read_only =True)
     class Meta:
         model = User
-        exclude = ["password","is_staff","user_permissions","spotify_token"]
+        exclude = ["password","is_staff","user_permissions","spotify_token","email"]
 
 class UserProfileImage(serializers.ModelSerializer):
 
@@ -133,27 +133,8 @@ class UserProfileImage(serializers.ModelSerializer):
 
 # update user profile
 
-# show top song
-class UserTopSongserialize(serializers.ModelSerializer):
-    topics_list = serializers.SerializerMethodField()
 
-    def get_topics_list(self, instance):
-        names = []
-        dict = {}
-        a = instance.music.get_queryset()
-        print()
-        for i in a:
-            temp = {}
-            song=  i.music_name.replace('[','')
-            song =song.replace("'",'')
-            song =song.replace("]",'')
-            temp['song_name'] = song
-            temp['artist_name'] = i.artist_name
-            names.append(temp)
-        return names
-    class Meta:
-        model = User
-        fields = ['topics_list']
+
 # class UserInterestsSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Interests
