@@ -216,7 +216,7 @@ class UserProfileimage(GenericAPIView,UpdateModelMixin):
     serializer_class = UserProfileImage
     @permission_classes([IsAuthenticated])
     def put(self, request, *args, **kwargs):
-        user = get_object_or_404(CustomUser, pk=request.user.id)
+        user = request.user.id
         serializer = UserProfileImage(user, data=request.data, partial=True)
         if serializer.is_valid():
             user = serializer.save()
