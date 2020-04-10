@@ -18,7 +18,22 @@ urlpatterns = [
     #     name='spotify')
     url(r'^get_url/$',
         views.SpotifyGetTokenView.as_view(),
-        name='get-token-spotify')
+        name='get-token-spotify'),
+    url(r'^score/$',
+            views. UserUpdateScore.as_view(),
+            name='scoreupdate'),
+    url(r'^topsong/$',
+            views. User_Top_Music.as_view(),
+            name='topsong'),
+    url(r'^question/$',
+       views.question.as_view(),
+        name='question'),
 
+    url(r'^quiz/$',
+       views.quiz.as_view(),
+        name='quiz'),
+    # url(r'^Top/$',
+    #     views.Top_Artist.as_view(),
+    #     name='TopArtist')
 
 ]
