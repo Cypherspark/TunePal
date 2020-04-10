@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 from . import views
@@ -24,12 +26,12 @@ urlpatterns = [
     url(r'^logout/$',
         views.LogoutView.as_view(),
         name='logout'),
-            url(r'^profile/$',
+    url(r'^profile/$',
             views. UserProfileimage.as_view(),
             name='profile'),
-    url(r'^topsong/$',
-            views. User_Top_Music.as_view(),
-            name='topsong'),
+
 
 
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
