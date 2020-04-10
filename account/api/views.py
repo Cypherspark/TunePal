@@ -214,6 +214,7 @@ class UserProfileimage(GenericAPIView,UpdateModelMixin):
 
     queryset = CustomUser.objects.all()
     serializer_class = UserProfileImage
+    @permission_classes([IsAuthenticated])
     def put(self, request, *args, **kwargs):
         user = get_object_or_404(CustomUser, pk=request.user.id)
         serializer = UserProfileImage(user, data=request.data, partial=True)
@@ -221,6 +222,7 @@ class UserProfileimage(GenericAPIView,UpdateModelMixin):
             user = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @permission_classes([IsAuthenticated])
     def get(self,request):
         if request.method == 'GET':
             queryset = CustomUser.objects.all()
