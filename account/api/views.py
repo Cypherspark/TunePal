@@ -20,6 +20,9 @@ from drf_yasg import openapi
 
 from hashlib import sha256
 
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
+
 # @swagger_auto_schema(method='put', auto_schema=None)
 # @swagger_auto_schema(methods=['get'], ...)
 # @api_view(['GET', 'PUT'])
@@ -64,7 +67,7 @@ class SignupView(APIView):
             login(request, u)
             token, created = Token.objects.get_or_create(user=u)
             info = UserInfoSerializer(u)
-            print(u)
+
             return Response({
                 'message': 'your account have been created successfuly',
                 'data': {
@@ -139,7 +142,6 @@ class LoginView(APIView):
                 login(request, u)
                 user = u
                 user.status = "online"
-                print(user.status)
                 token, created = Token.objects.get_or_create(user=u)
                 return Response(
                     {
@@ -202,7 +204,9 @@ class LogoutView(APIView):
 class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
+        # user = get_object_or_404(CustomUser, pk=request.user)
         serializer = UserInfoSerializer(request.user)
+        print(serializer.data)
         return Response(serializer.data)
 
 
@@ -211,10 +215,10 @@ class UserProfileimage(GenericAPIView,UpdateModelMixin):
     queryset = CustomUser.objects.all()
     serializer_class = UserProfileImage
     def put(self, request, *args, **kwargs):
-        question = get_object_or_404(CustomUser, pk=request.user.id)
-        serializer = UserProfileImage(question, data=request.data, partial=True)
+        user = get_object_or_404(CustomUser, pk=request.user.id)
+        serializer = UserProfileImage(user, data=request.data, partial=True)
         if serializer.is_valid():
-            question = serializer.save()
+            user = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def get(self,request):
@@ -222,15 +226,3 @@ class UserProfileimage(GenericAPIView,UpdateModelMixin):
             queryset = CustomUser.objects.all()
             serializer = UserProfileImage(queryset, many=True)
             return Response(serializer.data)
-
-
-class User_Top_Music(GenericAPIView, UpdateModelMixin):
-
-    def get(self, request):
-        dict={}
-        queryset = CustomUser.objects.all()
-        user = get_object_or_404(queryset, pk=self.request.user.id)
-        serializer = UserTopSongserialize(user)
-        print(serializer.data)
-
-        return Response(serializer.data)
