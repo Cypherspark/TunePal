@@ -183,7 +183,7 @@ class question(APIView):
                                 temp.remove(result["artists"][0]["name"])
 
                             print(temp)
-                            question = "the song with name "+result["name"]+"is for ...."
+                            question = "the song with name "+result["name"]+" is for ...."
                             list = random.sample(temp, len(temp))
                             choices2 = list[0]
                             choices3 = list[1]
@@ -197,13 +197,13 @@ class question(APIView):
                             Activeuser = get_object_or_404(CustomUser,id =request.user.id)
                             Activeuser.quiz.add(Quiz1)
 
-                    results = sp.current_user_top_artists(limit=10, offset=0, time_range='medium_term')
-
+                    results = sp.current_user_top_artists(limit=5, offset=0, time_range='medium_term')
                     for i in range(len(results)):
+                        temp.append(results['items'][i]['name'])
+                    for i in range(len(results)):
+
                             if results['items'][i]['name'] in temp:
                                 temp.remove(results['items'][i]['name'])
-
-                            print(temp)
                             question = results['items'][i]['images'][2]['url']
                             print(temp)
                             list = random.sample(temp, 3)
@@ -226,7 +226,7 @@ class question(APIView):
                         },
                             status=status.HTTP_400_BAD_REQUEST
                         )
-class quiz(GenericAPIView):
+class privatequiz(GenericAPIView):
     queryset = CustomUser.objects.all()
     def get(self, request):
         list= []
@@ -236,3 +236,23 @@ class quiz(GenericAPIView):
             serializer = Userprivatequiz(song)
             list.append(serializer.data)
         return Response(list)
+class checkanswer(GenericAPIView):
+     queryset = Quiz.objects.all()
+     serializer_class = Checkserialiser
+     def post(self,request):
+        quiz = get_object_or_404(self.queryset,id=request.POST.get('quiz_id'))
+        answer = request.POST.get('answer')
+        if quiz.answer == answer:
+            return Response('true')
+        else:
+            return Response("False")
+class publicquiz(GenericAPIView):
+    queryset = Quiz.objects.all()
+    def get(self,request):
+        questions = []
+        randomlist = random.sample(range(0,self.queryset.count()), 10)
+        for i in randomlist:
+            question = get_object_or_404(self.queryset, pk= i )
+            serializer = Userprivatequiz(question)
+            questions.append(serializer.data)
+        return Response(questions)
