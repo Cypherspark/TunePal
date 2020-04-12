@@ -30,8 +30,14 @@ urlpatterns = [
         name='question'),
 
     url(r'^quiz/$',
-       views.quiz.as_view(),
+       views.privatequiz.as_view(),
         name='quiz'),
+    url(r'^check/$',
+       views.checkanswer.as_view(),
+        name='checkanswer'),
+    url(r'^publicquiz/$',
+       views.publicquiz.as_view(),
+        name='publicquiz'),
     # url(r'^Top/$',
     #     views.Top_Artist.as_view(),
     #     name='TopArtist')
