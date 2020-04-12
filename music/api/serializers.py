@@ -27,3 +27,7 @@ class Userprivatequiz(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = ["question",'choices1','choices2','choices3','choices4']
+class Checkserialiser(serializers.ModelSerializer):
+            class Meta:
+                model = Quiz
+                fields = ["quiz_id",'answer']
