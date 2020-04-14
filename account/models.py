@@ -60,7 +60,7 @@ class CustomUser(AbstractUser):
 
 class Friend(models.Model):
     users = models.ManyToManyField(CustomUser)
-    current_user = models.ForeignKey(CustomUser, related_name="owner", null=True)
+    current_user = models.ForeignKey(CustomUser, related_name="owner", null=True, on_delete=models.CASCADE)
 
     @classmethod
     def make_friend(cls, current_user, new_friend):
