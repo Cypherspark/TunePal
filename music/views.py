@@ -1,6 +1,6 @@
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
-from account.models import CustomUser,Music,Friends
+from account.models import CustomUser,Music,Friend
 from django.http import HttpResponse
 from music.models import User_top_music
 import sys
@@ -112,5 +112,5 @@ def friends(request,id,sp):
                 if flag:
                     pass
                 else:
-                     f= Friends.objects.create(username = user.username,nickname = user.nickname,gender = user.gender,spotify_token = user.spotify_token)
+                     f= Friend.objects.create(username = user.username,nickname = user.nickname,gender = user.gender,spotify_token = user.spotify_token)
                      Activeuser.friends.add(f)
