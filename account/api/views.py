@@ -98,6 +98,8 @@ class SignupView(APIView):
         security=[],
         responses={200: user_response3}
      )
+
+    @swagger_auto_schema(request_body=UserSignupSerializer, tags=['Profile'],responses={200: openapi.Response('account info has been updated'})
     @permission_classes([IsAuthenticated])
     @csrf_exempt
     def put(self, request):
@@ -123,7 +125,6 @@ class LoginView(APIView):
     @swagger_auto_schema(request_body=RequestLoginSerializer,responses={200: user_response1,400:user_response2})
     @csrf_exempt
     def post(self, request):
-        print("fdsbioiobuiio")
         serializer = RequestLoginSerializer(data=request.data)
         if serializer.is_valid():
             u = authenticate(
@@ -204,6 +205,7 @@ class LogoutView(APIView):
 
 
 class UserInfoView(APIView):
+    @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserInfoSerializer)})
     @permission_classes([IsAuthenticated])
     def get(self, request):
         serializer = UserInfoSerializer(request.user)
@@ -212,6 +214,7 @@ class UserInfoView(APIView):
 
 
 class UserAvatarView(APIView):
+    @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserAvatarSerializer)})
     @permission_classes([IsAuthenticated])
     def get(self, request):
         serializer = UserAvatarSerializer(request.user)
