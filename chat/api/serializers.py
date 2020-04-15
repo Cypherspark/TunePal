@@ -14,7 +14,7 @@ class UserProfileSerilizer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ['id','username', 'nickname','status','to_show']
+        fields = ['id','username', 'nickname','status','to_show','user_avatar']
         extra_kwargs ={'to_show':{'required': False}}
 
 

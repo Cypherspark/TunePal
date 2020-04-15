@@ -128,6 +128,11 @@ class UserInfoSerializer(serializers.ModelSerializer):
         model = User
         exclude = ["password","is_staff","user_permissions","spotify_token"]
 
+class UserAvatarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["user_avatar"]
+
 
 # class UserInterestsSerializer(serializers.ModelSerializer):
 #     class Meta:

@@ -92,6 +92,7 @@ class SignupView(APIView):
                 'birthdate': { "type": "string", "format": "date"},
                 'interests':openapi.Schema(type=openapi.TYPE_STRING),
                 'biography':openapi.Schema(type=openapi.TYPE_STRING),
+                # 'user_avatar':
             },
         ),
         security=[],
@@ -206,4 +207,12 @@ class UserInfoView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         serializer = UserInfoSerializer(request.user)
+        return Response(serializer.data)
+
+
+
+class UserAvatarView(APIView):
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        serializer = UserAvatarSerializer(request.user)
         return Response(serializer.data)
