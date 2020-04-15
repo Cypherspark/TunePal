@@ -44,8 +44,11 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname','biography','interests']
-        extra_kwargs = {'biography':  {'allow_null': True, 'required': False},'interests': {'allow_null': True, 'required': False}}
+        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname','biography','interests','user_avatar']
+        extra_kwargs = {'biography':  {'allow_null': True, 'required': False},
+        'interests': {'allow_null': True, 'required': False},
+        'user_avatar':{'required': False}
+        }
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
