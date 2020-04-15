@@ -80,7 +80,7 @@ class SignupView(APIView):
 
 
     @swagger_auto_schema(
-    operation_description="user update info",
+    operation_description="user update profile",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -95,11 +95,10 @@ class SignupView(APIView):
                 # 'user_avatar':
             },
         ),
+        tags=['Profile'],
         security=[],
-        responses={200: user_response3}
+        responses={200: openapi.Response('account info has been updated')}
      )
-
-    @swagger_auto_schema(request_body=UserSignupSerializer, tags=['Profile'],responses={200: openapi.Response('account info has been updated'})
     @permission_classes([IsAuthenticated])
     @csrf_exempt
     def put(self, request):
