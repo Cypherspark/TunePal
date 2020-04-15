@@ -207,7 +207,7 @@ class UserInfoView(APIView):
     @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserInfoSerializer)})
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        serializer = UserInfoSerializer(request.user)
+        serializer = UserInfoSerializer(request.user,context={"request":request})
         return Response(serializer.data)
 
 
@@ -216,5 +216,5 @@ class UserAvatarView(APIView):
     @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserAvatarSerializer)})
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        serializer = UserAvatarSerializer(request.user)
+        serializer = UserAvatarSerializer(request.user,context={"request":request})
         return Response(serializer.data)

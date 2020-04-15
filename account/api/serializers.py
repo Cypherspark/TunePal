@@ -122,12 +122,20 @@ class LocationSerializer(serializers.ModelSerializer):
         return ulocation
 
 class UserInfoSerializer(serializers.ModelSerializer):
+    # user_avatar = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    # serializers.SerializerMethodField()
     # interest = UserInterestsSerializer(read_only =True)
     location = LocationSerializer(read_only =True)
+    
+    # def get_user_avatar(self, user):
+    #     photo_url = user.user_avatar
+    #     return request.build_absolute_uri(photo_url)
+
     class Meta:
         model = User
         exclude = ["password","is_staff","user_permissions","spotify_token"]
 
+  
 class UserAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
