@@ -62,6 +62,7 @@ class SignupView(APIView):
         if serializer.is_valid():
             u = serializer.save()
             login(request, u)
+            u.status = "online"
             token, created = Token.objects.get_or_create(user=u)
             info = UserInfoSerializer(u)
             print(u)
@@ -192,6 +193,7 @@ class LogoutView(APIView):
     @permission_classes([IsAuthenticated])
     @csrf_exempt
     def get(self, request):
+        request.user.status = "offline"
         Token.objects.get(user=request.user).delete()
         logout(request)
         return Response({"message:logged out successfully"},status=204)
