@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('account/', include('account.api.urls')),
+    path('chat/', include('chat.api.urls')),
     path('spotify/', include('music.api.urls')),
     path('accounts/', include('rest_framework.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
