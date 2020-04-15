@@ -44,8 +44,11 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname','biography','interests']
-        extra_kwargs = {'biography':  {'allow_null': True, 'required': False},'interests': {'allow_null': True, 'required': False}}
+        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname','biography','interests','user_avatar']
+        extra_kwargs = {'biography':  {'allow_null': True, 'required': False},
+        'interests': {'allow_null': True, 'required': False},
+        'user_avatar':{'required': False}
+        }
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -124,6 +127,11 @@ class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ["password","is_staff","user_permissions","spotify_token"]
+
+class UserAvatarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["user_avatar"]
 
 
 # class UserInterestsSerializer(serializers.ModelSerializer):
