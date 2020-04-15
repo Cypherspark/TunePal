@@ -6,12 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Conversation(models.Model):
-    name = models.CharField(max_length=100)
-    members = models.ManyToManyField(Users)
+    name = models.CharField(max_length=100,blank=True,null =True)
+    members = models.ManyToManyField(User)
     is_group = models.BooleanField(_("is_group"),default=False)
 
     def __str__(self):
-        return self.name
+        return f"{self.id}"
 
 
 class Message(models.Model):
@@ -23,12 +23,12 @@ class Message(models.Model):
         on_delete=models.CASCADE
     )
     text = models.TextField()
-    date = models.DateField()
+    date = models.DateTimeField(_("time"), auto_now=False, auto_now_add=False)
     is_seen = models.BooleanField(_("is_seen"),default=False)
 
     def __str__(self):
-        return "%s (%s): %s" % (
-            self.sender_id.first_name, 
-            self.conversation_id.name,
+        return "%s (%d): %s" % (
+            self.sender_id.nickname, 
+            self.conversation_id.id,
             self.text
         )
