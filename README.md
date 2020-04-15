@@ -15,7 +15,7 @@ docs and other info about api are here:
 - [ ] deploy on vps
 - [ ] editing and testing friend relationship 
 - [x] complete matching
-- [ ] profile picture test
+- [x] profile picture test
 - [x] django channels chatroom 
 
 
