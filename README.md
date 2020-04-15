@@ -11,11 +11,12 @@ docs and other info about api are here:
 
 
 ### masoud sprint2 todolist
-- [x] adding postgres both local and serverside -> estimated time 1:30'
-- [ ] editing and  cleaning friend relationship -> estimated time 30'
-- [ ] complete matching -> estimated time 3
-- [ ] profile picture -> estimated time  30'
-- [ ] django channels chatroom -> estimated time 4
+- [x] adding postgres local
+- [ ] deploy on vps
+- [ ] editing and testing friend relationship 
+- [x] complete matching
+- [ ] profile picture test
+- [x] django channels chatroom 
 
 
 
