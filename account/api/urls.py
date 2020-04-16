@@ -26,11 +26,7 @@ urlpatterns = [
     url(r'^logout/$',
         views.LogoutView.as_view(),
         name='logout'),
-    url(r'^profile/$',
-            views. UserProfileimage.as_view(),
-            name='profile'),
-
-
+    
 
 ]
 if settings.DEBUG:
