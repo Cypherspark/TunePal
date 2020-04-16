@@ -102,7 +102,7 @@ class RequestLoginSerializer(serializers.Serializer):
         required=True, max_length=30, allow_blank=False,
     )
     password = serializers.CharField(
-        required=True, max_length=128, allow_blank=False 
+        required=True, max_length=128, allow_blank=False
     )
 
 
@@ -133,7 +133,9 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ["password","is_staff","user_permissions","spotify_token"]
+        exclude = ["password","is_staff","user_permissions","spotify_token","email"]
+
+
 
   
 class UserAvatarSerializer(serializers.ModelSerializer):
@@ -144,4 +146,5 @@ class UserAvatarSerializer(serializers.ModelSerializer):
 
 # class UserInterestsSerializer(serializers.ModelSerializer):
 #     class Meta:
-#         model = Interests
+#         model = User
+#         fiels = ['interests']

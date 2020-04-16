@@ -20,6 +20,9 @@ from drf_yasg import openapi
 
 from hashlib import sha256
 
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
+
 # @swagger_auto_schema(method='put', auto_schema=None)
 # @swagger_auto_schema(methods=['get'], ...)
 # @api_view(['GET', 'PUT'])
@@ -65,7 +68,7 @@ class SignupView(APIView):
             u.status = "online"
             token, created = Token.objects.get_or_create(user=u)
             info = UserInfoSerializer(u)
-            print(u)
+
             return Response({
                 'message': 'your account have been created successfuly',
                 'data': {
@@ -142,7 +145,6 @@ class LoginView(APIView):
                 login(request, u)
                 user = u
                 user.status = "online"
-                print(user.status)
                 token, created = Token.objects.get_or_create(user=u)
                 return Response(
                     {
@@ -166,7 +168,7 @@ class LoginView(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
 
 
 class UserLocationView(APIView):
