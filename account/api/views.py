@@ -65,6 +65,7 @@ class SignupView(APIView):
         if serializer.is_valid():
             u = serializer.save()
             login(request, u)
+            u.status = "online"
             token, created = Token.objects.get_or_create(user=u)
             info = UserInfoSerializer(u)
 
@@ -82,7 +83,7 @@ class SignupView(APIView):
 
 
     @swagger_auto_schema(
-    operation_description="user update info",
+    operation_description="user update profile",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -94,10 +95,12 @@ class SignupView(APIView):
                 'birthdate': { "type": "string", "format": "date"},
                 'interests':openapi.Schema(type=openapi.TYPE_STRING),
                 'biography':openapi.Schema(type=openapi.TYPE_STRING),
+                # 'user_avatar':
             },
         ),
+        tags=['Profile'],
         security=[],
-        responses={200: user_response3}
+        responses={200: openapi.Response('account info has been updated')}
      )
     @permission_classes([IsAuthenticated])
     @csrf_exempt
@@ -193,6 +196,7 @@ class LogoutView(APIView):
     @permission_classes([IsAuthenticated])
     @csrf_exempt
     def get(self, request):
+        request.user.status = "offline"
         Token.objects.get(user=request.user).delete()
         logout(request)
         return Response({"message:logged out successfully"},status=204)
@@ -202,9 +206,17 @@ class LogoutView(APIView):
 
 
 class UserInfoView(APIView):
+    @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserInfoSerializer)})
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        # user = get_object_or_404(CustomUser, pk=request.user)
-        serializer = UserInfoSerializer(request.user)
-        print(serializer.data)
+        serializer = UserInfoSerializer(request.user,context={"request":request})
+        return Response(serializer.data)
+
+
+
+class UserAvatarView(APIView):
+    @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserAvatarSerializer)})
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        serializer = UserAvatarSerializer(request.user,context={"request":request})
         return Response(serializer.data)

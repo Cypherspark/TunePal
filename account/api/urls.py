@@ -23,6 +23,10 @@ urlpatterns = [
         views.UserInfoView.as_view(),
         name='user-info'),
 
+    url(r'^get_user_avatar/$',
+        views.UserAvatarView.as_view(),
+        name='user-avatar'),
+    
     url(r'^logout/$',
         views.LogoutView.as_view(),
         name='logout'),
