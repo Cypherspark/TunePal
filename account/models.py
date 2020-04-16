@@ -46,7 +46,11 @@ class CustomUser(AbstractUser):
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
     music = models.ManyToManyField(User_top_music,blank=True)
     status = models.CharField(blank = True,max_length = 10)
-    
+    file = models.FileField(blank=True, null=False, default = None)
+    top_artist = models.CharField(blank = True,max_length = 100)
+    score = models.CharField(blank = True,max_length = 100000000, default = '0')
+
+
     location = models.OneToOneField(UserLocation,
                     blank=True,
                     null=True,
