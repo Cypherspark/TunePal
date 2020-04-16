@@ -1,5 +1,5 @@
 import hashlib, binascii, os
-from music.models import User_top_music,Music,Quiz
+from music.models import User_top_music,Music
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
@@ -61,8 +61,7 @@ class CustomUser(AbstractUser):
     status = models.CharField(blank = True,max_length = 10)
     file = models.FileField(blank=True, null=False, default = None)
     top_artist = models.CharField(blank = True,max_length = 100)
-    score = models.CharField(blank = True,max_length = 100000000)
-    quiz =  models.ManyToManyField(Quiz)
+    score = models.CharField(blank = True,max_length = 100000000, default = '0')
 
 
     location = models.OneToOneField(UserLocation,
