@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'account',
     'drf_yasg',
     'music',
+    'quiz'
 ]
 
 
@@ -97,9 +98,9 @@ DATABASES = {
 
 
 SWAGGER_SETTINGS = {
-    
+
     'VALIDATOR_URL': 'http://localhost:8189',
-    
+
 }
 
 
@@ -114,7 +115,7 @@ REST_FRAMEWORK = {
 }
 
 
-MEDIA_ROOT =  os.path.join(BASE_DIR, 'media') 
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
