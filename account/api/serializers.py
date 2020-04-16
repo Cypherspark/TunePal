@@ -125,16 +125,10 @@ class UserInfoSerializer(serializers.ModelSerializer):
         model = User
         exclude = ["password","is_staff","user_permissions","spotify_token","email"]
 
-class UserProfileImage(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ['file']
-
-# update user profile
 
 
 
 # class UserInterestsSerializer(serializers.ModelSerializer):
 #     class Meta:
-#         model = Interests
+#         model = User
+#         fiels = ['interests']
