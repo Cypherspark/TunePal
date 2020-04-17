@@ -7,7 +7,8 @@ from django.http import JsonResponse
 import os
 import json
 import sys
-from account.models import CustomUser
+from account.models import CustomUser, Suggest, Friend
+from chat.models import Conversation
 import spotipy
 from spotipy import oauth2
 import spotipy.util as util
@@ -52,6 +53,8 @@ class SpotifyView(APIView):
 
 
 class SpotifyGetTokenView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
     def get(self, request):
         access_token = ""
 
@@ -72,6 +75,90 @@ class SpotifyGetTokenView(APIView):
             sp = spotipy.Spotify(access_token)
             results = sp.current_user()
             return Response({"url":"http://localhost:3000/spotifyresult/"})
+
+
+class SuggestUserView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        user = request.user
+        try:
+            suggetionlist = Suggest.objects.get(s_current_user = request.user)
+        except:        
+            random.seed()
+            slist = random.sample(list(User.objects.exclude(id = request.user.id)),4)
+            suggetionlist = Suggest(s_current_user = request.user) 
+            suggetionlist.save()
+            suggetionlist.s_users.add(*slist)
+
+
+        serializer = SuggestInfoSerializer(suggetionlist, context={'requsest':request})
+
+                      
+        
+        return Response(
+                serializer.data['s_users'],
+                status=status.HTTP_200_OK)
+
+
+
+class Friend_Request(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        pass
+
+      
+
+
+
+
+
+
+class Friend_Request(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        pass
+
+
+
+
+
+
+
+class Add_Or_Reject_Friends(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        verb  = request.GET['verb']
+        username  = request.GET['username']
+        print(request.data)
+        n_f = get_object_or_404(User, username=username)
+        owner = request.user
+        
+        if verb == "accept": 
+            Suggest.remove_suggest(owner, n_f)
+            Friend.make_friend(owner, n_f)
+            c = Conversation()    
+            c.save()
+            c.members.add(owner,n_f)
+            return Response(
+                {"message":"let's start your conversation"},
+                status=status.HTTP_200_OK
+                )
+
+
+        else:
+            Suggest.remove_suggest(owner, n_f)            
+            
+            return Response(
+                {"message":"let's start your conversation"},
+                status=status.HTTP_200_OK
+                )
+
+
+
 
 
 class User_Top_Music(GenericAPIView, UpdateModelMixin):
@@ -141,8 +228,8 @@ class User_Top_Artist(GenericAPIView):
             temp = []
             dict = {}
             for i in range(3):
-                    url = "url "+str(i)
-                    name = "name "+str(i)
+                    url = "url"
+                    name = "name"
                     dict[url] = results['items'][i]['images'][2]['url']
                     dict[name] = results['items'][i]['name']
                     temp.append(dict)

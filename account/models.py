@@ -63,9 +63,10 @@ class CustomUser(AbstractUser):
 
 
 class Friend(models.Model):
-    users = models.ManyToManyField(CustomUser)
+    users = models.ManyToManyField(CustomUser,related_name="friends",blank=True)
     current_user = models.ForeignKey(CustomUser, related_name="owner", null=True, on_delete=models.CASCADE)
-
+    accepted = models.BooleanField(_("accepted") ,default=False)
+   
     @classmethod
     def make_friend(cls, current_user, new_friend):
         friend, created = cls.objects.get_or_create(
@@ -73,12 +74,22 @@ class Friend(models.Model):
         )
         friend.users.add(new_friend)
 
-    @classmethod
-    def remove_friend(cls, current_user, new_friend):
-        friend, created = cls.objects.get_or_create(
-            current_user = current_user
-        )
-        friend.users.remove(new_friend)
 
     def __str__(self):
         return str(self.current_user)
+
+
+
+class Suggest(models.Model):
+    s_users = models.ManyToManyField(CustomUser,related_name="s_users",blank=True)
+    s_current_user = models.ForeignKey(CustomUser, related_name="s_owner", null=True, on_delete=models.CASCADE)
+
+    @classmethod
+    def remove_suggest(cls, current_user, new_friend):
+        suggest, created = cls.objects.get_or_create(
+            s_current_user = current_user
+        )
+        suggest.s_users.remove(new_friend)
+
+    def __str__(self):
+        return str(self.s_current_user)
