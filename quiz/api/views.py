@@ -154,6 +154,7 @@ class passagequiz(GenericAPIView):
     def get(self,request):
         questions = []
         question = random.choice(self.list1)
+        print(question)
         serializer = passagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
