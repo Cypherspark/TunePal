@@ -102,7 +102,7 @@ class SuggestUserView(APIView):
 
 
 
-class Friend_Request(APIView):
+class Friend_Request_View(APIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
