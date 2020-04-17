@@ -164,7 +164,7 @@ class checkimageanswer(GenericAPIView):
      serializer_class = Checkimagequiz
      def post(self,request):
         user = get_object_or_404(CustomUser,pk =self.request.user.id)
-        quiz = get_object_or_404(self.queryset,id=request.POST.get('quiz_id'))
+        quiz = get_object_or_404(self.queryset,int(id=request.POST.get('quiz_id')))
         answer = request.POST.get('answer')
         if quiz.answer == answer:
             score = user.score
@@ -181,7 +181,8 @@ class checkpssageanswer(GenericAPIView):
      serializer_class = Checkpassagequiz
      def post(self,request):
         user = get_object_or_404(CustomUser,pk =self.request.user.id)
-        quiz = get_object_or_404(self.queryset,id=request.POST.get('quiz_id'))
+        print(request.POST.get('quiz_id'))
+        quiz = get_object_or_404(self.queryset,id=int((request.POST.get('quiz_id'))))
         answer = request.POST.get('answer')
         if quiz.answer == answer:
             score = user.score
