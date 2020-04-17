@@ -14,6 +14,10 @@ urlpatterns = [
     url(r'^topsong/$',
             views.User_Top_Music.as_view(),
             name='topsong'),
+    url(r'^topartist/$',
+            views. User_Top_Artist.as_view(),
+            name='topartist'),
+
 
     url(r'^suggestions/$',
         views.SuggestUser.as_view(),
