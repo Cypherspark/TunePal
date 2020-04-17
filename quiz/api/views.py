@@ -140,19 +140,20 @@ class question(APIView):
 
 class Imagequiz(GenericAPIView):
     queryset = QuizImage.objects.all()
+    list1=list(queryset)
     def get(self,request):
         questions = []
-        randomnumber = random.sample(range(0,self.queryset.count()), 1)
-        question = get_object_or_404(self.queryset, pk= randomnumber[0] )
+        random.seed()
+        question = random.choice(self.list1)
         serializer = Imagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
 class passagequiz(GenericAPIView):
     queryset = QuizPassage.objects.all()
+    list1=list(queryset)
     def get(self,request):
         questions = []
-        randomnumber = random.sample(range(0,self.queryset.count()), 1)
-        question = get_object_or_404(self.queryset, pk= randomnumber[0] )
+        question = random.choice(self.list1)
         serializer = passagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
