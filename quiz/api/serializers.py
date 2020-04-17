@@ -9,11 +9,11 @@ class UserScore(serializers.ModelSerializer):
 class Imagequizserializer(serializers.ModelSerializer):
     class Meta:
         model = QuizPassage
-        fields = ["question",'choices1','choices2','choices3','choices4']
+        fields = ["question",'choices1','choices2','choices3','choices4','id']
 class passagequizserializer(serializers.ModelSerializer):
     class Meta:
         model = QuizImage
-        fields = ["question",'choices1','choices2','choices3','choices4']
+        fields = ["question",'choices1','choices2','choices3','choices4','id']
 class Checkimagequiz(serializers.ModelSerializer):
             class Meta:
                 model = QuizPassage
