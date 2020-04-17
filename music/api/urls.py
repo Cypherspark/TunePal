@@ -20,7 +20,7 @@ urlpatterns = [
 
 
     url(r'^suggestions/$',
-        views.SuggestUser.as_view(),
+        views.SuggestUserView.as_view(),
         name='user-suggestions'),
 
     url(r'^friend/$',
