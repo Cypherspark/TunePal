@@ -106,7 +106,8 @@ class Friend_Request(APIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        
+        pass
+
       
 
 
@@ -118,6 +119,7 @@ class Friend_Request(APIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
+        pass
 
 
 
