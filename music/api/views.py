@@ -123,3 +123,31 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
                 list.append(serializer.data)
 
             return Response(list)
+class User_Top_Artist(GenericAPIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        access_token = ""
+
+        token_info = sp_oauth.get_cached_token(request)
+
+        print ("Found cached token!")
+        access_token = token_info['access_token']
+
+        if access_token:
+            print ("Access token available! Wating for find your friends...")
+            sp = spotipy.Spotify(access_token)
+            results = sp.current_user_top_artists(limit=4, offset=0, time_range='medium_term')
+            temp = []
+            dict = {}
+            for i in range(3):
+                    url = "url "+str(i)
+                    name = "name "+str(i)
+                    dict[url] = results['items'][i]['images'][2]['url']
+                    dict[name] = results['items'][i]['name']
+                    temp.append(dict)
+                    dict = {}
+
+            return Response(temp)
+        else:
+            return Response("failed")
