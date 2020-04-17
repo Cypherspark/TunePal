@@ -154,7 +154,6 @@ class passagequiz(GenericAPIView):
     def get(self,request):
         questions = []
         question = random.choice(self.list1)
-        print(question)
         serializer = passagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
@@ -182,6 +181,7 @@ class checkpssageanswer(GenericAPIView):
      def post(self,request):
         user = get_object_or_404(CustomUser,pk =self.request.user.id)
         print(request.POST.get('quiz_id'))
+        print(request.data)
         quiz = get_object_or_404(self.queryset,id=int(request.POST.get('quiz_id')))
         answer = request.POST.get('answer')
         if quiz.answer == answer:
