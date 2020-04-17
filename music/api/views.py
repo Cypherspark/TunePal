@@ -228,8 +228,8 @@ class User_Top_Artist(GenericAPIView):
             temp = []
             dict = {}
             for i in range(3):
-                    url = "url "+str(i)
-                    name = "name "+str(i)
+                    url = "url"
+                    name = "name"
                     dict[url] = results['items'][i]['images'][2]['url']
                     dict[name] = results['items'][i]['name']
                     temp.append(dict)
