@@ -170,7 +170,6 @@ class checkimageanswer(GenericAPIView):
             score+= 10
             user.score = score
             user.save()
-            user.save()
             return Response(quiz.answer)
         else:
             return Response(quiz.answer)
