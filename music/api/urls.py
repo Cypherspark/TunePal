@@ -12,7 +12,15 @@ urlpatterns = [
         name='get-token-spotify'),
 
     url(r'^topsong/$',
-            views. User_Top_Music.as_view(),
+            views.User_Top_Music.as_view(),
             name='topsong'),
 
+    url(r'^suggestions/$',
+        views.SuggestUser.as_view(),
+        name='user-suggestions'),
+
+    url(r'^friend/$',
+            views.Add_Or_Reject_Friends.as_view(),
+            name='add-or-remove-friend'),
+    
 ]

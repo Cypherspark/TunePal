@@ -173,6 +173,7 @@ class checkimageanswer(GenericAPIView):
             return Response(quiz.answer)
         else:
             return Response(quiz.answer)
+            
 class checkpssageanswer(GenericAPIView):
      anser_list = []
      queryset = QuizPassage.objects.all()
