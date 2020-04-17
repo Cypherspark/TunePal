@@ -171,9 +171,9 @@ class checkimageanswer(GenericAPIView):
             user.score = score
             user.save()
             user.save()
-            return Response(user.score)
+            return Response(quiz.answer)
         else:
-            return Response("False")
+            return Response(quiz.answer)
 class checkpssageanswer(GenericAPIView):
      anser_list = []
      queryset = QuizPassage.objects.all()
@@ -188,11 +188,11 @@ class checkpssageanswer(GenericAPIView):
             score+= 10
             user.score = score
             user.save()
-            return Response("Ture" +"  score: "+str(user.score))
+            return Response(quiz.answer)
 
         else:
-            return Response("False"+"  score: "+str(user.score))
-        return Response(user.score)
+            return Response(quiz.answer)
+
 class getscore(GenericAPIView):
         def get(self,request):
             user = get_object_or_404(CustomUser,pk =self.request.user.id)
