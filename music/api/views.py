@@ -88,18 +88,18 @@ class SuggestUserView(APIView):
         user = request.user
         try:
             suggetionlist = Suggest.objects.get(s_current_user = request.user)
-        except:        
+        except:
             random.seed()
             slist = random.sample(list(User.objects.exclude(id = request.user.id)),4)
-            suggetionlist = Suggest(s_current_user = request.user) 
+            suggetionlist = Suggest(s_current_user = request.user)
             suggetionlist.save()
             suggetionlist.s_users.add(*slist)
 
 
         serializer = SuggestInfoSerializer(suggetionlist, context={'request':request})
 
-                      
-        
+
+
         return Response(
                 serializer.data,
                 status=status.HTTP_200_OK)
@@ -118,7 +118,7 @@ class Friend_Request(APIView):
         FR.save()
         return Response(status=status.HTTP_200_OK)
 
-        
+
 
 
 
@@ -132,13 +132,13 @@ class Friend_Request_View(APIView):
         querylist = FriendshipRequest.objects.all()
         owner = request.user
         FR = querylist.filter(to_user=request.user)
-        FR = FR.filter(accepted= False)   
+        FR = FR.filter(accepted= False)
         serializer = FriendshipInfoSerializer(FR,many=True,context={'request':request})
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 
-      
+
 
 
 class Add_Or_Reject_Friends(APIView):
@@ -152,10 +152,10 @@ class Add_Or_Reject_Friends(APIView):
         print(request.data)
         n_f = get_object_or_404(User, username=username)
         owner = request.user
-        
-        if verb == "accept": 
+
+        if verb == "accept":
             FriendshipRequest.accept(owner, n_f)
-            c = Conversation()    
+            c = Conversation()
             c.save()
             c.members.add(owner,n_f)
             return Response(
@@ -165,8 +165,8 @@ class Add_Or_Reject_Friends(APIView):
 
 
         elif verb == "decline":
-            FriendshipRequest.decline(owner, n_f)           
-            
+            FriendshipRequest.decline(owner, n_f)
+
             return Response(
                 {"message":"request declined successfully"},
                 status=status.HTTP_200_OK
@@ -176,6 +176,12 @@ class Add_Or_Reject_Friends(APIView):
                 status=status.HTTP_400_BAD_REQUEST
                 )
 
+class Top_Music(GenericAPIView):
+    def get(self,request):
+        user =request.user
+        songs = user.music.all()
+        serializer_class = UserTopSongserialize(songs,many = True)
+        return Response(serializer_class.data)
 
 
 class User_Top_Music(GenericAPIView, UpdateModelMixin):
