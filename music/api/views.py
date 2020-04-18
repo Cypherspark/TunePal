@@ -141,14 +141,12 @@ class Friend_Request_View(APIView):
       
 
 
-
-
-
 class Add_Or_Reject_Friends(APIView):
     @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok')})
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
+        print(request.GET['verb'])
         verb  = request.GET['verb']
         username  = request.GET['username']
         print(request.data)
@@ -166,7 +164,7 @@ class Add_Or_Reject_Friends(APIView):
                 )
 
 
-        else:
+        elif verb == "decline":
             FriendshipRequest.decline(owner, n_f)           
             
             return Response(
@@ -174,7 +172,9 @@ class Add_Or_Reject_Friends(APIView):
                 status=status.HTTP_200_OK
                 )
 
-
+        return Response ({"message":"Bad Request"},
+                status=status.HTTP_400_BAD_REQUEST
+                )
 
 
 
