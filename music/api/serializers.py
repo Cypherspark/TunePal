@@ -83,15 +83,14 @@ class SuggestInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Suggest
-        fields = "__all__"
-
+        fields = ['s_users']
 
 class FriendshipInfoSerializer(serializers.ModelSerializer):
-    to_user = UserInfoSerializer2()
+    from_user = UserInfoSerializer2()
 
     class Meta:
         model = FriendshipRequest
-        fields = ['to_user']
+        fields = ['from_user']
 
 # location
 # username
