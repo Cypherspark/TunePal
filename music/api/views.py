@@ -133,7 +133,7 @@ class Friend_Request_View(APIView):
         owner = request.user
         FR = querylist.filter(to_user=request.user)
         FR = FR.filter(accepted= False)   
-        serializer = FriendshipInfoSerializer(FR,many=True)
+        serializer = FriendshipInfoSerializer(FR,many=True,context={'request':request})
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 
