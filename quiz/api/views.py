@@ -70,15 +70,7 @@ class question(APIView):
                     sp = spotipy.Spotify(access_token)
                     results = sp.current_user_top_tracks(
                     limit=5, offset=0)
-                    for song in range(50):
-                        list = []
-                        list.append(results)
-                        with open('top50_data.json', 'w', encoding='utf-8') as f:
-                            json.dump(list, f, ensure_ascii=False, indent=4)
-
-                    with open('top50_data.json') as f:
-                        data = json.load(f)
-                    list_of_results = data[0]["items"]
+                    list_of_results = results["items"]
                     list_of_artist_names=[]
                     for result in list_of_results:
                             result["album"]
@@ -138,6 +130,9 @@ class question(APIView):
                         )
 
 
+
+
+
 class Imagequiz(GenericAPIView):
     queryset = QuizImage.objects.all()
     list1=list(queryset)
@@ -145,24 +140,38 @@ class Imagequiz(GenericAPIView):
         questions = []
         random.seed()
         question = random.choice(self.list1)
+        i = 0;
+        while question.quiz_id == "show" and i< len(self.list1)-1:
+            question = random.choice(self.list1)
+            i+=1
+            if i == len(self.list1)-1:
+                for q in QuizImage.objects.all():
+                    q.quiz_id == ""
+                    i = 0;
+                    question.quiz_id = ""
+        question.quiz_id = "show"
         serializer = Imagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
-
-
-
-
 class passagequiz(GenericAPIView):
     queryset = QuizPassage.objects.all()
     list1=list(queryset)
     def get(self,request):
         questions = []
         question = random.choice(self.list1)
+        i = 0;
+        while question.quiz_id == "show" and i< len(self.list1)-1:
+            question = random.choice(self.list1)
+            i+=1
+            if i == len(self.list1)-1:
+                for q in QuizPassage.objects.all():
+                    q.quiz_id == ""
+                    i = 0;
+                    question.quiz_id = ""
+        question.quiz_id = "show"
         serializer = passagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
-
-
 class checkimageanswer(GenericAPIView):
      anser_list = []
      queryset = QuizImage.objects.all()
@@ -170,7 +179,7 @@ class checkimageanswer(GenericAPIView):
      def post(self,request):
         user = get_object_or_404(CustomUser,pk =self.request.user.id)
         quiz = get_object_or_404(self.queryset,id=int(request.data.get('quiz_id')))
-        answer = request.POST.get('answer')
+        answer = request.data.get('answer')
         if quiz.answer == answer:
             score = user.score
             score = int(score)
@@ -180,17 +189,14 @@ class checkimageanswer(GenericAPIView):
             return Response(quiz.answer)
         else:
             return Response(quiz.answer)
-            
-            
 class checkpssageanswer(GenericAPIView):
      anser_list = []
      queryset = QuizPassage.objects.all()
      serializer_class = Checkpassagequiz
      def post(self,request):
         user = get_object_or_404(CustomUser,pk =self.request.user.id)
-        print(request.data.get('quiz_id'))
         quiz = get_object_or_404(self.queryset,id=int(request.data.get('quiz_id')))
-        answer = request.POST.get('answer')
+        answer = request.data.get('answer')
         if quiz.answer == answer:
             score = user.score
             score = int(score)
