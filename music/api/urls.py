@@ -14,16 +14,24 @@ urlpatterns = [
     url(r'^topsong/$',
             views.User_Top_Music.as_view(),
             name='topsong'),
+
     url(r'^topartist/$',
             views. User_Top_Artist.as_view(),
             name='topartist'),
-
 
     url(r'^suggestions/$',
         views.SuggestUserView.as_view(),
         name='user-suggestions'),
 
-    url(r'^friend/$',
+    url(r'^friend_list/$',
+            views.Friend_Request_View.as_view(),
+            name='Friend_Request_View'),
+
+    url(r'^friend_request/$',
+            views.Friend_Request.as_view(),
+            name='Friend_Request'),
+
+    url(r'^friend_list/$',
             views.Add_Or_Reject_Friends.as_view(),
             name='add-or-remove-friend'),
     

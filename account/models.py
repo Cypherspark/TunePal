@@ -3,6 +3,8 @@ from music.models import User_top_music,Music
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
+import datetime
+
 
 
 class UserLocation(models.Model):
@@ -46,7 +48,6 @@ class CustomUser(AbstractUser):
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
     music = models.ManyToManyField(User_top_music,blank=True)
     status = models.CharField(blank = True,max_length = 10)
-    file = models.FileField(blank=True, null=False, default = None)
     top_artist = models.CharField(blank = True,max_length = 100)
     score = models.CharField(blank = True,max_length = 100000000, default = '0')
 
@@ -62,10 +63,41 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['gender', 'email','password']
 
 
+
+
+
+
+
+class FriendshipRequest(models.Model):
+    from_user = models.ForeignKey(CustomUser, related_name="invitations_from",on_delete=models.CASCADE)
+    to_user = models.ForeignKey(CustomUser, related_name="invitations_to",on_delete=models.CASCADE)
+    message = models.CharField(max_length=200, blank=True)
+    created = models.DateTimeField(default=datetime.datetime.now,
+                                   editable=False)
+    accepted = models.BooleanField(default=False)
+
+    @classmethod
+    def accept(self):
+        Friend.make_friend(self.from_user, self.to_user)
+        Suggest.remove_suggest(n_f, owner)
+        self.accepted = True
+        self.save()
+
+    @classmethod
+    def decline(self):
+        Suggest.remove_suggest(n_f, owner)
+        signals.friendship_declined.send(sender=self)
+        self.delete()
+
+    # def cancel(self):
+    #     signals.friendship_cancelled.send(sender=self)
+    #     self.delete()
+
+
+
 class Friend(models.Model):
     users = models.ManyToManyField(CustomUser,related_name="friends",blank=True)
     current_user = models.ForeignKey(CustomUser, related_name="owner", null=True, on_delete=models.CASCADE)
-    accepted = models.BooleanField(_("accepted") ,default=False)
    
     @classmethod
     def make_friend(cls, current_user, new_friend):
@@ -73,6 +105,18 @@ class Friend(models.Model):
             current_user = current_user
         )
         friend.users.add(new_friend)
+        friend, created = cls.objects.get_or_create(
+            current_user = new_friend
+        )
+        friend.users.add(current_user)
+
+
+    @classmethod
+    def remove_friend(cls, current_user, new_friend):
+        suggest, created = cls.objects.get_or_create(
+            current_user = current_user
+        )
+        friend.users.remove(new_friend)
 
 
     def __str__(self):
@@ -82,7 +126,7 @@ class Friend(models.Model):
 
 class Suggest(models.Model):
     s_users = models.ManyToManyField(CustomUser,related_name="s_users",blank=True)
-    s_current_user = models.ForeignKey(CustomUser, related_name="s_owner", null=True, on_delete=models.CASCADE)
+    s_current_user = models.ForeignKey(CustomUser, related_name="s_owner", null=True, on_delete=models.SET_NULL)
 
     @classmethod
     def remove_suggest(cls, current_user, new_friend):

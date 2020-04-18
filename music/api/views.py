@@ -7,7 +7,7 @@ from django.http import JsonResponse
 import os
 import json
 import sys
-from account.models import CustomUser, Suggest, Friend
+from account.models import CustomUser, Suggest, Friend, FriendshipRequest
 from chat.models import Conversation
 import spotipy
 from spotipy import oauth2
@@ -20,9 +20,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import UpdateModelMixin
+
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 import random
 
@@ -78,6 +81,7 @@ class SpotifyGetTokenView(APIView):
 
 
 class SuggestUserView(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok', SuggestInfoSerializer)})
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
@@ -92,21 +96,47 @@ class SuggestUserView(APIView):
             suggetionlist.s_users.add(*slist)
 
 
-        serializer = SuggestInfoSerializer(suggetionlist, context={'requsest':request})
+        serializer = SuggestInfoSerializer(suggetionlist, context={'request':request})
 
                       
         
         return Response(
-                serializer.data['s_users'],
+                serializer.data,
                 status=status.HTTP_200_OK)
 
 
 
-class Friend_Request_View(APIView):
+class Friend_Request(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok')})
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        pass
+        username  = request.GET['username']
+        n_f = get_object_or_404(User, username=username)
+        owner = request.user
+        FR = FriendshipRequest(from_user=owner, to_user=n_f)
+        FR.save()
+        return Response(status=status.HTTP_200_OK)
+
+        
+
+
+
+
+
+class Friend_Request_View(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok', FriendshipInfoSerializer)})
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        querylist = FriendshipRequest.objects.all()
+        owner = request.user
+        FR = querylist.filter(to_user=request.user)
+        FR = FR.filter(accepted= False)   
+        serializer = FriendshipInfoSerializer(FR,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+
 
       
 
@@ -114,20 +144,8 @@ class Friend_Request_View(APIView):
 
 
 
-
-class Friend_Request(APIView):
-    @csrf_exempt
-    @permission_classes([IsAuthenticated])
-    def get(self, request):
-        pass
-
-
-
-
-
-
-
 class Add_Or_Reject_Friends(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok')})
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
@@ -138,8 +156,7 @@ class Add_Or_Reject_Friends(APIView):
         owner = request.user
         
         if verb == "accept": 
-            Suggest.remove_suggest(owner, n_f)
-            Friend.make_friend(owner, n_f)
+            FriendshipRequest.accept(owner, n_f)
             c = Conversation()    
             c.save()
             c.members.add(owner,n_f)
@@ -150,10 +167,10 @@ class Add_Or_Reject_Friends(APIView):
 
 
         else:
-            Suggest.remove_suggest(owner, n_f)            
+            FriendshipRequest.decline(owner, n_f)           
             
             return Response(
-                {"message":"let's start your conversation"},
+                {"message":"request declined successfully"},
                 status=status.HTTP_200_OK
                 )
 
@@ -210,6 +227,8 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
                 list.append(serializer.data)
 
             return Response(list)
+
+
 class User_Top_Artist(GenericAPIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
