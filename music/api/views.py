@@ -141,9 +141,6 @@ class Friend_Request_View(APIView):
       
 
 
-
-
-
 class Add_Or_Reject_Friends(APIView):
     @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok')})
     @csrf_exempt
