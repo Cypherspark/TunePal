@@ -72,8 +72,8 @@ class FriendshipRequest(models.Model):
     from_user = models.ForeignKey(CustomUser, related_name="invitations_from",on_delete=models.CASCADE)
     to_user = models.ForeignKey(CustomUser, related_name="invitations_to",on_delete=models.CASCADE)
     message = models.CharField(max_length=200, blank=True)
-    created = models.DateTimeField(default=datetime.datetime.now,
-                                   editable=False)
+    # created = models.DateTimeField(default=datetime.datetime.now,
+                                #    editable=False)
     accepted = models.BooleanField(default=False)
 
     @classmethod
