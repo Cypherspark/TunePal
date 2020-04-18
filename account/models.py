@@ -77,17 +77,24 @@ class FriendshipRequest(models.Model):
     accepted = models.BooleanField(default=False)
 
     @classmethod
-    def accept(self):
-        Friend.make_friend(self.from_user, self.to_user)
+    def accept(cls, owner, n_f):
+        friendshipRequest, created = cls.objects.get_or_create(
+            from_user = n_f,
+            to_user = owner
+        )
+        Friend.make_friend(n_f, owner)
         Suggest.remove_suggest(n_f, owner)
-        self.accepted = True
-        self.save()
+        friendshipRequest.accepted = True
+        friendshipRequest.save()
 
     @classmethod
-    def decline(self):
+    def decline(cls, owner, n_f):
+        friendshipRequest, created = cls.objects.get_or_create(
+            from_user = n_f,
+            to_user = owner
+        )
         Suggest.remove_suggest(n_f, owner)
-        signals.friendship_declined.send(sender=self)
-        self.delete()
+        friendshipRequest.delete()
 
     # def cancel(self):
     #     signals.friendship_cancelled.send(sender=self)
