@@ -23,7 +23,7 @@ class UserTopSongserialize(serializers.ModelSerializer):
         fields = ['artist_name','music_name','album']
 
 
-class UserInfoSerializer(serializers.ModelSerializer):
+class UserInfoSerializer2(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
 
@@ -87,7 +87,7 @@ class SuggestInfoSerializer(serializers.ModelSerializer):
 
 
 class FriendshipInfoSerializer(serializers.ModelSerializer):
-    to_user = UserInfoSerializer()
+    to_user = UserInfoSerializer2()
 
     class Meta:
         model = FriendshipRequest
