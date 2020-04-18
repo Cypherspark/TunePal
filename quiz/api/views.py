@@ -148,6 +148,10 @@ class Imagequiz(GenericAPIView):
         serializer = Imagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
+
+
+
+
 class passagequiz(GenericAPIView):
     queryset = QuizPassage.objects.all()
     list1=list(queryset)
@@ -157,6 +161,8 @@ class passagequiz(GenericAPIView):
         serializer = passagequizserializer(question)
         questions.append(serializer.data)
         return Response(questions)
+
+
 class checkimageanswer(GenericAPIView):
      anser_list = []
      queryset = QuizImage.objects.all()
@@ -174,6 +180,7 @@ class checkimageanswer(GenericAPIView):
             return Response(quiz.answer)
         else:
             return Response(quiz.answer)
+            
             
 class checkpssageanswer(GenericAPIView):
      anser_list = []
