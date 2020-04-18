@@ -31,7 +31,7 @@ urlpatterns = [
             views.Friend_Request.as_view(),
             name='Friend_Request'),
 
-    url(r'^friend_list/$',
+    url(r'^response/$',
             views.Add_Or_Reject_Friends.as_view(),
             name='add-or-remove-friend'),
     
