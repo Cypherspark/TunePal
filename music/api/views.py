@@ -176,12 +176,12 @@ class Add_Or_Reject_Friends(APIView):
                 status=status.HTTP_400_BAD_REQUEST
                 )
 
-class Top_Music(GenericAPIView):
-    def get(self,request):
-        user =request.user
-        songs = user.music.all()
-        serializer_class = UserTopSongserialize(songs,many = True)
-        return Response(serializer_class.data)
+# class Top_Music(GenericAPIView):
+#     def get(self,request):
+#         user =request.user
+#         songs = user.music.all()
+#         serializer_class = UserTopSongserialize(songs,many = True)
+#         return Response(serializer_class.data)
 
 
 class User_Top_Music(GenericAPIView, UpdateModelMixin):
@@ -195,22 +195,16 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
 
             print ("Found cached token!")
             access_token = token_info['access_token']
-
+            dict = {}
+            list = []
             if access_token:
                 user = get_object_or_404(self.queryset, pk=self.request.user.id)
                 print ("Access token available! Wating for find your friends...")
                 sp = spotipy.Spotify(access_token)
                 results = sp.current_user_top_tracks(
                 limit=50, offset=0)
-                for song in range(50):
-                    list = []
-                    list.append(results)
-                    with open('top50_data.json', 'w', encoding='utf-8') as f:
-                        json.dump(list, f, ensure_ascii=False, indent=4)
 
-                with open('top50_data.json') as f:
-                    data = json.load(f)
-                list_of_results = data[0]["items"]
+                list_of_results = results["items"]
 
                 list_of_artist_names = []
                 list_of_song_names = []
@@ -221,16 +215,11 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
                     list_of_artist_names.append( result["artists"][0]["name"])
                     list_of_song_names.append(result["name"])
                     list_of_albums.append(result["album"]["name"])
-                    music = User_top_music.objects.create(music_name = result["name"],artist_name =result["artists"][0]["name"],album = result["album"]["name"])
-                    user.music.add(music)
-                    user.save()
-                    for mn,al,ar in User_top_music.objects.values_list('music_name','album','artist_name').distinct():
-                                User_top_music.objects.filter(pk__in=User_top_music.objects.filter(music_name=mn,artist_name = ar,album = al).values_list('id', flat=True)[1:]).delete()
-            list= []
-            songs = user.music.all()
-            for song in songs:
-                serializer = UserTopSongserialize(song)
-                list.append(serializer.data)
+                    dict["music_name "] = result["name"]
+                    dict[" artist_name"] = result["artists"][0]["name"]
+                    dict["album "] =  result["album"]["name"]
+                    dict[" url"] = result["album"]["images"][2]['url']
+                    list.append(dict)
 
             return Response(list)
 
@@ -249,10 +238,10 @@ class User_Top_Artist(GenericAPIView):
         if access_token:
             print ("Access token available! Wating for find your friends...")
             sp = spotipy.Spotify(access_token)
-            results = sp.current_user_top_artists(limit=4, offset=0, time_range='medium_term')
+            results = sp.current_user_top_artists(limit=50, offset=0, time_range='medium_term')
             temp = []
             dict = {}
-            for i in range(3):
+            for i in range(50):
                     url = "url"
                     name = "name"
                     dict[url] = results['items'][i]['images'][2]['url']
