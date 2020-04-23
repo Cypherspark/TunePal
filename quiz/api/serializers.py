@@ -22,3 +22,4 @@ class Checkpassagequiz(serializers.ModelSerializer):
             class Meta:
                 model = QuizImage
                 fields = ["quiz_id",'answer']
+# class
