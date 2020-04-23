@@ -14,12 +14,7 @@ class passagequizserializer(serializers.ModelSerializer):
     class Meta:
         model = QuizImage
         fields = ["question",'choices1','choices2','choices3','choices4']
-class Checkimagequiz(serializers.ModelSerializer):
+class Checkanswer(serializers.ModelSerializer):
             class Meta:
                 model = QuizPassage
                 fields = ["quiz_id",'answer']
-class Checkpassagequiz(serializers.ModelSerializer):
-            class Meta:
-                model = QuizImage
-                fields = ["quiz_id",'answer']
-# class
