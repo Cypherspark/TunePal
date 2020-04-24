@@ -1,8 +1,8 @@
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
-from account.models import CustomUser,Music,Friend
+from account.models import CustomUser,Friend
 from django.http import HttpResponse
-from music.models import User_top_music
+from music.models import Music
 import sys
 import spotipy
 import spotipy.util as util

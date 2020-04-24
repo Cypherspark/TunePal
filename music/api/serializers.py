@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from music.models import User_top_music
+from music.models import Music
 from account.models import CustomUser as User
 from account.models import Friend, Suggest, UserLocation, FriendshipRequest
 from TunePal import settings
@@ -7,7 +7,7 @@ from random import seed
 from random import randint
 from datetime import date
 
-seed(1)
+seed()
 
 
 
@@ -19,8 +19,8 @@ class LocationSerializer(serializers.ModelSerializer):
 
 class UserTopSongserialize(serializers.ModelSerializer):
     class Meta:
-        model = User_top_music
-        fields = ['artist_name','music_name','album']
+        model = Music
+        fields = ['track_name','artist_name','album','image_url','spotify_url']
 
 
 class UserInfoSerializer2(serializers.ModelSerializer):

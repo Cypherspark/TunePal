@@ -37,4 +37,7 @@ urlpatterns = [
             views.Add_Or_Reject_Friends.as_view(),
             name='add-or-remove-friend'),
 
+    url(r'^task/$',
+            views.TaskView.as_view(),
+            name='TaskView'),
 ]
