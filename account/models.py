@@ -1,5 +1,5 @@
 import hashlib, binascii, os
-from music.models import User_top_music,Music
+from music.models import Artist,Music
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
@@ -41,12 +41,12 @@ class CustomUser(AbstractUser):
     nickname = models.CharField(_('nickname'), max_length=30, blank=True, unique=False)
     email = models.EmailField(_('email address'), unique=True)
     birthdate = models.DateField(null=True)
-    biography = models.CharField(_('biography'), max_length=150, blank=True, null=True)
+    biography = models.CharField(_('biography'), max_length=500, blank=True, null=True)
     interests = models.CharField(_('interests'), max_length=30, blank=True, null=True)
     user_avatar = models.ImageField(upload_to="images/", blank=True)
     spotify_token = models.CharField(_('spotify token'), max_length=700, blank=True, null=True)
-    assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
-    music = models.ManyToManyField(User_top_music,blank=True)
+    artists = models.ManyToManyField(Artist, default=None,blank=True)
+    tracks = models.ManyToManyField(Music,blank=True)
     status = models.CharField(blank = True,max_length = 10)
     top_artist = models.CharField(blank = True,max_length = 100)
     score = models.CharField(blank = True,max_length = 100000000, default = '0')

@@ -38,30 +38,15 @@ CACHE = '.spotipyoauthcache'
 
 sp_oauth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY_REDIRECT_URI,scope=SCOPE,cache_path=CACHE )
 
-def getSPOauthURI():
-    auth_url = sp_oauth.get_authorize_url()
-    return Response(
-        {"spotifyurl":auth_url},
-        status=status.HTTP_200_OK
-       )
-
-
-
-class SpotifyView(APIView):
-    @csrf_exempt
-    @permission_classes([IsAuthenticated])
-    def get(self, request):
-        return getSPOauthURI()
-
-
-
 
 
 class question(APIView):
     @csrf_exempt
     def get(self, request):
         print ("Found cached token!")
-        token_info = sp_oauth.get_cached_token(request)
+        user = get_object_or_404(CustomUser, username = request.GET['username'])
+        user_id = user.id
+        token_info = sp_oauth.get_cached_token(user_id)
         access_token = token_info['access_token']
         dict = {}
         q = []

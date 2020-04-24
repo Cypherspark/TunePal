@@ -209,7 +209,11 @@ class UserInfoView(APIView):
     @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserInfoSerializer)})
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        serializer = UserInfoSerializer(request.user,context={"request":request})
+        if request.GET['username']==None:
+            user = request.user
+        else:
+            user = get_object_or_404(CustomUser, username = request.GET['username'])
+        serializer = UserInfoSerializer(user,context={"request":request})
         return Response(serializer.data)
 
 

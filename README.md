@@ -10,13 +10,10 @@ docs and other info about api are here:
 [http://tunepal.pythonanywhere.com/swagger/](http://tunepal.pythonanywhere.com/swagger/)
 
 
-### masoud sprint2 todolist
-- [x] adding postgres local
-- [ ] deploy on vps
-- [ ] editing and testing friend relationship 
-- [x] complete matching
-- [x] profile picture test
-- [x] django channels chatroom 
+### masoud sprint3 todolist
+- [ ] deploy on vps + docker + postgres + nginx
+- [ ] user top songs and artists + celery + redis
+- [ ] django channels chatroom 
 
 
 

@@ -14,6 +14,8 @@ from spotipy import oauth2
 import spotipy.util as util
 from music.views import *
 from music.api.serializers import *
+from music.tasks import save_songs
+
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
@@ -28,6 +30,7 @@ from rest_framework.mixins import UpdateModelMixin
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from celery import Celery, current_app
 
 import random
 
@@ -178,52 +181,58 @@ class Add_Or_Reject_Friends(APIView):
                 status=status.HTTP_400_BAD_REQUEST
                 )
 
-# class Top_Music(GenericAPIView):
-#     def get(self,request):
-#         user =request.user
-#         songs = user.music.all()
-#         serializer_class = UserTopSongserialize(songs,many = True)
-#         return Response(serializer_class.data)
-
-
 class User_Top_Music(GenericAPIView, UpdateModelMixin):
     queryset = CustomUser.objects.all()
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
-            access_token = ""
+        context = {}
+        if request.GET['username']==None:
+            user = request.user
+        else:
+            user = get_object_or_404(CustomUser, username = request.GET['username'])
+        user_id = user.id
+        # if user.tracks.exists():
+        #     songs = user.tracks.all()
+        #     serializer_class = UserTopSongserialize(songs,many = True)
+        #     return Response(serializer_class.data)
 
-            token_info = sp_oauth.get_cached_token(request)
 
-            print ("Found cached token!")
-            access_token = token_info['access_token']
-            dict = {}
-            list = []
-            if access_token:
-                user = get_object_or_404(self.queryset, pk=self.request.user.id)
-                print ("Access token available! Wating for find your friends...")
-                sp = spotipy.Spotify(access_token)
-                results = sp.current_user_top_tracks(
-                limit=50, offset=0)
+        
+        access_token = ""
+        token_info = sp_oauth.get_cached_token(user_id=user_id)
 
-                list_of_results = results["items"]
+        print ("Found cached token!")
+        access_token = token_info['access_token']
+        list = []
+        if access_token:
+            sp = spotipy.Spotify(access_token)
+            results = sp.current_user_top_tracks(
+            limit=50, offset=0)
 
-                list_of_artist_names = []
-                list_of_song_names = []
-                list_of_albums = []
+            list_of_results = results["items"]
+            list_of_artist_names = []
+            list_of_song_names = []
+            list_of_albums = []
 
-                for result in list_of_results:
-                    result["album"]
-                    list_of_artist_names.append( result["artists"][0]["name"])
-                    list_of_song_names.append(result["name"])
-                    list_of_albums.append(result["album"]["name"])
-                    dict["music_name "] = result["name"]
-                    dict[" artist_name"] = result["artists"][0]["name"]
-                    dict["album "] =  result["album"]["name"]
-                    dict[" url"] = result["album"]["images"][2]['url']
-                    list.append(dict)
+            # task = save_songs.delay(list_of_results, request.user.id)
+            # context['task_id'] = task.id
+            # context['task_status'] = task.status
 
-            return Response(list)
+            for result in list_of_results:
+                dict = {}
+                result["album"]
+                list_of_artist_names.append( result["artists"][0]["name"])
+                list_of_song_names.append(result["name"])
+                list_of_albums.append(result["album"]["name"])
+                dict["track_name"] = result["name"]
+                dict["artist_name"] = result["artists"][0]["name"]
+                dict["album"] =  result["album"]["name"]
+                dict["image_url"] = result["album"]["images"][2]['url']
+                dict["spotify_url"] = result["external_urls"]["spotify"]
+                list.append(dict)
+            list.append(context)
+        return Response(list)
 
 
 class User_Top_Artist(GenericAPIView):
@@ -231,26 +240,41 @@ class User_Top_Artist(GenericAPIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         access_token = ""
+        if request.GET['username']==None:
+            user = request.user
+        else:
+            user = get_object_or_404(CustomUser, username = request.GET['username'])
+        user_id = user.id
+        token_info = sp_oauth.get_cached_token(user_id)
 
-        token_info = sp_oauth.get_cached_token(request)
-
-        print ("Found cached token!")
         access_token = token_info['access_token']
 
         if access_token:
-            print ("Access token available! Wating for find your friends...")
             sp = spotipy.Spotify(access_token)
             results = sp.current_user_top_artists(limit=50, offset=0, time_range='medium_term')
             temp = []
-            dict = {}
             for i in range(50):
-                    url = "url"
-                    name = "name"
-                    dict[url] = results['items'][i]['images'][2]['url']
-                    dict[name] = results['items'][i]['name']
-                    temp.append(dict)
-                    dict = {}
+                dict = {}
+                url = "url"
+                name = "name"
+                dict[url] = results['items'][i]['images'][2]['url']
+                dict[name] = results['items'][i]['name']
+                temp.append(dict)
+                    
 
             return Response(temp)
         else:
             return Response("failed")
+
+
+
+class TaskView(APIView):
+    def get(self, request):
+        task_id = request.GET['task_id']
+        task = current_app.AsyncResult(task_id)
+        response_data = {'task_status': task.status, 'task_id': task.id}
+
+        if task.status == 'SUCCESS':
+            response_data['results'] = task.get()
+
+        return JsonResponse(response_data)
