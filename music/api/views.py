@@ -181,21 +181,17 @@ class Add_Or_Reject_Friends(APIView):
                 status=status.HTTP_400_BAD_REQUEST
                 )
 
-# class Top_Music(GenericAPIView):
-#     def get(self,request):
-#         user =request.user
-#         songs = user.music.all()
-#         serializer_class = UserTopSongserialize(songs,many = True)
-#         return Response(serializer_class.data)
-
-
 class User_Top_Music(GenericAPIView, UpdateModelMixin):
     queryset = CustomUser.objects.all()
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
         context = {}
-        user = get_object_or_404(self.queryset, pk=self.request.user.id)
+        if request.GET['username']==None:
+            user = request.user
+        else:
+            user = get_object_or_404(CustomUser, username = request.GET['username'])
+        user_id = user.id
         # if user.tracks.exists():
         #     songs = user.tracks.all()
         #     serializer_class = UserTopSongserialize(songs,many = True)
@@ -204,7 +200,7 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
 
         
         access_token = ""
-        token_info = sp_oauth.get_cached_token(request)
+        token_info = sp_oauth.get_cached_token(user_id=user_id)
 
         print ("Found cached token!")
         access_token = token_info['access_token']
@@ -244,10 +240,13 @@ class User_Top_Artist(GenericAPIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         access_token = ""
+        if request.GET['username']==None:
+            user = request.user
+        else:
+            user = get_object_or_404(CustomUser, username = request.GET['username'])
+        user_id = user.id
+        token_info = sp_oauth.get_cached_token(user_id)
 
-        token_info = sp_oauth.get_cached_token(request)
-
-        print ("Found cached token!")
         access_token = token_info['access_token']
 
         if access_token:

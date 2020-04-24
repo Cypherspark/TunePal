@@ -133,7 +133,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ["password","is_staff","user_permissions","spotify_token","email"]
+        fields = ['username', 'email', 'birthdate', 'gender', 'nickname','biography','interests','score','location','user_avatar']
 
 
 

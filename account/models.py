@@ -41,7 +41,7 @@ class CustomUser(AbstractUser):
     nickname = models.CharField(_('nickname'), max_length=30, blank=True, unique=False)
     email = models.EmailField(_('email address'), unique=True)
     birthdate = models.DateField(null=True)
-    biography = models.CharField(_('biography'), max_length=150, blank=True, null=True)
+    biography = models.CharField(_('biography'), max_length=500, blank=True, null=True)
     interests = models.CharField(_('interests'), max_length=30, blank=True, null=True)
     user_avatar = models.ImageField(upload_to="images/", blank=True)
     spotify_token = models.CharField(_('spotify token'), max_length=700, blank=True, null=True)
