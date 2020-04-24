@@ -44,7 +44,7 @@ class question(APIView):
     @csrf_exempt
     def get(self, request):
         print ("Found cached token!")
-        user = get_object_or_404(CustomUser, username = request.GET['username'])
+        user = get_object_or_404(CustomUser, id = request.user.id)
         user_id = user.id
         token_info = sp_oauth.get_cached_token(user_id)
         access_token = token_info['access_token']

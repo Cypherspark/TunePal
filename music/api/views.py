@@ -187,7 +187,7 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         context = {}
-        if request.GET['username']==None:
+        if 'username' not in request.GET.keys():
             user = request.user
         else:
             user = get_object_or_404(CustomUser, username = request.GET['username'])
@@ -240,7 +240,7 @@ class User_Top_Artist(GenericAPIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         access_token = ""
-        if request.GET['username']==None:
+        if 'username' not in request.GET.keys():
             user = request.user
         else:
             user = get_object_or_404(CustomUser, username = request.GET['username'])
