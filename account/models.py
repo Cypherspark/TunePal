@@ -3,6 +3,8 @@ from music.models import User_top_music,Music
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
+import datetime
+
 
 
 class UserLocation(models.Model):
@@ -46,7 +48,6 @@ class CustomUser(AbstractUser):
     assigned = models.ForeignKey(Music, default=None, null=True,blank=True, on_delete=models.SET_NULL)
     music = models.ManyToManyField(User_top_music,blank=True)
     status = models.CharField(blank = True,max_length = 10)
-    file = models.FileField(blank=True, null=False, default = None)
     top_artist = models.CharField(blank = True,max_length = 100)
     score = models.CharField(blank = True,max_length = 100000000, default = '0')
 
@@ -62,23 +63,84 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['gender', 'email','password']
 
 
-class Friend(models.Model):
-    users = models.ManyToManyField(CustomUser)
-    current_user = models.ForeignKey(CustomUser, related_name="owner", null=True, on_delete=models.CASCADE)
 
+
+
+
+
+class FriendshipRequest(models.Model):
+    from_user = models.ForeignKey(CustomUser, related_name="invitations_from",on_delete=models.CASCADE)
+    to_user = models.ForeignKey(CustomUser, related_name="invitations_to",on_delete=models.CASCADE)
+    message = models.CharField(max_length=200, blank=True)
+    # created = models.DateTimeField(default=datetime.datetime.now,
+                                #    editable=False)
+    accepted = models.BooleanField(default=False)
+
+    @classmethod
+    def accept(cls, owner, n_f):
+        friendshipRequest, created = cls.objects.get_or_create(
+            from_user = n_f,
+            to_user = owner
+        )
+        Friend.make_friend(n_f, owner)
+        Suggest.remove_suggest(n_f, owner)
+        friendshipRequest.accepted = True
+        friendshipRequest.save()
+
+    @classmethod
+    def decline(cls, owner, n_f):
+        friendshipRequest, created = cls.objects.get_or_create(
+            from_user = n_f,
+            to_user = owner
+        )
+        Suggest.remove_suggest(n_f, owner)
+        friendshipRequest.delete()
+
+    # def cancel(self):
+    #     signals.friendship_cancelled.send(sender=self)
+    #     self.delete()
+
+
+
+class Friend(models.Model):
+    users = models.ManyToManyField(CustomUser,related_name="friends",blank=True)
+    current_user = models.ForeignKey(CustomUser, related_name="owner", null=True, on_delete=models.CASCADE)
+   
     @classmethod
     def make_friend(cls, current_user, new_friend):
         friend, created = cls.objects.get_or_create(
             current_user = current_user
         )
         friend.users.add(new_friend)
+        friend, created = cls.objects.get_or_create(
+            current_user = new_friend
+        )
+        friend.users.add(current_user)
+
 
     @classmethod
     def remove_friend(cls, current_user, new_friend):
-        friend, created = cls.objects.get_or_create(
+        suggest, created = cls.objects.get_or_create(
             current_user = current_user
         )
         friend.users.remove(new_friend)
 
+
     def __str__(self):
         return str(self.current_user)
+
+
+
+class Suggest(models.Model):
+    s_users = models.ManyToManyField(CustomUser,related_name="s_users",blank=True)
+    s_current_user = models.ForeignKey(CustomUser, related_name="s_owner", null=True, on_delete=models.SET_NULL)
+
+    @classmethod
+    def remove_suggest(cls, current_user, new_friend):
+        suggest, created = cls.objects.get_or_create(
+            s_current_user = current_user
+        )
+        suggest.s_users.remove(new_friend)
+
+    def __str__(self):
+        return str(self.s_current_user)

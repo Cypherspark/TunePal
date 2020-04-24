@@ -7,7 +7,8 @@ from django.http import JsonResponse
 import os
 import json
 import sys
-from account.models import CustomUser
+from account.models import CustomUser, Suggest, Friend, FriendshipRequest
+from chat.models import Conversation
 import spotipy
 from spotipy import oauth2
 import spotipy.util as util
@@ -19,9 +20,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
 
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import UpdateModelMixin
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 import random
 
@@ -52,6 +58,8 @@ class SpotifyView(APIView):
 
 
 class SpotifyGetTokenView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
     def get(self, request):
         access_token = ""
 
@@ -74,6 +82,110 @@ class SpotifyGetTokenView(APIView):
             return Response({"url":"http://localhost:3000/spotifyresult/"})
 
 
+class SuggestUserView(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok', SuggestInfoSerializer)})
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        user = request.user
+        try:
+            suggetionlist = Suggest.objects.get(s_current_user = request.user)
+        except:
+            random.seed()
+            slist = random.sample(list(User.objects.exclude(id = request.user.id)),4)
+            suggetionlist = Suggest(s_current_user = request.user)
+            suggetionlist.save()
+            suggetionlist.s_users.add(*slist)
+
+
+        serializer = SuggestInfoSerializer(suggetionlist, context={'request':request})
+
+
+
+        return Response(
+                serializer.data,
+                status=status.HTTP_200_OK)
+
+
+
+class Friend_Request(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok')})
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        username  = request.GET['username']
+        n_f = get_object_or_404(User, username=username)
+        owner = request.user
+        FR = FriendshipRequest(from_user=owner, to_user=n_f)
+        FR.save()
+        return Response(status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+class Friend_Request_View(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok', FriendshipInfoSerializer)})
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        querylist = FriendshipRequest.objects.all()
+        owner = request.user
+        FR = querylist.filter(to_user=request.user)
+        FR = FR.filter(accepted= False)
+        serializer = FriendshipInfoSerializer(FR,many=True,context={'request':request})
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+
+
+
+
+
+class Add_Or_Reject_Friends(APIView):
+    @swagger_auto_schema(tags=['Match'],responses={200: openapi.Response('ok')})
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        print(request.GET['verb'])
+        verb  = request.GET['verb']
+        username  = request.GET['username']
+        print(request.data)
+        n_f = get_object_or_404(User, username=username)
+        owner = request.user
+
+        if verb == "accept":
+            FriendshipRequest.accept(owner, n_f)
+            c = Conversation()
+            c.save()
+            c.members.add(owner,n_f)
+            return Response(
+                {"message":"let's start your conversation"},
+                status=status.HTTP_200_OK
+                )
+
+
+        elif verb == "decline":
+            FriendshipRequest.decline(owner, n_f)
+
+            return Response(
+                {"message":"request declined successfully"},
+                status=status.HTTP_200_OK
+                )
+
+        return Response ({"message":"Bad Request"},
+                status=status.HTTP_400_BAD_REQUEST
+                )
+
+# class Top_Music(GenericAPIView):
+#     def get(self,request):
+#         user =request.user
+#         songs = user.music.all()
+#         serializer_class = UserTopSongserialize(songs,many = True)
+#         return Response(serializer_class.data)
+
+
 class User_Top_Music(GenericAPIView, UpdateModelMixin):
     queryset = CustomUser.objects.all()
     @csrf_exempt
@@ -85,22 +197,16 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
 
             print ("Found cached token!")
             access_token = token_info['access_token']
-
+            dict = {}
+            list = []
             if access_token:
                 user = get_object_or_404(self.queryset, pk=self.request.user.id)
                 print ("Access token available! Wating for find your friends...")
                 sp = spotipy.Spotify(access_token)
                 results = sp.current_user_top_tracks(
                 limit=50, offset=0)
-                for song in range(50):
-                    list = []
-                    list.append(results)
-                    with open('top50_data.json', 'w', encoding='utf-8') as f:
-                        json.dump(list, f, ensure_ascii=False, indent=4)
 
-                with open('top50_data.json') as f:
-                    data = json.load(f)
-                list_of_results = data[0]["items"]
+                list_of_results = results["items"]
 
                 list_of_artist_names = []
                 list_of_song_names = []
@@ -111,15 +217,40 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
                     list_of_artist_names.append( result["artists"][0]["name"])
                     list_of_song_names.append(result["name"])
                     list_of_albums.append(result["album"]["name"])
-                    music = User_top_music.objects.create(music_name = result["name"],artist_name =result["artists"][0]["name"],album = result["album"]["name"])
-                    user.music.add(music)
-                    user.save()
-                    for mn,al,ar in User_top_music.objects.values_list('music_name','album','artist_name').distinct():
-                                User_top_music.objects.filter(pk__in=User_top_music.objects.filter(music_name=mn,artist_name = ar,album = al).values_list('id', flat=True)[1:]).delete()
-            list= []
-            songs = user.music.all()
-            for song in songs:
-                serializer = UserTopSongserialize(song)
-                list.append(serializer.data)
+                    dict["music_name "] = result["name"]
+                    dict[" artist_name"] = result["artists"][0]["name"]
+                    dict["album "] =  result["album"]["name"]
+                    dict[" url"] = result["album"]["images"][2]['url']
+                    list.append(dict)
 
             return Response(list)
+
+
+class User_Top_Artist(GenericAPIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request):
+        access_token = ""
+
+        token_info = sp_oauth.get_cached_token(request)
+
+        print ("Found cached token!")
+        access_token = token_info['access_token']
+
+        if access_token:
+            print ("Access token available! Wating for find your friends...")
+            sp = spotipy.Spotify(access_token)
+            results = sp.current_user_top_artists(limit=50, offset=0, time_range='medium_term')
+            temp = []
+            dict = {}
+            for i in range(50):
+                    url = "url"
+                    name = "name"
+                    dict[url] = results['items'][i]['images'][2]['url']
+                    dict[name] = results['items'][i]['name']
+                    temp.append(dict)
+                    dict = {}
+
+            return Response(temp)
+        else:
+            return Response("failed")
