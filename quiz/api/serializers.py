@@ -10,6 +10,11 @@ class Imagequizserializer(serializers.ModelSerializer):
     class Meta:
         model = QuizPassage
         fields = ["question",'choices1','choices2','choices3','choices4','id']
+
+class Checkanswer(serializers.ModelSerializer):
+            class Meta:
+                model = QuizPassage
+                fields = ["quiz_id",'answer']      
 class passagequizserializer(serializers.ModelSerializer):
     class Meta:
         model = QuizImage
