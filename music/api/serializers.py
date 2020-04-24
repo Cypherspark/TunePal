@@ -8,7 +8,7 @@ from TunePal import settings
 class UserTopSongserialize(serializers.ModelSerializer):
     class Meta:
         model = User_top_music
-        fields = ['artist_name','music_name','album']
+        fields = ['artist_name','music_name','album','genre']
 
 
 # class FriendInfoSerializer(serializers.ModelSerializer):
