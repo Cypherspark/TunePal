@@ -65,8 +65,9 @@ class SpotifyGetTokenView(APIView):
     @permission_classes([IsAuthenticated])
     def get(self, request):
         access_token = ""
-
-        token_info = sp_oauth.get_cached_token(request)
+        user = request.user
+        user_id = user.id
+        token_info = sp_oauth.get_cached_token(user_id)
         if token_info:
             print ("Found cached token!fildshcilk")
             access_token = token_info['access_token']
@@ -75,7 +76,7 @@ class SpotifyGetTokenView(APIView):
             code = sp_oauth.parse_response_code(url)
             if code:
                 print ("Found Spotify auth code in Request URL! Trying to get valid access token...")
-                token_info = sp_oauth.get_access_token(code,request=request)
+                token_info = sp_oauth.get_access_token(code,user_id=user_id)
                 access_token = token_info['access_token']
 
         if access_token:
