@@ -253,15 +253,16 @@ class User_Top_Artist(GenericAPIView):
         if access_token:
             sp = spotipy.Spotify(access_token)
             results = sp.current_user_top_artists(limit=50, offset=0, time_range='medium_term')
+            list_of_results = results[items]
             temp = []
-            for i in range(50):
+            for result in list_of_results:
                 dict = {}
                 url = "url"
                 name = "name"
-                dict[url] = results['items'][i]['images'][2]['url']
-                dict[name] = results['items'][i]['name']
-                temp.append(dict)
-                    
+                dict["artist_name"] = result["name"]
+                dict["image_url"] = result['images'][2]['url']
+                dict["spotify_url"] = result['external_urls']["spotify"]
+                temp.append(dict)                  
 
             return Response(temp)
         else:
