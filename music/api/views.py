@@ -229,7 +229,7 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
                 dict["track_name"] = result["name"]
                 dict["artist_name"] = result["artists"][0]["name"]
                 dict["album"] =  result["album"]["name"]
-                dict["image_url"] = result["album"]["images"][2]['url']
+                dict["image_url"] = result["album"]["images"][0]['url']
                 dict["spotify_url"] = result["external_urls"]["spotify"]
                 list.append(dict)
             list.append(context)
@@ -253,14 +253,14 @@ class User_Top_Artist(GenericAPIView):
         if access_token:
             sp = spotipy.Spotify(access_token)
             results = sp.current_user_top_artists(limit=50, offset=0, time_range='medium_term')
-            list_of_results = results[items]
+            list_of_results = results['items']
             temp = []
             for result in list_of_results:
                 dict = {}
                 url = "url"
                 name = "name"
                 dict["artist_name"] = result["name"]
-                dict["image_url"] = result['images'][2]['url']
+                dict["image_url"] = result['images'][0]['url']
                 dict["spotify_url"] = result['external_urls']["spotify"]
                 temp.append(dict)                  
 
