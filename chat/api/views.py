@@ -34,6 +34,9 @@ def simple_chat(request, userparameter=None):
                 # users = selected_conv.members.all()
                 M = Message.objects.filter(conversation_id = int(userparameter)).all()
                 message_list = MessageSerializer(M, many=True, context={'request': request})
+                for message in message_list:
+                    if message.sender_id.id != request.user.id:
+                        message.is_seen = True
             except :
                 M = []
                 users = []
@@ -81,18 +84,16 @@ def simple_chat(request, userparameter=None):
         )
 
 
+@permission_classes([IsAuthenticated])
+@csrf_exempt
+@api_view(['GET'])
+def all_inboxes(request):
+    if request.method == 'GET':
+        user = request.user
+            u.recieved_messages = 0
+            for c in u.conversations_set.all():
+                u.recieved_messages += len(Messages.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
 
-
-# def inboxes(request):
-#     users_list = Users.objects.all()
-#     for u in users_list:
-#         u.recieved_messages = 0
-#         for c in u.conversations_set.all():
-#             u.recieved_messages += len(Messages.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)))
-
-#     return render(
-#                   request,
-#                   "inboxes.html",{
-#                     "users_list":users_list,  
-#                   }
-#             )
+        return Response(
+                    u.recieved_messages
+                )

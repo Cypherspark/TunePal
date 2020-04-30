@@ -3,6 +3,8 @@ from account.models import CustomUser as User
 from ..models import Message, Conversation
 from TunePal import settings
 from datetime import datetime
+from django.db.models import Q
+
 
 
 
@@ -19,7 +21,20 @@ class UserProfileSerilizer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
+    new_messages = serializers.SerializerMethodField()
     members = UserProfileSerilizer(many = True)
+    last_message = serializers.SerializerMethodField()
+
+    def get_last_message(self, obj):
+        user = self.context['request'].user
+        last_message = Messages.objects.filter(Q(conversation_id = obj))[-1]
+        serilizer = MessageSerializer(last_message)
+        return serilizer
+
+    def get_new_messages(self, obj):
+        user = self.context['request'].user
+        new_recieved_messages = len(Messages.objects.filter(Q(conversation_id = obj)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
+        return new_recieved_messages
 
     class Meta(object):
         model = Conversation
