@@ -92,7 +92,7 @@ def all_inboxes(request):
         user = request.user
         recieved_messages = 0
         for c in u.conversations_set.all():
-            recieved_messages += len(Messages.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
+            recieved_messages += len(Message.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
  
         return Response(
                     {"new_messages":recieved_messages}
