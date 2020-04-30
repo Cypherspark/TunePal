@@ -19,7 +19,7 @@ def simple_chat(request, userparameter=None):
         if  userparameter == None:
                 c = Conversation.objects.filter(members__id = request.user.id)
                 conversation_list = ConversationSerializer(c, many=True, context={'request': request})
-                print("here")
+                print("here-------")
 
                 return Response(
                 {   
@@ -34,7 +34,7 @@ def simple_chat(request, userparameter=None):
                 # users = selected_conv.members.all()
                 M = Message.objects.filter(conversation_id = int(userparameter)).all()
                 message_list = MessageSerializer(M, many=True, context={'request': request})
-                for message in message_list.data:
+                for message in M:
                     if message.sender_id.id != request.user.id:
                         message.is_seen = True
 
@@ -44,7 +44,8 @@ def simple_chat(request, userparameter=None):
                     "messages": message_list.data,
                 }
             )
-            except :
+            except Exception as e:
+                print(str(e))
                 message_list = []
                 users = []
 
