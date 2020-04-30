@@ -34,6 +34,14 @@ from celery import Celery, current_app
 
 import random
 
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+from django.template import Context
+from django.template.loader import render_to_string
+from TunePal.settings import EMAIL_HOST_USER
+
+
 SPOTIPY_CLIENT_ID = 'c42e107d3ae641e4af9e08e7d7a55b9b'
 SPOTIPY_CLIENT_SECRET = 'cd1e4e0aa3684e34ae12b313ebea1074'
 SPOTIPY_REDIRECT_URI = 'http://localhost:3000/spotifyresult/'
@@ -122,6 +130,7 @@ class Friend_Request(APIView):
         owner = request.user
         FR = FriendshipRequest(from_user=owner, to_user=n_f)
         FR.save()
+        SendEmail(request,str(n_f.email),"friend.html")
         return Response(status=status.HTTP_200_OK)
 
 
@@ -160,6 +169,7 @@ class Add_Or_Reject_Friends(APIView):
         owner = request.user
 
         if verb == "accept":
+            SendEmail(request,str(n_f.email),"accept.html")
             FriendshipRequest.accept(owner, n_f)
             c = Conversation()
             c.save()
@@ -171,6 +181,7 @@ class Add_Or_Reject_Friends(APIView):
 
 
         elif verb == "decline":
+            SendEmail(request,str(n_f.email),"decline.html")
             FriendshipRequest.decline(owner, n_f)
 
             return Response(
@@ -199,7 +210,7 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
         #     return Response(serializer_class.data)
 
 
-        
+
         access_token = ""
         token_info = sp_oauth.get_cached_token(user_id=user_id)
 
@@ -261,7 +272,7 @@ class User_Top_Artist(GenericAPIView):
                 dict["image_url"] = result['images'][0]['url']
                 dict["spotify_url"] = result['external_urls']["spotify"]
                 if dict != {}:
-                    temp.append(dict)                  
+                    temp.append(dict)
 
             return Response(temp)
         else:

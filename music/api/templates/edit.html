@@ -1,0 +1,97 @@
+{% extends "master.html" %}
+{% block 'contant' %}
+{% if messages %}
+   {% for message in messages %}
+       <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+   {% endfor %}
+{% endif %}
+<div class="card">
+  <div class="card-header card-header-primary">
+    <h4 class="card-title">WELCOME</h4>
+    <p class="card-category">SIGN_IN</p>
+  </div>
+  <div class="card-body">
+
+    <form  method="post">
+      {% csrf_token %}
+      <div class="container-fluid" dir="ltr">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header card-header-primary">
+                <h4 class="card-title"> Profile</h4>
+                <p class="card-category">Complete your profile</p>
+              </div>
+              <div class="card-body">
+                <form>
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">user_name </label>
+                        <input type="text" class="form-control" name = 'user_name'>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">password</label>
+                        <input type="text" class="form-control" name = 'user_pass'>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">name</label>
+                        <input type="text" class="form-control" name = 'name'>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">your genre you like</label>
+                        <input type="text" class="form-control" name = 'user_genre'>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Adress</label>
+                        <input type="text" class="form-control" name = 'user_adress'>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">City</label>
+                        <input type="text" class="form-control" name = 'user_city'>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Country</label>
+                        <input type="text" class="form-control" name = 'user_company'>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">SEX</label>
+                        <input type="text" class="form-control" name = 'sex'>
+                      </div>
+                    </div>
+                    <input type="submit"  class="btn btn-primary pull-right " value=" edit">
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    </div>
+</form>
+  </div>
+</div>
+{% endblock %}
