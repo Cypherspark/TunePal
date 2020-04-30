@@ -37,15 +37,21 @@ def simple_chat(request, userparameter=None):
                 for message in message_list:
                     if message.sender_id.id != request.user.id:
                         message.is_seen = True
+
+                return Response(
+                {   
+                    # "users": user_list,
+                    "messages": message_list.data,
+                }
+            )
             except :
-                M = Message.objects.filter(conversation_id = int(userparameter)).all()
-                message_list = MessageSerializer(M, many=True, context={'request': request})
+                message_list = []
                 users = []
 
             return Response(
                 {   
                     # "users": user_list,
-                    "messages": message_list.data,
+                    "messages": message_list
                 }
             )
 
