@@ -53,54 +53,54 @@ class question(APIView):
         if access_token:
                     print ("Access token available! Wating for find question...")
                     sp = spotipy.Spotify(access_token)
-                    QuizImage.objects.all().delete()
-                    queryset = User_top_music.objects.all()
-                    serializer_class = UserTopSongserialize(queryset,many = True)
-                    artist = []
-                    for i in range(len(serializer_class.data)):
-                        if serializer_class.data[i]['artist_name'] not in artist:
-                                artist.append(serializer_class.data[i]['artist_name'])
-                    song = []
-                    for i in range(len(serializer_class.data)):
-                        if serializer_class.data[i]['music_name'] not in song:
-                                song.append(serializer_class.data[i]['music_name'])
-                    album = []
-                    for i in range(len(serializer_class.data)):
-                        if serializer_class.data[i]['album'] not in album:
-                                album.append(serializer_class.data[i]['album'])
-                    for i in range(int(len(serializer_class.data)/2)):
-                            if serializer_class.data[i]['artist_name'] in artist:
-                                artist.remove(serializer_class.data[i]['artist_name'])
+                    # QuizImage.objects.all().delete()
+                    # queryset = User_top_music.objects.all()
+                    # serializer_class = UserTopSongserialize(queryset,many = True)
+                    # artist = []
+                    # for i in range(len(serializer_class.data)):
+                    #     if serializer_class.data[i]['artist_name'] not in artist:
+                    #             artist.append(serializer_class.data[i]['artist_name'])
+                    # song = []
+                    # for i in range(len(serializer_class.data)):
+                    #     if serializer_class.data[i]['music_name'] not in song:
+                    #             song.append(serializer_class.data[i]['music_name'])
+                    # album = []
+                    # for i in range(len(serializer_class.data)):
+                    #     if serializer_class.data[i]['album'] not in album:
+                    #             album.append(serializer_class.data[i]['album'])
+                    # for i in range(int(len(serializer_class.data)/2)):
+                    #         if serializer_class.data[i]['artist_name'] in artist:
+                    #             artist.remove(serializer_class.data[i]['artist_name'])
 
-                            question =serializer_class.data[i]['music_name']+" is for .... , "+" https://onesoftwaresolution.com/wp-content/uploads/2017/01/iStock-147246163-900x500.jpg"
-                            list = random.sample(artist,3)
-                            choices2 = list[0]
-                            choices3 = list[1]
-                            choices4 = list[2]
-                            list.append(serializer_class.data[i]['artist_name'])
-                            answer = serializer_class.data[i]['artist_name']
-                            choices = random.sample(list,4)
-                            artist.append(serializer_class.data[i]['artist_name'])
-                            quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
-                            for quiz in QuizImage.objects.values_list('question', flat=True).distinct():
-                                                QuizImage.objects.filter(pk__in=QuizImage.objects.filter(question=quiz).values_list('id', flat=True)[1:]).delete()
-                    #
-                    for i in range(int(len(serializer_class.data)/2)):
-                            if serializer_class.data[i]['artist_name'] in artist:
-                                artist.remove(serializer_class.data[i]['artist_name'])
+                    #         question =serializer_class.data[i]['music_name']+" is for .... , "+" https://onesoftwaresolution.com/wp-content/uploads/2017/01/iStock-147246163-900x500.jpg"
+                    #         list = random.sample(artist,3)
+                    #         choices2 = list[0]
+                    #         choices3 = list[1]
+                    #         choices4 = list[2]
+                    #         list.append(serializer_class.data[i]['artist_name'])
+                    #         answer = serializer_class.data[i]['artist_name']
+                    #         choices = random.sample(list,4)
+                    #         artist.append(serializer_class.data[i]['artist_name'])
+                    #         quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
+                    #         for quiz in QuizImage.objects.values_list('question', flat=True).distinct():
+                    #                             QuizImage.objects.filter(pk__in=QuizImage.objects.filter(question=quiz).values_list('id', flat=True)[1:]).delete()
+                    # #
+                    # for i in range(int(len(serializer_class.data)/2)):
+                    #         if serializer_class.data[i]['artist_name'] in artist:
+                    #             artist.remove(serializer_class.data[i]['artist_name'])
 
-                            question ="front image is related to .... , "+serializer_class.data[i]['genre']
-                            list = random.sample(artist,3)
-                            choices2 = list[0]
-                            choices3 = list[1]
-                            choices4 = list[2]
-                            list.append(serializer_class.data[i]['artist_name'])
-                            answer = serializer_class.data[i]['artist_name']
-                            choices = random.sample(list,4)
-                            artist.append(serializer_class.data[i]['artist_name'])
-                            quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
-                            for quiz in QuizImage.objects.values_list('question', flat=True).distinct():
-                                                QuizImage.objects.filter(pk__in=QuizImage.objects.filter(question=quiz).values_list('id', flat=True)[1:]).delete()
+                    #         question ="front image is related to .... , "+serializer_class.data[i]['genre']
+                    #         list = random.sample(artist,3)
+                    #         choices2 = list[0]
+                    #         choices3 = list[1]
+                    #         choices4 = list[2]
+                    #         list.append(serializer_class.data[i]['artist_name'])
+                    #         answer = serializer_class.data[i]['artist_name']
+                    #         choices = random.sample(list,4)
+                    #         artist.append(serializer_class.data[i]['artist_name'])
+                    #         quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
+                    #         for quiz in QuizImage.objects.values_list('question', flat=True).distinct():
+                    #                             QuizImage.objects.filter(pk__in=QuizImage.objects.filter(question=quiz).values_list('id', flat=True)[1:]).delete()
 
 
                     res = sp.playlist('0MG9jIyagfVWDLhShEhvbg', fields=None, market=None)
@@ -117,23 +117,22 @@ class question(APIView):
                     "Metro Station","Higher Love","Roses","Snacks","Recovery","Euphoria (Standard US/Latin version)","Young, Wild & Free (feat. Bruno Mars)",
                     "Stronger (Deluxe Version)","Nothing but the Beat (Ultimate Edition)","My Beautiful Dark Twisted Fantasy","Sorry For Party Rocking (Deluxe Version)"
                     ,"Rolling Papers","Stereo Love","The Papercut Chronicles II","The Sequel (Deluxe)",
-                    "Whatever","Black And Yellow","Born This Way","Lasers","Femme Fatale (Deluxe Version)","Torches","LOVE? (Deluxe Edition)","Singles"
-                    ,"Doo-Wops & Hooligans","Planet Pit (Deluxe Version)","The Kickback","Only By The Night","I AM...SASHA FIERCE",
-                    "The Time Of Our Lives (Canadian Version)","Fearless","The Blueprint 3","Only One Flo (Part 1)","Girls Night Out","The Fame Monster (Deluxe Edition)"
-                    ,"Ocean Eyes","THE E.N.D. (THE ENERGY NEVER DIES)","Replay","Believe (Deluxe Edition)","Up All Night","Avril Lavigne","Badlands","Bamboleo single","Believer(feat.Lil Wayne) Single","Colors Single","Divide(Deluxe)"]
+                    "Whatever","Black And Yellow","Born This Way","Lasers","Femme Fatale","Torches","LOVE? (Deluxe Edition)","Singles"
+                    ,"Doo-Wops & Hooligans","Planet Pit","The Kickback","Only By The Night","I AM...SASHA FIERCE",
+                    "The Time Of Our Lives","Fearless","The Blueprint 3","Only One Flo (Part 1)","Girls Night Out","The Fame Monster (Deluxe Edition)"
+                    ,"Ocean Eyes","THE E.N.D. ","Replay","Up All Night","Avril Lavigne","Badlands","Bamboleo single","Believer(feat.Lil Wayne) Single","Colors Single","Divide(Deluxe)"]
                     # # for i in range(len(res['tracks']['items'])):
                     # #     if res['tracks']['items'][i]['track']['album']['name'] not in album:
                     # #             album.append(res['tracks']['items'][i]['track']['album']['name'])
                     list1 = []
 
-                    with open('/home/tunepal/tunepal.pythonanywhere.com/quiz/api/views.py', newline='') as csvfile:
+                    with open('/home/tunepal/tunepal.pythonanywhere.com/quiz/api/song.csv', newline='') as csvfile:
                          spamreader = csv.reader(csvfile, quotechar=',')
                          for row in spamreader:
                              list1.append(row)
                     del list1[0]
                     del list1[0]
                     del list1[73]
-
                     song = []
                     for x in list1 :
                         if x[2] not in artist:
@@ -160,19 +159,19 @@ class question(APIView):
                     for i in range(len(res['tracks']['items'])):
                             if res['tracks']['items'][i]['track']['album']['artists'][0]['name'] in artist:
                                 artist.remove(res['tracks']['items'][i]['track']['album']['artists'][0]['name'])
-                            question = "The song with name ( "+res['tracks']['items'][i]['track']['name']+" ) is for .... , "+"https://onesoftwaresolution.com/wp-content/uploads/2017/01/iStock-147246163-900x500.jpg"
+                            question = "The song  "+res['tracks']['items'][i]['track']['name']+" is for .... , "+"NO"
                             list = random.sample(artist, 3)
                             list.append(res['tracks']['items'][i]['track']['album']['artists'][0]['name'])
                             answer = res['tracks']['items'][i]['track']['album']['artists'][0]['name']
                             choices = random.sample(list,4)
                             artist.append(res['tracks']['items'][i]['track']['album']['artists'][0]['name'])
-                            quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
+                            QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
 
 
                     for i in range(len(res['tracks']['items'])):
                             if res['tracks']['items'][i]['track']['album']['artists'][0]['name'] in artist:
                                 artist.remove(res['tracks']['items'][i]['track']['album']['artists'][0]['name'])
-                            question = "The album with name ("+res['tracks']['items'][i]['track']['album']['name']+") and front image is for .... , "+res['tracks']['items'][i]['track']['album']['images'][2]['url']
+                            question = "The album "+res['tracks']['items'][i]['track']['album']['name']+" is for .... , "+res['tracks']['items'][i]['track']['album']['images'][0]['url']
                             list = random.sample(artist, 3)
                             list.append(res['tracks']['items'][i]['track']['album']['artists'][0]['name'])
                             answer = res['tracks']['items'][i]['track']['album']['artists'][0]['name']
@@ -185,44 +184,44 @@ class question(APIView):
                             if res['tracks']['items'][i]['track']['name'] in song:
                                     song.remove(res['tracks']['items'][i]['track']['name'])
 
-                            question = "Which one of this songs is for  ("+res['tracks']['items'][i]['track']['album']['artists'][0]['name']+" "+") , https://onesoftwaresolution.com/wp-content/uploads/2017/01/iStock-147246163-900x500.jpg"
+                            question = "Which one of this songs is for "+res['tracks']['items'][i]['track']['album']['artists'][0]['name']+" "+", NO"
                             list = random.sample(song, 3)
                             list.append(res['tracks']['items'][i]['track']['name'])
                             answer = res['tracks']['items'][i]['track']['name']
                             choices = random.sample(list,4)
-                            quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
+                            QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
 
                     for i in range(len(res['tracks']['items'])):
                           if res['tracks']['items'][i]['track']['album']['name'] in album:
                                   album.remove(res['tracks']['items'][i]['track']['album']['name'])
-                          question = "Which one of this albums is for  ("+res['tracks']['items'][i]['track']['album']['artists'][0]['name']+") , https://onesoftwaresolution.com/wp-content/uploads/2017/01/iStock-147246163-900x500.jpg"
+                          question = "Which one of this albums is for  "+res['tracks']['items'][i]['track']['album']['artists'][0]['name']+" , NO"
                           list = random.sample(album, 3)
                           list.append(res['tracks']['items'][i]['track']['album']['name'])
                           answer = res['tracks']['items'][i]['track']['album']['name']
                           choices = random.sample(list,4)
                           album.append(res['tracks']['items'][i]['track']['album']['name'])
-                          quiz1 = QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
+                          QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
 
                     for i in range(len(res['tracks']['items'])):
                           if res['tracks']['items'][i]['track']['name'] in song:
                                   song.remove(res['tracks']['items'][i]['track']['name'])
-                          question = "Which one of this songs is in the album with name ( "+res['tracks']['items'][i]['track']['album']['name']+" ) and front image , "+res['tracks']['items'][i]['track']['album']['images'][2]['url']
+                          question = "Which one of this songs is in the album  "+res['tracks']['items'][i]['track']['album']['name']+" , "+res['tracks']['items'][i]['track']['album']['images'][0]['url']
                           list = random.sample(song, 3)
                           list.append(res['tracks']['items'][i]['track']['name'])
                           answer = res['tracks']['items'][i]['track']['name']
                           choices = random.sample(list,4)
-                          quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
+                          QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
 
                     for i in range(len(res['tracks']['items'])):
                           if res['tracks']['items'][i]['track']['album']['name'] in album:
                                   album.remove(res['tracks']['items'][i]['track']['album']['name'])
-                          question = "the song  with name ( "+res['tracks']['items'][i]['track']['name']+" ) is in which one of this albums"+" , https://onesoftwaresolution.com/wp-content/uploads/2017/01/iStock-147246163-900x500.jpg"
+                          question = "the song "+res['tracks']['items'][i]['track']['name']+" is in which one of this albums"+" , NO"
                           list = random.sample(album, 3)
                           list.append(res['tracks']['items'][i]['track']['album']['name'])
                           answer = res['tracks']['items'][i]['track']['album']['name']
                           choices = random.sample(list,4)
                           album.append(res['tracks']['items'][i]['track']['album']['name'])
-                          quiz1 =QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
+                          QuizImage.objects.create(question = question,choices1 = choices[0],choices2 = choices[1] , choices3 = choices[2],choices4 = choices[3] , answer = answer)
                     for quiz in QuizImage.objects.values_list('question', flat=True).distinct():
                                 QuizImage.objects.filter(pk__in=QuizImage.objects.filter(question=quiz).values_list('id', flat=True)[1:]).delete()
                     quiz = QuizImage.objects.all()
@@ -235,6 +234,7 @@ class question(APIView):
 class quiz(GenericAPIView):
     queryset = QuizImage.objects.all()
     list1=list(queryset)
+    print(list1)
     def get(self,request):
         questions = []
         random.seed()
@@ -260,21 +260,23 @@ class checkanswer(GenericAPIView):
      def post(self,request):
         user = get_object_or_404(CustomUser,pk =self.request.user.id)
         quiz = get_object_or_404(self.queryset,id=int(request.data.get('quiz_id')))
-        answer = request.data.get('answer')
-        if quiz.answer == answer:
+        # answer = request.data.get('answer')
+        # return Response(request.data.get("answer")
+        if quiz.answer == request.data.get("answer"):
             score = user.score
             score = int(score)
-            score+= 10
+            score += 10
             user.score = score
             user.save()
             self.dict['answer'] = quiz.answer
             self.dict['score'] = user.score
-            return Response(dict)
+            return Response(self.dict)
 
         else:
             self.dict['answer'] = quiz.answer
             self.dict['score'] = user.score
             return Response(self.dict)
+
 
 
 class getscore(GenericAPIView):
