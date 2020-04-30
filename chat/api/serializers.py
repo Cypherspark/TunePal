@@ -38,8 +38,8 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Conversation
-        fields = ['members','id','is_group']
-        extra_kwargs = {'is_group':  {'required': False}}
+        fields = ['members','id','is_group','new_messages','last_message']
+        extra_kwargs = {'is_group':  {'required': False},'new_messages':  {'required': False},'last_message':{'required': False}}
         
     
 class MessageSerializer(serializers.ModelSerializer):
