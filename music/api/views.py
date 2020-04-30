@@ -257,12 +257,11 @@ class User_Top_Artist(GenericAPIView):
             temp = []
             for result in list_of_results:
                 dict = {}
-                url = "url"
-                name = "name"
                 dict["artist_name"] = result["name"]
                 dict["image_url"] = result['images'][0]['url']
                 dict["spotify_url"] = result['external_urls']["spotify"]
-                temp.append(dict)                  
+                if dict != {}:
+                    temp.append(dict)                  
 
             return Response(temp)
         else:
