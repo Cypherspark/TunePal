@@ -33,7 +33,7 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def get_new_messages(self, obj):
         user = self.context['request'].user
-        new_recieved_messages = len(Message.objects.filter(Q(conversation_id = obj)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
+        new_recieved_messages = len(Message.objects.filter(Q(conversation_id = obj)).filter(~Q(sender_id=user)).filter(Q(is_seen=False)))
         return new_recieved_messages
 
     class Meta(object):
