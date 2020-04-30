@@ -90,10 +90,10 @@ def simple_chat(request, userparameter=None):
 def all_inboxes(request):
     if request.method == 'GET':
         user = request.user
-            u.recieved_messages = 0
-            for c in u.conversations_set.all():
-                u.recieved_messages += len(Messages.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
-
+        recieved_messages = 0
+        for c in u.conversations_set.all():
+            recieved_messages += len(Messages.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
+ 
         return Response(
-                    u.recieved_messages
+                    {"new_messages":recieved_messages}
                 )
