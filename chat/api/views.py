@@ -34,7 +34,7 @@ def simple_chat(request, userparameter=None):
                 # users = selected_conv.members.all()
                 M = Message.objects.filter(conversation_id = int(userparameter)).all()
                 message_list = MessageSerializer(M, many=True, context={'request': request})
-                for message in message_list:
+                for message in message_list.data:
                     if message.sender_id.id != request.user.id:
                         message.is_seen = True
 
