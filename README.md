@@ -2,14 +2,23 @@
 
 ### deployment
 the project has been deployed on pythonanywhere .
+[http://tunepal.pythonanywhere.com](http://tunepal.pythonanywhere.com)
 
 
 ### available urls:
-Post request to:
-http://tunepal.pythonanywhere.com/account/login/
-
-Post request to:
-http://tunepal.pythonanywhere.com/account/sign_up/
-
 docs and other info about api are here:
 [http://tunepal.pythonanywhere.com/swagger/](http://tunepal.pythonanywhere.com/swagger/)
+
+
+### masoud sprint3 todolist
+- [ ] deploy on vps + docker + postgres + nginx
+- [ ] user top songs and artists + celery + redis
+- [ ] django channels chatroom 
+
+
+
+
+
+
+
+all great things are simple =))

@@ -24,7 +24,7 @@ import six
 import six.moves.urllib.parse as urllibparse
 
 from account.models import CustomUser
-
+from django.shortcuts import get_object_or_404
 
 
 class SpotifyOauthError(Exception):
@@ -207,7 +207,7 @@ class SpotifyOAuth(SpotifyAuthBase):
         self.requests_timeout = requests_timeout
         self.show_dialog = show_dialog
 
-    def get_cached_token(self, request=None):
+    def get_cached_token(self, user_id=None):
         """ Gets a cached auth token
         """
         token_info = None
@@ -219,10 +219,10 @@ class SpotifyOAuth(SpotifyAuthBase):
         #         "You must either set a cache_path or a username."
         #     )
 
-        if request != None:
+        if user_id != None:
             try:
-                userr = CustomUser.objects.get(username=request.user)
-                token_info_string = userr.spotify_token
+                instance = get_object_or_404(CustomUser, pk=user_id)
+                token_info_string = instance.spotify_token
                 # print('---',token_info_string)
                 # f = open(self.cache_path)
                 # token_info_string = f.read()
@@ -238,20 +238,20 @@ class SpotifyOAuth(SpotifyAuthBase):
                 if self.is_token_expired(token_info):
                     token_info = self.refresh_access_token(
                         token_info["refresh_token"],
-                        request
+                        user_id
                     )
 
             except :
                 pass
         return token_info
 
-    def _save_token_info(self, token_info,request=None):
+    def _save_token_info(self, token_info,user_id=None):
         if True:
             try:
                 # f = open(self.cache_path, "w")
-                userr = CustomUser.objects.get(username=request.user)
-                userr.spotify_token = json.dumps(token_info)
-                userr.save()
+                instance = get_object_or_404(CustomUser, pk=user_id)
+                instance.spotify_token = json.dumps(token_info)
+                instance.save()
                 # f.close()
             except :
                 self._warn("couldn't write token cache to " + self.cache_path)
@@ -336,7 +336,7 @@ class SpotifyOAuth(SpotifyAuthBase):
     def get_authorization_code(self, response=None):
         return self.parse_response_code(response or self.get_auth_response())
 
-    def get_access_token(self, code=None, as_dict=True, check_cache=True, request=None):
+    def get_access_token(self, code=None, as_dict=True, check_cache=True, user_id=None):
         """ Gets the access token for the app given the code
 
             Parameters:
@@ -362,7 +362,7 @@ class SpotifyOAuth(SpotifyAuthBase):
                 if is_token_expired(token_info):
                     token_info = self.refresh_access_token(
                         token_info["refresh_token"],
-                        request
+                        user_id
                     )
                 return token_info if as_dict else token_info["access_token"]
 
@@ -390,7 +390,7 @@ class SpotifyOAuth(SpotifyAuthBase):
             raise SpotifyOauthError(response.reason)
         token_info = response.json()
         token_info = self._add_custom_values_to_token_info(token_info)
-        self._save_token_info(token_info, request)
+        self._save_token_info(token_info, user_id)
         return token_info if as_dict else token_info["access_token"]
 
     def _normalize_scope(self, scope):
@@ -400,7 +400,7 @@ class SpotifyOAuth(SpotifyAuthBase):
         else:
             return None
 
-    def refresh_access_token(self, refresh_token, request):
+    def refresh_access_token(self, refresh_token, user_id):
         payload = {
             "refresh_token": refresh_token,
             "grant_type": "refresh_token",
@@ -428,7 +428,7 @@ class SpotifyOAuth(SpotifyAuthBase):
         token_info = self._add_custom_values_to_token_info(token_info)
         if "refresh_token" not in token_info:
             token_info["refresh_token"] = refresh_token
-        self._save_token_info(token_info, request)
+        self._save_token_info(token_info, user_id)
         return token_info
 
     def _add_custom_values_to_token_info(self, token_info):
