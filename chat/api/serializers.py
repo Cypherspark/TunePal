@@ -27,7 +27,7 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def get_last_message(self, obj):
         user = self.context['request'].user
-        last_message = Message.objects.filter(Q(conversation_id = obj))[-1]
+        last_message = Message.objects.filter(Q(conversation_id = obj)).reverse()[0]
         serilizer = MessageSerializer(last_message)
         return serilizer
 
