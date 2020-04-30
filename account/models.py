@@ -49,7 +49,7 @@ class CustomUser(AbstractUser):
     tracks = models.ManyToManyField(Music,blank=True)
     status = models.CharField(blank = True,max_length = 10)
     top_artist = models.CharField(blank = True,max_length = 100)
-    score = models.CharField(blank = True,max_length = 100000000, default = '0')
+    score = models.CharField(blank = True,max_length = 100000, default = '0')
 
 
     location = models.OneToOneField(UserLocation,
