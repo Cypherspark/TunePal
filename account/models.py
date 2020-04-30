@@ -47,7 +47,7 @@ class CustomUser(AbstractUser):
     spotify_token = models.CharField(_('spotify token'), max_length=700, blank=True, null=True)
     artists = models.ManyToManyField(Artist, default=None,blank=True)
     tracks = models.ManyToManyField(Music,blank=True)
-    status = models.CharField(blank = True,max_length = 10)
+    status = models.CharField(blank = True,max_length = 10,default = 'offline')
     top_artist = models.CharField(blank = True,max_length = 100)
     score = models.CharField(blank = True,max_length = 100000, default = '0')
 
