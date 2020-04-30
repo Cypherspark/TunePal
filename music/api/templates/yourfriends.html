@@ -1,0 +1,70 @@
+{% extends "master.html" %}
+{% block 'contant' %}
+{% if messages %}
+   {% for message in messages %}
+       <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+   {% endfor %}
+{% endif %}
+<h1></h1>
+<div class="card">
+  <div class="card-header card-header-primary">
+    <h4 class="card-title "> yourfriend</h4>
+    <p class="card-category"> Here is your listfrieds </p>
+  </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th >profile</th>
+                   <th>Id</th>
+                    <th>
+                      Name
+                    </th>
+
+                    <th>
+                      sex
+                    </th>
+                    <th>
+                      genre love
+                    </th>
+                    <th>
+                      country
+                    </th>
+                    <th>
+                      city
+                    </th>
+                  </thead>
+                  <tbody>
+                    {%for task in person%}
+                       <tr>
+                         <td><i class="material-icons text-success">photo_library</i></td>
+                         <td>{{task.id}}</td>
+                         <td>{{task.name}}</td>
+                         <td>{{task.sex}}</td>
+                         <td>{{task.user_genre}}</td>
+                         <td>{{task.user_company}}</td>
+                         <td>{{task.user_city}}</td>
+
+
+
+                       </tr>
+
+                    {%endfor%}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="text-left">
+            <a href="#" class="btn btn-success pull-left"> add friend<td><i class="material-icons">add</i></td>
+
+            </a>
+
+          </div>
+          <div class="text-left">
+            <a href="#" class="btn btn-danger pull-left"> delete friend<td><i class="material-icons">delete</i></td>
+
+            </a>
+
+          </div>
+{% endblock %}
