@@ -48,12 +48,12 @@ def simple_chat(request, userparameter=None):
                 message_list = []
                 users = []
 
-            return Response(
-                {   
-                    # "users": user_list,
-                    "messages": message_list
-                }
-            )
+                return Response(
+                    {   
+                        # "users": user_list,
+                        "messages": message_list
+                    }
+                )
 
 
 
