@@ -124,17 +124,11 @@ def friends(request,id,sp):
                      f= Friend.objects.create(username = user.username,nickname = user.nickname,gender = user.gender,spotify_token = user.spotify_token)
                      Activeuser.friends.add(f)
 
-def SendEmail(request,recepient,html):
+def SendEmail(request,recepient,html,usernameofn_f,usernameofowner):
     if request.method == 'GET':
-        # sub = forms.Subscribe(request.POST)
-        subject = 'Welcome to DataFlair'
-        html_content = '<div style="background-color:green;" id="div">HELLO</div>'
-        # template = get_template('myapp/email.html')
-        # content = template.render(context)
-        html_message = render_to_string(html)
+        subject = 'Welcome to TunePal'
+        html_message = render_to_string(html,{'usernameofn_f':usernameofn_f,'usernameofowner' :usernameofowner})
         message = strip_tags(html_message)
-
-        # message.a(body, 'text/html')
         message1 =EmailMultiAlternatives(subject,
             message, EMAIL_HOST_USER, [recepient])
         message1.attach_alternative(html_message, 'text/html')
