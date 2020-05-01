@@ -21,7 +21,7 @@ class UserProfileSerilizer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
-    members = UserProfileSerilizer(many = True, context:{'request': context['request']})
+    members = UserProfileSerilizer(many = True,required=False)
     new_messages = serializers.SerializerMethodField()
     last_message = serializers.SerializerMethodField()
 
@@ -29,7 +29,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         try:
             last_messageop = Message.objects.filter(Q(conversation_id = obj)).reverse()[0]
-            serilizer = MessageSerializer(last_messageop)
+            serilizer = MessageSerializer(last_messageop,context={'request': context['request']})
         except Exception as e:
             print(str(e))
             serilizer = {}  
