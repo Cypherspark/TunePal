@@ -33,7 +33,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(str(e))
             serilizer = {}  
-        return serilizer.data
+        return serilizer
 
     def get_new_messages(self, obj):
         user = self.context['request'].user
