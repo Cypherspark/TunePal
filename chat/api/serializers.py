@@ -29,7 +29,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         try:
             last_messageop = Message.objects.filter(Q(conversation_id = obj)).reverse()[0]
-            serilizer = MessageSerializer(last_message)
+            serilizer = MessageSerializer(last_messageop)
         except Exception as e:
             print(str(e))
             serilizer = {}  
