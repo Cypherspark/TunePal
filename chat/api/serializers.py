@@ -31,10 +31,14 @@ class ConversationSerializer(serializers.ModelSerializer):
         try:
             last_messageop = Message.objects.filter(Q(conversation_id = obj)).reverse()[0]
             serilizer = MessageSerializer(last_messageop,context={'request': request})
+            data = {"nickname" :serilizer.data['sender_id']['nickname'],
+                    "text": serilizer.data["text"]        
+                    }
         except Exception as e:
             print(str(e))
-            serilizer = {}  
-        return serilizer.data
+            serilizer = {} 
+            data = serilizer 
+        return data
 
     def get_new_messages(self, obj):
         user = self.context['request'].user
