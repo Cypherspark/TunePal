@@ -12,6 +12,15 @@ import os
 import json
 from django.http import JsonResponse
 
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+from django.template import Context
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from TunePal.settings import EMAIL_HOST_USER
+
+
 def counting(list):
    n = len(list)
    tempcount = []
@@ -114,3 +123,22 @@ def friends(request,id,sp):
                 else:
                      f= Friend.objects.create(username = user.username,nickname = user.nickname,gender = user.gender,spotify_token = user.spotify_token)
                      Activeuser.friends.add(f)
+
+def SendEmail(request,recepient,html):
+    if request.method == 'GET':
+        # sub = forms.Subscribe(request.POST)
+        subject = 'Welcome to DataFlair'
+        html_content = '<div style="background-color:green;" id="div">HELLO</div>'
+        # template = get_template('myapp/email.html')
+        # content = template.render(context)
+        html_message = render_to_string(html)
+        message = strip_tags(html_message)
+
+        # message.a(body, 'text/html')
+        message1 =EmailMultiAlternatives(subject,
+            message, EMAIL_HOST_USER, [recepient])
+        message1.attach_alternative(html_message, 'text/html')
+        message1.send()
+        return HttpResponse('done')
+    else:
+        return HttpResponse('fialed')

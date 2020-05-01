@@ -1,0 +1,124 @@
+{% extends "master.html" %}
+{% block 'contant' %}
+{% if messages %}
+   {% for message in messages %}
+       <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+   {% endfor %}
+{% endif %}
+<div class="card">
+
+  <div class="card-body text-left" dir="ltr">
+      <a  class = "btn btn-info btn-round" data-toggle="collapse" data-target="#search-box">
+        <i class="materail-icons mr-2">search</i>
+      </a>
+      <div id="search-box" class="collapse">
+        <hr>
+        <form  class= "row"  method="POST">
+           {% csrf_token %}
+            <div class="col-md-4" dir="ltr">
+              <div class="form-group">
+                <label for="music_name">write music name</label>
+                <input type="text" class="form-control" name="music_name" >
+                <input type="submit"  class="btn btn-primary " value=" search">
+
+
+              </div>
+
+            </div>
+         </form>
+      </td>
+      </div>
+  </div>
+  <div class="card-body text-left" dir="ltr">
+
+  <a  class = "col-md-1 btn btn-info btn-round" data-toggle="collapse" data-target="#filter">
+    <i class="materail-icons mr-2">FILTER</i>
+  </a>
+  <form  class= "row"  method="POST">
+      {% csrf_token %}
+    <div id="filter" class="collapse">
+      <input type="checkbox"  name="ROCK" value="1"{% if request.POST.ROCK %}checked{% endif %} >
+      <span class="ml-2">ROCK</span>
+      <input type="checkbox"  name="POP" value="1"{% if request.POST.ROCK %}checked{% endif %} >
+      <span class="ml-2">:POP</span>
+      <input type="checkbox"  name="POP" value="1"{% if request.POST.ROCK %}checked{% endif %} >
+      <span class="ml-2">ROCK</span>
+      <input type="checkbox"  name="ROCK" value="1"{% if request.POST.ROCK %}checked{% endif %} >
+      <span class="ml-2">ROCK</span>
+      <input type="submit"  class="btn btn-primary " value=" filter">
+
+      </div>
+    </form>
+
+    </div>
+<div class="col-md-4" dir="ltr">
+
+</div>
+
+
+
+
+
+
+      <h1></h1>
+      <h1></h1>
+
+      <h1></h1>
+
+  <div class="card-header card-header-primary">
+    <h4 class="card-title "> favorite music list</h4>
+    <p class="card-category"> Here is musics  that you like </p>
+  </div>
+            <div class="card-body">
+              {% if count  %}
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead class=" text-primary" align = 'center'>
+                    <th>play</th>
+                   <th>Id</th>
+                    <th>
+                      Music_Name
+                    </th>
+                    <th>
+                      Artist_name
+                    </th >
+                    <th>
+                      genre
+                    </th>
+                    <th>
+                      Album
+                    </th>
+                  </thead>
+                  <tbody>
+                    {%for music in page%}
+                       <tr method="post">
+                         <td align = 'center'><i class="material-icons text-danger">music_note</i></td>
+                         <td align ='Center'>{{music.id}}</td>
+                         <td align = 'center'>{{music.music_name}}</td>
+                         <td align = 'center'>{{music.artist_name}}</td>
+                         <td align = 'center'>{{music.genre}}</td>
+                         <td align = 'center'>{{music.album}}</td>
+                         <td align = 'center'>   <a href="#" class="btn btn-success btn-round"> EDITE<i class="material-icons ">edit</i></a></td>
+                         <td align = 'center'>  <form  action="{% url 'delete' music.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-round"> delete<i class="material-icons">delete</i></button>
+                          </form>
+                       </td>
+
+                       </tr>
+
+                    {%endfor%}
+                  </tbody>
+                </table>
+              </div>
+              {% else %}
+              <div class="alert alert-warning">
+                not find anything
+              </div>
+              {% endif %}
+              {% include "includes/paginationmusic.html" %}
+
+            </div>
+          </div>
+
+{% endblock %}

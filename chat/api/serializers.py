@@ -27,8 +27,12 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def get_last_message(self, obj):
         user = self.context['request'].user
-        last_message = Message.objects.filter(Q(conversation_id = obj)).reverse()[0]
-        serilizer = MessageSerializer(last_message)
+        try:
+            last_messageop = Message.objects.filter(Q(conversation_id = obj)).reverse()[0]
+            serilizer = MessageSerializer(last_message)
+        except Exception as e:
+            print(str(e))
+            serilizer = {}  
         return serilizer
 
     def get_new_messages(self, obj):
@@ -41,7 +45,9 @@ class ConversationSerializer(serializers.ModelSerializer):
         fields = ['members','id','is_group','new_messages','last_message']
         extra_kwargs = {'is_group':  {'required': False},'new_messages':  {'required': False},'last_message':{'required': False}}
         
-    
+
+
+
 class MessageSerializer(serializers.ModelSerializer):
     sender_id = UserProfileSerilizer(required=False)
     is_client = serializers.SerializerMethodField()
@@ -51,7 +57,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Message
-        fields = ["sender_id" ,"conversation_id", "text" ,"date" , "is_client"]
+        fields = ["sender_id" ,"conversation_id", "text" ,"date" , "is_client",'is_seen']
         extra_kwargs = {'is_client':  {'required': False},
                         'date':  {'required': False},
                         'sender_id':  {'required': False},

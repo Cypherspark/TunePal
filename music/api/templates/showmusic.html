@@ -1,0 +1,72 @@
+{% extends "master.html" %}
+{% block 'contant' %}
+{% if messages %}
+   {% for message in messages %}
+       <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+   {% endfor %}
+{% endif %}
+
+<div class="card">
+  <h1>sdczdsv</h1>
+  <div class="card-body text-left">
+      <a  class="btn btn-info btn round" data-toggle="collapse "href="search-box">
+        <i class="materail-icons mr-2">search</i>
+      </a>
+  </div>
+  <div class="card-header card-header-success">
+    <h4 class="card-title "> musics</h4>
+    <p class="card-category"> Here is your music list that you love </p>
+  </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary" align = 'center'>
+                    <th>play</th>
+                   <th>Id</th>
+                    <th>
+                      Music_Name
+                    </th>
+                    <th>
+                      Artist_name
+                    </th >
+                    <th>
+                      genre
+                    </th>
+                    <th>
+                      Album
+                    </th>
+                  </thead>
+                  <tbody>
+
+                    {%for music in musics%}
+                       <tr>
+                         {% if per.assigned.id == music.id %}
+                         <td align = 'center'><i class="material-icons text-danger">music_note</i></td>
+                         <td align ='center'>{{music.id}}</td>
+                         <td align = 'center'>{{music.music_name}}</td>
+                         <td align = 'center'>{{music.artist_name}}</td>
+                         <td align = 'center'>{{music.genre}}</td>
+                         <td align = 'center'>{{music.album}}</td>
+                         <td align = 'center'>   <a href="{% url 'deletemusic' per.id %}" class="btn btn-danger "> DELETE<i class="material-icons ">delete</i></a></td>
+
+
+                         {% endif %}
+
+                       </tr>
+
+                    {%endfor%}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="text-left">
+
+
+            </a>
+
+          </div>
+          <div class="text-left">
+
+          </div>
+{% endblock %}

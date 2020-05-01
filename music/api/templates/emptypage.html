@@ -1,0 +1,59 @@
+{% extends "master.html" %}
+{% block 'contant' %}
+{% if messages %}
+   {% for message in messages %}
+       <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+   {% endfor %}
+{% endif %}
+<div class="card">
+  <div class="card-header card-header-primary">
+    <h4 class="card-title">WELCOME</h4>
+    <p class="card-category">SIGN_IN</p>
+  </div>
+  <div class="card-body">
+    <form  method="POST" action="{% url 'assigned' id %}">
+      {% csrf_token %}
+      <div class="container-fluid" dir="ltr">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header card-header-primary">
+                <h4 class="card-title"> Profile</h4>
+                <p class="card-category">Complete your profile</p>
+              </div>
+
+              <div class="card-body">
+                <form>
+                  {% csrf_token %}
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="form-group">
+                        <label  for="musicform">music_name </label>
+                        <select class="from-control btn btn-success" name="person_id">
+
+                        {%for music in musics%}
+
+                               <option value="{{music.id}}">{{music.music_name}}</option>
+                               {%endfor%}
+                         </select>
+
+
+                       </div>
+                    </div>
+                  </div>
+                  {{ id }}
+                  {{int}}
+                   <input type="submit" value=" edit">
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    </div>
+</form>
+  </div>
+</div>
+{% endblock %}
