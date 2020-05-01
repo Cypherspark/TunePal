@@ -26,10 +26,11 @@ class ConversationSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField()
 
     def get_last_message(self, obj):
-        user = self.context['request'].user
+        request = self.context['request']
+        user = request.user
         try:
             last_messageop = Message.objects.filter(Q(conversation_id = obj)).reverse()[0]
-            serilizer = MessageSerializer(last_messageop,context={'request': context['request']})
+            serilizer = MessageSerializer(last_messageop,context={'request': request]})
         except Exception as e:
             print(str(e))
             serilizer = {}  
