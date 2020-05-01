@@ -37,6 +37,7 @@ def simple_chat(request, userparameter=None):
                 for message in M:
                     if message.sender_id.id != request.user.id:
                         message.is_seen = True
+                        message.save()
 
                 return Response(
                 {   
@@ -98,10 +99,12 @@ def simple_chat(request, userparameter=None):
 def all_inboxes(request):
     if request.method == 'GET':
         user = request.user
+        conversations_set =  Conversation.objects.filter(members__id = request.user.id)
         recieved_messages = 0
-        for c in u.conversations_set.all():
-            recieved_messages += len(Message.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
- 
+        for c in conversations_set:
+            kos = list(Message.objects.filter(Q(conversation_id = c)).filter(is_seen=False).filter(~Q(sender_id__id=user.id)))
+            recieved_messages += len(kos)
+            print(kos)
         return Response(
                     {"new_messages":recieved_messages}
                 )
