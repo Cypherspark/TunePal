@@ -21,8 +21,8 @@ class UserProfileSerilizer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
+    members = UserProfileSerilizer(many = True, context:{'request': context['request']})
     new_messages = serializers.SerializerMethodField()
-    members = UserProfileSerilizer(many = True)
     last_message = serializers.SerializerMethodField()
 
     def get_last_message(self, obj):
