@@ -19,7 +19,7 @@ def simple_chat(request, userparameter=None):
         if  userparameter == None:
                 c = Conversation.objects.filter(members__id = request.user.id)
                 conversation_list = ConversationSerializer(c, many=True, context={'request': request})
-                print("here-------")
+                
 
                 return Response(
                 {   
@@ -82,8 +82,6 @@ def simple_chat(request, userparameter=None):
         )
         message_list = MessageSerializer(M, many=True ,context={'request': request})
 
-
-        
     
         return Response(
             {   
@@ -102,9 +100,8 @@ def all_inboxes(request):
         conversations_set =  Conversation.objects.filter(members__id = request.user.id)
         recieved_messages = 0
         for c in conversations_set:
-            kos = list(Message.objects.filter(Q(conversation_id = c)).filter(is_seen=False).filter(~Q(sender_id__id=user.id)))
-            recieved_messages += len(kos)
-            print(kos)
+            unSeenMessages = list(Message.objects.filter(Q(conversation_id = c)).filter(is_seen=False).filter(~Q(sender_id__id=user.id)))
+            recieved_messages += len(unSeenMessages)
         return Response(
                     {"new_messages":recieved_messages}
                 )
