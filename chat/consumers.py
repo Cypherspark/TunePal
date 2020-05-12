@@ -15,15 +15,16 @@ class ChatConsumer(WebsocketConsumer):
     # conversation_id = Conversation.obects.all()[0]
     # userparameter = 0
     def connect(self):
+        self.user = self.scope["user"]
 
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
 
         # Join room group
-        # async_to_sync(self.channel_layer.group_add)(
-        #     self.room_group_name,
-        #     self.channel_name
-        # )
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name
+        )
 
 
         self.accept()
@@ -52,18 +53,9 @@ class ChatConsumer(WebsocketConsumer):
             )
             # GroupMessage.objects.create(sender_id =self.sender_id,conversation_id =self.conversation_id,text = message)
             c = Conversation.objects.get(id = self.room_name)
-            messege = Message.objects.create(sender_id =self.scope["user"],conversation_id = c ,text = messege,date = datetime.now() )
+            messege = Message.objects.create(sender_id =self.user,conversation_id = c ,text = messege,date = datetime.now() )
 
-            # users = c.members.all()
-            # user_list = ProfileSerilizer(users, many=True)
-
-
-
-
-
-
-        # print(m)
-
+  
 
     # Receive message from room group
     def chat_message(self, event):
