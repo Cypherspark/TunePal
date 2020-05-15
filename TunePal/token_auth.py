@@ -16,7 +16,7 @@ class TokenAuthMiddleware:
         if b'cookie' in headers:
             try:
                 token_name, token_key = headers[b'cookie'].decode().split()
-                if token_name == 'Token':
+                if token_name == 'Authorization:Token':
                     token = Token.objects.get(key=token_key)
                     scope['user'] = token.user
             except Token.DoesNotExist:
