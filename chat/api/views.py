@@ -19,7 +19,6 @@ def simple_chat(request, userparameter=None):
         if  userparameter == None:
                 c = Conversation.objects.filter(members__id = request.user.id)
                 conversation_list = ConversationSerializer(c, many=True, context={'request': request})
-                print("here-------")
 
                 return Response(
                 {   
