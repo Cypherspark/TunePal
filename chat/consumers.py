@@ -53,7 +53,7 @@ class ChatConsumer(WebsocketConsumer):
         )
         # GroupMessage.objects.create(sender_id =self.sender_id,conversation_id =self.conversation_id,text = message)
         c = Conversation.objects.get(id = self.room_name)
-        messege = Message.objects.create(sender_id =self.user,conversation_id = c ,text = messege,date = datetime.now() )
+        Message.objects.create(sender_id =self.user,conversation_id = c ,text = message,date = datetime.now() )
 
   
 
