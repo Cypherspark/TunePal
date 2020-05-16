@@ -103,11 +103,17 @@ class SuggestUserView(APIView):
         try:
             suggetionlist = Suggest.objects.get(s_current_user = request.user)
         except:
-            random.seed()
-            slist = random.sample(list(User.objects.exclude(id = request.user.id)),4)
-            suggetionlist = Suggest(s_current_user = request.user)
-            suggetionlist.save()
-            suggetionlist.s_users.add(*slist)
+            try:
+                random.seed()
+                slist = random.sample(list(User.objects.exclude(id = request.user.id)),4)
+                suggetionlist = Suggest(s_current_user = request.user)
+                suggetionlist.save()
+                suggetionlist.s_users.add(*slist)
+            except:
+                Response(
+                    {"message":"not enough users"},
+                    status=HTTP_500_INTERNAL_SERVER_ERROR
+                )
 
 
         serializer = SuggestInfoSerializer(suggetionlist, context={'request':request})
@@ -212,39 +218,45 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
 
 
         access_token = ""
-        token_info = sp_oauth.get_cached_token(user_id=user_id)
+        try:
+            token_info = sp_oauth.get_cached_token(user_id=user_id)
 
-        print ("Found cached token!")
-        access_token = token_info['access_token']
-        list = []
-        if access_token:
-            sp = spotipy.Spotify(access_token)
-            results = sp.current_user_top_tracks(
-            limit=50, offset=0)
+            print ("Found cached token!")
+            access_token = token_info['access_token']
+            list = []
+            if access_token:
+                sp = spotipy.Spotify(access_token)
+                results = sp.current_user_top_tracks(
+                limit=50, offset=0)
 
-            list_of_results = results["items"]
-            list_of_artist_names = []
-            list_of_song_names = []
-            list_of_albums = []
+                list_of_results = results["items"]
+                list_of_artist_names = []
+                list_of_song_names = []
+                list_of_albums = []
 
-            # task = save_songs.delay(list_of_results, request.user.id)
-            # context['task_id'] = task.id
-            # context['task_status'] = task.status
+                # task = save_songs.delay(list_of_results, request.user.id)
+                # context['task_id'] = task.id
+                # context['task_status'] = task.status
 
-            for result in list_of_results:
-                dict = {}
-                result["album"]
-                list_of_artist_names.append( result["artists"][0]["name"])
-                list_of_song_names.append(result["name"])
-                list_of_albums.append(result["album"]["name"])
-                dict["track_name"] = result["name"]
-                dict["artist_name"] = result["artists"][0]["name"]
-                dict["album"] =  result["album"]["name"]
-                dict["image_url"] = result["album"]["images"][0]['url']
-                dict["spotify_url"] = result["external_urls"]["spotify"]
-                list.append(dict)
-            list.append(context)
-        return Response(list)
+                for result in list_of_results:
+                    dict = {}
+                    result["album"]
+                    list_of_artist_names.append( result["artists"][0]["name"])
+                    list_of_song_names.append(result["name"])
+                    list_of_albums.append(result["album"]["name"])
+                    dict["track_name"] = result["name"]
+                    dict["artist_name"] = result["artists"][0]["name"]
+                    dict["album"] =  result["album"]["name"]
+                    dict["image_url"] = result["album"]["images"][0]['url']
+                    dict["spotify_url"] = result["external_urls"]["spotify"]
+                    list.append(dict)
+                list.append(context)
+            return Response(list)
+        except:
+            return Response({
+                        'message': 'token not found'
+                    },
+                    status=status.HTTP_404_NOT_FOUND)
 
 
 class User_Top_Artist(GenericAPIView):
@@ -259,24 +271,29 @@ class User_Top_Artist(GenericAPIView):
         user_id = user.id
         token_info = sp_oauth.get_cached_token(user_id)
 
-        access_token = token_info['access_token']
+        try:
+            access_token = token_info['access_token']
 
-        if access_token:
-            sp = spotipy.Spotify(access_token)
-            results = sp.current_user_top_artists(limit=50, offset=0, time_range='medium_term')
-            list_of_results = results['items']
-            temp = []
-            for result in list_of_results:
-                dict = {}
-                dict["artist_name"] = result["name"]
-                dict["image_url"] = result['images'][0]['url']
-                dict["spotify_url"] = result['external_urls']["spotify"]
-                if dict != {}:
-                    temp.append(dict)
+            if access_token:
+                sp = spotipy.Spotify(access_token)
+                results = sp.current_user_top_artists(limit=50, offset=0, time_range='medium_term')
+                list_of_results = results['items']
+                temp = []
+                for result in list_of_results:
+                    dict = {}
+                    dict["artist_name"] = result["name"]
+                    dict["image_url"] = result['images'][0]['url']
+                    dict["spotify_url"] = result['external_urls']["spotify"]
+                    if dict != {}:
+                        temp.append(dict)
 
-            return Response(temp)
-        else:
-            return Response("failed")
+                return Response(temp)
+            else:
+                return Response("failed")
+        except:
+            return Response({
+                        'message': 'token not found'
+                    },
 
 
 
