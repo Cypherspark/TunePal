@@ -33,11 +33,14 @@ class TokenAuthMiddlewareInstance:
 
     async def __call__(self, receive, send):
         headers = dict(self.scope['headers'])
-        if b'cookie' in headers:
-            token_name = headers[b'cookie'].decode().split()[2]
-            token_key = headers[b'cookie'].decode().split()[3]
-            if token_name == 'Authorization:Token':
-                self.scope['user'] = await get_user(token_key)      
+        try:
+            if b'cookie' in headers:
+                token_name = headers[b'cookie'].decode().split()[2]
+                token_key = headers[b'cookie'].decode().split()[3]
+                if token_name == 'Authorization:Token':
+                    self.scope['user'] = await get_user(token_key)
+        except:
+            self.scope['user'] = AnonymousUser()
         inner = self.inner(self.scope)
         return await inner(receive, send) 
 
