@@ -46,7 +46,7 @@ class ChatConsumer(WebsocketConsumer):
                 "date" : f"{datetime.now()}",
                 'type': 'chat_message',
                 'message': message,
-                'user':self.user
+                'user': self.user.nickname
             }
         )
         c = Conversation.objects.get(id = self.room_name)
