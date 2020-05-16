@@ -21,7 +21,7 @@ class TokenAuthMiddleware:
                     token = Token.objects.get(key=token_key)
                     scope['user'] = token.user
             except Token.DoesNotExist:
-        scope['user'] = AnonymousUser()
+                scope['user'] = AnonymousUser()
         return self.inner(scope)
 
 TokenAuthMiddlewareStack = lambda inner: TokenAuthMiddleware(AuthMiddlewareStack(inner))
