@@ -294,6 +294,7 @@ class User_Top_Artist(GenericAPIView):
             return Response({
                         'message': 'token not found'
                     },
+                    status=HTTP_404_NOT_FOUND)
 
 
 
