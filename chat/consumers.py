@@ -44,17 +44,16 @@ class ChatConsumer(WebsocketConsumer):
         # print(self.length)
         # Send message to room group
         print(message)
-        if self.room_name ==self.user_room_name:
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    'type': 'chat_message',
-                    'message': message
-                }
-            )
-            # GroupMessage.objects.create(sender_id =self.sender_id,conversation_id =self.conversation_id,text = message)
-            c = Conversation.objects.get(id = self.room_name)
-            messege = Message.objects.create(sender_id =self.user,conversation_id = c ,text = messege,date = datetime.now() )
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': message
+            }
+        )
+        # GroupMessage.objects.create(sender_id =self.sender_id,conversation_id =self.conversation_id,text = message)
+        c = Conversation.objects.get(id = self.room_name)
+        messege = Message.objects.create(sender_id =self.user,conversation_id = c ,text = messege,date = datetime.now() )
 
   
 
