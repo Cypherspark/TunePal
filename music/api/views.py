@@ -112,7 +112,7 @@ class SuggestUserView(APIView):
             except:
                 Response(
                     {"message":"not enough users"},
-                    status=HTTP_500_INTERNAL_SERVER_ERROR
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
 
@@ -294,7 +294,7 @@ class User_Top_Artist(GenericAPIView):
             return Response({
                         'message': 'token not found'
                     },
-                    status=HTTP_404_NOT_FOUND)
+                    status=status.HTTP_404_NOT_FOUND)
 
 
 
