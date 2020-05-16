@@ -151,6 +151,7 @@ def add_member(request,room_name,username):
     group = Conversation.objects.get(name = room_name)
     admin = group.admin.all()
     member = CustomUser.objects.get(username = username)
+    SendEmail(request,str(member.email),"friend.html",member.username,admin.username)
     if request.user in admin :
         group.members.add(member)
         group.save()
@@ -163,11 +164,11 @@ def remove_member(request,room_name,username):
         group.members.remove(member)
         group.save()
 
-def add_Admin (request,member_username):
+def add_Admin (request,member_username,conv_name):
     user  = get_object_or_404(CustomUser,id = request.user.id )
     member = get_object_or_404(CustomUser,username = member_username )
 
-    group = Conversation.objects.get(name = 'football')
+    group = Conversation.objects.get(name = conv_name)
     admin = group.admin.all()
     if user in admin:
         if member in group.members.all() :
@@ -178,11 +179,11 @@ def add_Admin (request,member_username):
             return HttpResponse("this user not in members")
 
     return HttpResponse(admin)
-def remove_Admin (request,member_username):
+def remove_Admin (request,member_username,conv_name):
     user  = get_object_or_404(CustomUser,id = request.user.id )
     member = get_object_or_404(CustomUser,username = member_username )
 
-    group = Conversation.objects.get(name = 'football')
+    group = Conversation.objects.get(name = conv_name)
     admin = group.admin.all()
     if user in admin:
         if member in group.members.all() :
@@ -193,6 +194,49 @@ def remove_Admin (request,member_username):
             return HttpResponse("this user not in members")
 
     return HttpResponse(admin)
+def online_user(request,conv_name):
+    group = Conversation.objects.get(name = conv_name)
+    online_list = []
+    for user in group.members.all():
+        if user.status == "online":
+            online_list.append(user)
+    return Response(online_list)
+def SendEmail(request,recepient,html,usernameofn_f,usernameofowner):
+    if request.method == 'GET':
+        subject = 'Welcome to TunePal'
+        html_message = render_to_string(html,{'usernameofn_f':usernameofn_f,'usernameofowner' :usernameofowner})
+        message = strip_tags(html_message)
+        message1 =EmailMultiAlternatives(subject,
+            message, EMAIL_HOST_USER, [recepient])
+        message1.attach_alternative(html_message, 'text/html')
+        message1.send()
+        return HttpResponse('done')
+    else:
+        return HttpResponse('fialed')
+def left_group(request,conv_name,username):
+    member = CustomUser.objects.get(user = request.user)
+    group = Conversation.objects.get(name = conv_name)
+    group.members.remove(member)
+    group.save()
+    return Response("done")
+def edit_message(request,old_message,conv_name,new_message):
+    group = Conversation.objects.get(name = conv_name)
+    message = Message.objects.get(conversation_id = group,text = old_message)
+    message.text = new_message
+    message.save()
+    return Response("done")
+def set_pin_message(request,message,conv_name):
+    group = Conversation.objects.get(name = conv_name)
+    group.pin_message = message1
+    group.save()
+    return Response(group.pin_message)
+
+def pin_message(request,conv_name):
+    group = Conversation.objects.get(name = conv_name)
+    return Response(group.pin_message)
+
+
+
 
 # @swagger_auto_schema(tags=['Match'],request.usersponses={200: openapi.Response('ok')})
 # @csrf_exempt
