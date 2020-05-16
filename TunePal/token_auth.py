@@ -37,7 +37,7 @@ class TokenAuthMiddlewareInstance:
             token_name = headers[b'cookie'].decode().split()[2]
             token_key = headers[b'cookie'].decode().split()[3]
             if token_name == 'Authorization:Token':
-                scope['user'] = await get_user(token_key)      
+                self.scope['user'] = await get_user(token_key)      
         inner = self.inner(self.scope)
         return await inner(receive, send) 
 
