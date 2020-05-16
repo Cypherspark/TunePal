@@ -238,20 +238,25 @@ class quiz(GenericAPIView):
     def get(self,request):
         questions = []
         random.seed()
-        question = random.choice(self.list1)
-        i = 0;
-        while question.quiz_id == "show" and i< len(self.list1)-1:
+        try:
             question = random.choice(self.list1)
-            i+=1
-            if i == len(self.list1)-1:
-                for q in QuizImage.objects.all():
-                    q.quiz_id == ""
-                    i = 0;
-                    question.quiz_id = ""
-        question.quiz_id = "show"
-        serializer = Imagequizserializer(question)
-        questions.append(serializer.data)
-        return Response(questions)
+            i = 0;
+            while question.quiz_id == "show" and i< len(self.list1)-1:
+                question = random.choice(self.list1)
+                i+=1
+                if i == len(self.list1)-1:
+                    for q in QuizImage.objects.all():
+                        q.quiz_id == ""
+                        i = 0;
+                        question.quiz_id = ""
+            question.quiz_id = "show"
+            serializer = Imagequizserializer(question)
+            questions.append(serializer.data)
+            return Response(questions)
+        except IndexError:
+            return Response({"message":"no question is generated"},
+                            status=status.HTTP_404_NOT_FOUND)
+
 
 class checkanswer(GenericAPIView):
      dict = {}
