@@ -77,7 +77,6 @@ class SpotifyGetTokenView(APIView):
         user_id = user.id
         token_info = sp_oauth.get_cached_token(user_id)
         if token_info:
-            print ("Found cached token!fildshcilk")
             access_token = token_info['access_token']
         else:
             url = request.build_absolute_uri()
@@ -110,15 +109,13 @@ class SuggestUserView(APIView):
                 suggetionlist.save()
                 suggetionlist.s_users.add(*slist)
             except:
-                Response(
+                return Response(
                     {"message":"not enough users"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
+                    )
 
 
         serializer = SuggestInfoSerializer(suggetionlist, context={'request':request})
-
-
 
         return Response(
                 serializer.data,
@@ -220,9 +217,8 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
         access_token = ""
         try:
             token_info = sp_oauth.get_cached_token(user_id=user_id)
-
-            print ("Found cached token!")
             access_token = token_info['access_token']
+            print ("Found cached token!")
             list = []
             if access_token:
                 sp = spotipy.Spotify(access_token)
