@@ -12,14 +12,15 @@ class TokenAuthMiddleware:
         self.inner = inner
 
     def __call__(self, scope):
-        # headers = dict(scope['headers'])
-        # if b'cookie' in headers:
-        #     try:
-        #         token_name, token_key = headers[b'cookie'].decode().split()
-        #         if token_name == 'Authorization:Token':
-        #             token = Token.objects.get(key=token_key)
-        #             scope['user'] = token.user
-        #     except Token.DoesNotExist:
+        headers = dict(scope['headers'])
+        if b'cookie' in headers:
+            try:
+                token_name = headers[b'cookie'].decode().split()[2]
+                token_key = headers[b'cookie'].decode().split()[3]
+                if token_name == 'Authorization:Token':
+                    token = Token.objects.get(key=token_key)
+                    scope['user'] = token.user
+            except Token.DoesNotExist:
         scope['user'] = AnonymousUser()
         return self.inner(scope)
 
