@@ -9,11 +9,7 @@ from rest_framework import serializers
 from datetime import datetime
 
 class ChatConsumer(WebsocketConsumer):
-    # def __init__(self):
-    user_room_name= 'football'
-    sender_id = User
-    # conversation_id = Conversation.obects.all()[0]
-    # userparameter = 0
+    
     def connect(self):
         
         self.user = self.scope["user"]
@@ -41,18 +37,17 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['text']
-        # print(self.length)
+       
         # Send message to room group
         print(message)
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
-                "date" : datetime.now(),
+                "date" : f"{datetime.now()}",
                 'type': 'chat_message',
                 'message': message
             }
         )
-        # GroupMessage.objects.create(sender_id =self.sender_id,conversation_id =self.conversation_id,text = message)
         c = Conversation.objects.get(id = self.room_name)
         Message.objects.create(sender_id =self.user,conversation_id = c ,text = message,date = datetime.now() )
 
@@ -61,11 +56,9 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from room group
     def chat_message(self, event):
         message = event['message']
-        # GroupMessage.objects.create(sender_id,conversation_id,message)
+        date = event['date']
         # Send message to WebSocket
         self.send(text_data=json.dumps({
-            "date" : datetime.now(),
+            "date" : date,
             'message': message
-        }))
-    # def a(self):
-    #     print("sedhsioahoiguk")
+        }))    
