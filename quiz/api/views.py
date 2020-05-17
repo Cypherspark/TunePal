@@ -128,7 +128,7 @@ class question(APIView):
                     # #             album.append(res['tracks']['items'][i]['track']['album']['name'])
                     list1 = []
 
-                    with open('/home/tunepal/tunepal.pythonanywhere.com/quiz/api/song.csv', newline='') as csvfile:
+                    with open('/home/mesut/tunepal/TunePal/quiz/api/song.csv', newline='') as csvfile:
                          spamreader = csv.reader(csvfile, quotechar=',')
                          for row in spamreader:
                              list1.append(row)
