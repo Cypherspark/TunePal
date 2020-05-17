@@ -43,7 +43,7 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
-                "date" : datetime.now(),
+                "date" : f"{datetime.now()}",
                 'type': 'chat_message',
                 'message': message,
                 'username': self.user.username,
@@ -59,7 +59,8 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from room group
     def chat_message(self, event):
         message = event['message']
-        date = event['date']
+        date1 = event['date']
+        date = date1.replace(" ", "T") + "Z"
         username = event['username']
         nickname = event['nickame']
         is_me = (username == self.user.username)
