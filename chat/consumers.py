@@ -62,7 +62,7 @@ class ChatConsumer(WebsocketConsumer):
         date = event['date']
         username = event['username']
         nickname = event['nickame']
-        is_me = (user == self.user.username)
+        is_me = (username == self.user.username)
         # Send message to WebSocket
         self.send(text_data=json.dumps({
             "conversation_id": self.room_name,
