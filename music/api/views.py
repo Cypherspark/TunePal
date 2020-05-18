@@ -44,7 +44,7 @@ from TunePal.settings import EMAIL_HOST_USER
 
 SPOTIPY_CLIENT_ID = 'c42e107d3ae641e4af9e08e7d7a55b9b'
 SPOTIPY_CLIENT_SECRET = 'cd1e4e0aa3684e34ae12b313ebea1074'
-SPOTIPY_REDIRECT_URI = 'http://mytunepal.ir/spotifyresult/'
+SPOTIPY_REDIRECT_URI = 'https://mytunepal.ir/spotifyresult/'
 SCOPE = 'user-top-read user-read-currently-playing user-read-playback-state user-library-read'
 CACHE = '.spotipyoauthcache'
 
