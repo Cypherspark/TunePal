@@ -54,7 +54,6 @@ urlpatterns = [
     path('accounts/', include('rest_framework.urls')),
     path('quiz/', include('quiz.api.urls')),
     url(r'^.*/', index, name='base')
-]
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
