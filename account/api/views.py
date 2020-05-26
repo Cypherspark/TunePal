@@ -222,8 +222,8 @@ class UserInfoView(APIView):
 class UserAvatarView(APIView):
     @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserAvatarSerializer)})
     @permission_classes([IsAuthenticated])
-    def get(self, request):
-        user = get_object_or_404(CustomUser,id = request.user.id)
+    def get(self, request ):
+        user = get_object_or_404(CustomUser,username = request.data["username"] )
         serializer = UserAvatarSerializer(user.user_avatar,many =True)
         return Response(serializer.data)
 
