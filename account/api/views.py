@@ -229,8 +229,6 @@ class UserAvatarView(APIView):
 
 class UpdateImage(APIView):
     def put(self, request):
-        print(request.data['user_avatar'])
-        print(request.user.id)
         user = get_object_or_404(CustomUser, id=request.user.id)
         image = Avatar.objects.create(image = request.data['user_avatar'])
         user.user_avatar.add(image)
