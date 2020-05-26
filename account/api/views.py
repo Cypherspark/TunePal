@@ -218,9 +218,26 @@ class UserInfoView(APIView):
 
 
 
+
 class UserAvatarView(APIView):
     @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserAvatarSerializer)})
     @permission_classes([IsAuthenticated])
-    def get(self, request):
-        serializer = UserAvatarSerializer(request.user,context={"request":request})
+    def get(self, request ):
+        user = get_object_or_404(CustomUser,username = request.data["username"] )
+        serializer = UserAvatarSerializer(user.user_avatar,many =True)
         return Response(serializer.data)
+
+class UpdateImage(APIView):
+    def put(self, request):
+        user = get_object_or_404(CustomUser, id=request.user.id)
+        image = Avatar.objects.create(image = request.data['user_avatar'])
+        user.user_avatar.add(image)
+        user.save()
+        return Response("done")
+class RemoveImage(APIView):
+    def get(self,request):
+        user = get_object_or_404(CustomUser, id=request.user.id)
+        image = Avatar.objects.get(id = int(request.data['id']))
+        user.user_avatar.remove(image)
+        user.save()
+        return Response("done")

@@ -24,6 +24,11 @@ from drf_yasg import openapi
 
 from django.conf import settings
 from django.conf.urls.static import static
+from core.views import index
+import os
+from django.views.generic import TemplateView
+
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -39,16 +44,37 @@ schema_view = get_schema_view(
 )
 
 
+files_in_root = []
+for file in os.listdir(os.path.join(settings.BASE_DIR, '../TunePal-Front/build')):
+    files_in_root.append(file)
+precache_manifest_path = [f for f in files_in_root if ("precache-manifest" in f)][0]
+
+    
+
 urlpatterns = [
+    path('asset-manifest.json', (TemplateView.as_view(template_name="asset-manifest.json",
+                                                      content_type='application/manifest+json', )),
+         name='asset-manifest.json'),
+    path('service-worker.js', (TemplateView.as_view(template_name="service-worker.js",
+                                                    content_type='application/javascript', )),
+         name='service-worker.js'),
+    path(precache_manifest_path, (
+        TemplateView.as_view(template_name=precache_manifest_path,
+                             content_type='application/javascript', )),
+         name=precache_manifest_path),
+    path("", index, name="index"),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
-    path('account/', include('account.api.urls')),
-    path('chat/', include('chat.api.urls')),
-    path('spotify/', include('music.api.urls')),
-    path('accounts/', include('rest_framework.urls')),
-    path('quiz/', include('quiz.api.urls')),
+    path('api/account/', include('account.api.urls')),
+    path('api/chat/', include('chat.api.urls')),
+    path('api/spotify/', include('music.api.urls')),
+    path('api/accounts/', include('rest_framework.urls')),
+    path('api/quiz/', include('quiz.api.urls')),
+    url(r'^.*/', index, name='base'),
+    url(r'^$', index, name='base'),
+    url(r'^(?:.*)/?$', index, name='base'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

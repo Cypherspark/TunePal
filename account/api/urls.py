@@ -26,11 +26,17 @@ urlpatterns = [
     url(r'^get_user_avatar/$',
         views.UserAvatarView.as_view(),
         name='user-avatar'),
-    
+
     url(r'^logout/$',
         views.LogoutView.as_view(),
         name='logout'),
-    
+    url(r'^addimage/$',
+        views.UpdateImage.as_view(),
+        name='addimage'),
+    url(r'^removeimage/$',
+        views.RemoveImage.as_view(),
+        name='removeimage'),
+
 
 ]
 if settings.DEBUG:

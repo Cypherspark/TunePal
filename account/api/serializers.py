@@ -1,6 +1,6 @@
 from datetime import date
 from rest_framework import serializers
-from account.models import CustomUser as User
+from account.models import CustomUser as User,Avatar
 from account.models import UserLocation
 from TunePal import settings
 
@@ -44,10 +44,10 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname','biography','interests','user_avatar']
+        fields = ['username', 'email', 'password', 'birthdate', 'gender', 'nickname','biography','interests']
         extra_kwargs = {'biography':  {'allow_null': True, 'required': False},
         'interests': {'allow_null': True, 'required': False},
-        'user_avatar':{'required': False}
+
         }
 
     def validate_username(self, value):
@@ -126,7 +126,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     # serializers.SerializerMethodField()
     # interest = UserInterestsSerializer(read_only =True)
     location = LocationSerializer(read_only =True)
-    
+
     # def get_user_avatar(self, user):
     #     photo_url = user.user_avatar
     #     return request.build_absolute_uri(photo_url)
@@ -137,11 +137,10 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 
 
-  
 class UserAvatarSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ["user_avatar"]
+        model = Avatar
+        fields = ["image"]
 
 
 # class UserInterestsSerializer(serializers.ModelSerializer):

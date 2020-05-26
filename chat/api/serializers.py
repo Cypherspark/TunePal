@@ -21,27 +21,38 @@ class UserProfileSerilizer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
+    members = UserProfileSerilizer(many = True,required=False)
     new_messages = serializers.SerializerMethodField()
-    members = UserProfileSerilizer(many = True)
     last_message = serializers.SerializerMethodField()
 
     def get_last_message(self, obj):
-        user = self.context['request'].user
-        last_message = Messages.objects.filter(Q(conversation_id = obj))[-1]
-        serilizer = MessageSerializer(last_message)
-        return serilizer
+        request = self.context['request']
+        user = request.user
+        try:
+            last_messageop = Message.objects.filter(Q(conversation_id = obj))[0]
+            serilizer = MessageSerializer(last_messageop,context={'request': request})
+            data = {"nickname" :serilizer.data['sender_id']['nickname'],
+                    "text": serilizer.data["text"]        
+                    }
+        except Exception as e:
+            print(str(e))
+            serilizer = {} 
+            data = serilizer 
+        return data
 
     def get_new_messages(self, obj):
         user = self.context['request'].user
-        new_recieved_messages = len(Messages.objects.filter(Q(conversation_id = obj)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
+        new_recieved_messages = len(Message.objects.filter(Q(conversation_id = obj)).filter(~Q(sender_id=user)).filter(Q(is_seen=False)))
         return new_recieved_messages
 
     class Meta(object):
         model = Conversation
-        fields = ['members','id','is_group']
-        extra_kwargs = {'is_group':  {'required': False}}
+        fields = ['members','id','is_group','new_messages','last_message']
+        extra_kwargs = {'is_group':  {'required': False},'new_messages':  {'required': False},'last_message':{'required': False}}
         
-    
+
+
+
 class MessageSerializer(serializers.ModelSerializer):
     sender_id = UserProfileSerilizer(required=False)
     is_client = serializers.SerializerMethodField()
@@ -51,7 +62,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Message
-        fields = ["sender_id" ,"conversation_id", "text" ,"date" , "is_client"]
+        fields = ["sender_id" ,"conversation_id", "text" ,"date" , "is_client",'is_seen']
         extra_kwargs = {'is_client':  {'required': False},
                         'date':  {'required': False},
                         'sender_id':  {'required': False},

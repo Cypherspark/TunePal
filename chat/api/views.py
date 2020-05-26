@@ -19,7 +19,6 @@ def simple_chat(request, userparameter=None):
         if  userparameter == None:
                 c = Conversation.objects.filter(members__id = request.user.id)
                 conversation_list = ConversationSerializer(c, many=True, context={'request': request})
-                print("here")
 
                 return Response(
                 {   
@@ -34,19 +33,28 @@ def simple_chat(request, userparameter=None):
                 # users = selected_conv.members.all()
                 M = Message.objects.filter(conversation_id = int(userparameter)).all()
                 message_list = MessageSerializer(M, many=True, context={'request': request})
-                for message in message_list:
+                for message in M:
                     if message.sender_id.id != request.user.id:
                         message.is_seen = True
-            except :
-                M = []
-                users = []
+                        message.save()
 
-            return Response(
+                return Response(
                 {   
                     # "users": user_list,
                     "messages": message_list.data,
                 }
             )
+            except Exception as e:
+                print(str(e))
+                message_list = []
+                users = []
+
+                return Response(
+                    {   
+                        # "users": user_list,
+                        "messages": message_list
+                    }
+                )
 
 
 
@@ -90,10 +98,12 @@ def simple_chat(request, userparameter=None):
 def all_inboxes(request):
     if request.method == 'GET':
         user = request.user
+        conversations_set =  Conversation.objects.filter(members__id = request.user.id)
         recieved_messages = 0
-        for c in u.conversations_set.all():
-            recieved_messages += len(Messages.objects.filter(Q(conversation_id = c)).filter(~Q(sender_id=u)).filter(Q(is_seen=False)))
- 
+        for c in conversations_set:
+            kos = list(Message.objects.filter(Q(conversation_id = c)).filter(is_seen=False).filter(~Q(sender_id__id=user.id)))
+            recieved_messages += len(kos)
+            print(kos)
         return Response(
                     {"new_messages":recieved_messages}
                 )
