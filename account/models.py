@@ -22,6 +22,9 @@ class UserLocation(models.Model):
 #         return title
 
 
+class Avatar(models.Model):
+    image = models.ImageField(upload_to="images/", blank=True,null = True)
+
 class CustomUser(AbstractUser):
     first_name = None
     last_name = None
@@ -43,7 +46,7 @@ class CustomUser(AbstractUser):
     birthdate = models.DateField(null=True)
     biography = models.CharField(_('biography'), max_length=500, blank=True, null=True)
     interests = models.CharField(_('interests'), max_length=500, blank=True, null=True)
-    user_avatar = models.ImageField(upload_to="images/", blank=True)
+    user_avatar = models.ManyToManyField(Avatar, blank = True)
     spotify_token = models.CharField(_('spotify token'), max_length=700, blank=True, null=True)
     artists = models.ManyToManyField(Artist, default=None,blank=True)
     tracks = models.ManyToManyField(Music,blank=True)
@@ -105,7 +108,7 @@ class FriendshipRequest(models.Model):
 class Friend(models.Model):
     users = models.ManyToManyField(CustomUser,related_name="friends",blank=True)
     current_user = models.ForeignKey(CustomUser, related_name="owner", null=True, on_delete=models.CASCADE)
-   
+
     @classmethod
     def make_friend(cls, current_user, new_friend):
         friend, created = cls.objects.get_or_create(
