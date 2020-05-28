@@ -21,7 +21,7 @@ class UserProfileSerilizer(serializers.ModelSerializer):
     def get_user_avatar(self, obj ):
         user = self.context['request'].user
         serializer = UserAvatarSerializer(user.user_avatar,many = True)
-        return Response(serializer.data[-1])
+        return serializer.data[-1]
 
     def get_to_show(self, obj):
         return not obj == self.context['request'].user
