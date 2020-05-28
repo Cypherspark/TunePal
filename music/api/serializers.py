@@ -103,7 +103,7 @@ class UserInfoSerializer1(serializers.ModelSerializer):
             distance = R * c
         except:
             distance = None
-        return distinct
+        return distance
 
     class Meta:
         model = User
