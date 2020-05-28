@@ -140,7 +140,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 class UserAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Avatar
-        fields = ["image"]
+        fields = ["image","id"]
 
 
 # class UserInterestsSerializer(serializers.ModelSerializer):
