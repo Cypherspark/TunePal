@@ -16,7 +16,7 @@ class UserAvatarSerializer(serializers.ModelSerializer):
 
 class UserProfileSerilizer(serializers.ModelSerializer):
     to_show = serializers.SerializerMethodField()
-    user_avatar = serilizers.SerializerMethodField()
+    user_avatar = serializers.SerializerMethodField()
 
     def get_user_avatar(self, obj ):
         user = self.context['request'].user.username
