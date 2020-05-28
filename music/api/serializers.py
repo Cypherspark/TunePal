@@ -7,6 +7,9 @@ from random import seed
 from random import randint
 from datetime import date
 
+from math import sin, cos, sqrt, atan2, radians
+
+
 seed()
 
 class UserAvatarSerializer1(serializers.ModelSerializer):
@@ -38,12 +41,21 @@ class UserInfoSerializer2(serializers.ModelSerializer):
             age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
         except:
             age = 20
-        return age 
-        
+        return age
+
 
     def get_location(self, obj):
-        return hash(obj.username)%100
-	
+        dlon = self.context['request'].user.location.longitude - obj.location.longitude
+        dlat = self.context['request'].user.location.latitude - obj.location.latitude
+        R = 6373.0
+
+
+        a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        distance = R * c
+        return distinct
+
     class Meta:
         model = User
         fields = ["gender","location","nickname","username","user_avatar","age"]
@@ -57,7 +69,7 @@ class UserInfoSerializer1(serializers.ModelSerializer):
 
     def get_pendding(self, obj):
         try:
-            relation = FriendshipRequest.objects.get(to_user=obj, from_user=self.context['request'].user)  
+            relation = FriendshipRequest.objects.get(to_user=obj, from_user=self.context['request'].user)
             status = True
         except:
             status = False
@@ -72,12 +84,20 @@ class UserInfoSerializer1(serializers.ModelSerializer):
             age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
         except:
             age = 20
-        return age 
-        
+        return age
+
 
     def get_location(self, obj):
-        return hash(obj.username)%100
-	
+        dlon = self.context['request'].user.location.longitude - obj.location.longitude
+        dlat = self.context['request'].user.location.latitude - obj.location.latitude
+        R = 6373.0
+
+        a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        distance = R * c
+        return distinct
+
     class Meta:
         model = User
         fields = ["gender","location","nickname","username","user_avatar","age",'pendding']

@@ -11,10 +11,24 @@ def calculateAge(birthDate):
     age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
     return age
 
+
+class SetUserAvatarSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
+    class Meta:
+        model = Avatar
+        fields = ["image"]
+
+
 class UserAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Avatar
         fields = ["image","id"]
+
+
+class SetUserAvatarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Avatar
+        fields = ["image"]
 
 class UserSignupSerializer(serializers.ModelSerializer):
 
