@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import CustomUser as User
+from account.models import CustomUser as User,Avatar
 from ..models import Message, Conversation
 from TunePal import settings
 from datetime import datetime
@@ -8,8 +8,20 @@ from django.db.models import Q
 
 
 
+class UserAvatarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Avatar
+        fields = ["image","id"]
+
+
 class UserProfileSerilizer(serializers.ModelSerializer):
     to_show = serializers.SerializerMethodField()
+    user_avatar = serilizers.SerializerMethodField()
+
+    def get_user_avatar(self, obj ):
+        user = self.context['request'].user.username
+        serializer = UserAvatarSerializer(user.user_avatar,many = True)
+        return Response(serializer.data[-1])
 
     def get_to_show(self, obj):
         return not obj == self.context['request'].user
@@ -32,12 +44,12 @@ class ConversationSerializer(serializers.ModelSerializer):
             last_messageop = Message.objects.filter(Q(conversation_id = obj))[0]
             serilizer = MessageSerializer(last_messageop,context={'request': request})
             data = {"nickname" :serilizer.data['sender_id']['nickname'],
-                    "text": serilizer.data["text"]        
+                    "text": serilizer.data["text"]
                     }
         except Exception as e:
             print(str(e))
-            serilizer = {} 
-            data = serilizer 
+            serilizer = {}
+            data = serilizer
         return data
 
     def get_new_messages(self, obj):
@@ -49,7 +61,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         model = Conversation
         fields = ['members','id','is_group','new_messages','last_message']
         extra_kwargs = {'is_group':  {'required': False},'new_messages':  {'required': False},'last_message':{'required': False}}
-        
+
 
 
 
@@ -80,7 +92,7 @@ class MessageSerializer(serializers.ModelSerializer):
         u.save()
         return u
 
-     
+
     #def create(self, validated_data):
     #     user =  self.context['request'].user
     #     u = Conversation(name = user,
@@ -88,4 +100,3 @@ class MessageSerializer(serializers.ModelSerializer):
     #             )
     #     u.save()
     #     return u
- 
