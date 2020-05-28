@@ -21,7 +21,11 @@ class UserProfileSerilizer(serializers.ModelSerializer):
     def get_user_avatar(self, obj ):
         user = self.context['request'].user
         serializer = UserAvatarSerializer(user.user_avatar,many = True)
-        return serializer.data[-1]
+        try:
+            avatar = serializer.data[-1]
+        except:
+            avatar = None
+        return avatar
 
     def get_to_show(self, obj):
         return not obj == self.context['request'].user
