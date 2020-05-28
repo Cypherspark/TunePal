@@ -247,7 +247,7 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
                     dict["spotify_url"] = result["external_urls"]["spotify"]
                     dict["preview_url"] = result["preview_url"]
                     if dict != {}:
-                        temp.append(dict)
+                        list.append(dict)
                 list.append(context)
             return Response(list)
         except:
