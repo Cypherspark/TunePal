@@ -45,17 +45,21 @@ class UserInfoSerializer2(serializers.ModelSerializer):
 
 
     def get_location(self, obj):
-        dlon = self.context['request'].user.location.longitude - obj.location.longitude
-        dlat = self.context['request'].user.location.latitude - obj.location.latitude
-        R = 6373.0
+        try:
+            dlon = self.context['request'].user.location.longitude - obj.location.longitude
+            dlat = self.context['request'].user.location.latitude - obj.location.latitude
+            R = 6373.0
 
 
-        a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
-        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+            c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-        distance = R * c
+            distance = R * c
+        except:
+            distance = None
+
         return distinct
-
+            
     class Meta:
         model = User
         fields = ["gender","location","nickname","username","user_avatar","age"]
@@ -88,14 +92,17 @@ class UserInfoSerializer1(serializers.ModelSerializer):
 
 
     def get_location(self, obj):
-        dlon = self.context['request'].user.location.longitude - obj.location.longitude
-        dlat = self.context['request'].user.location.latitude - obj.location.latitude
-        R = 6373.0
+        try:
+            dlon = self.context['request'].user.location.longitude - obj.location.longitude
+            dlat = self.context['request'].user.location.latitude - obj.location.latitude
+            R = 6373.0
 
-        a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
-        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+            c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-        distance = R * c
+            distance = R * c
+        except:
+            distance = None
         return distinct
 
     class Meta:
