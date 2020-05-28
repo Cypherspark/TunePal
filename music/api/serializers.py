@@ -12,7 +12,7 @@ seed()
 class UserAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Avatar
-        fields = ["image"]
+        fields = ["image","id"]
 
 
 class LocationSerializer(serializers.ModelSerializer):
