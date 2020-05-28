@@ -9,7 +9,7 @@ from datetime import date
 
 seed()
 
-class UserAvatarSerializer(serializers.ModelSerializer):
+class UserAvatarSerializer1(serializers.ModelSerializer):
     class Meta:
         model = Avatar
         fields = ["image","id"]
@@ -29,7 +29,7 @@ class UserTopSongserialize(serializers.ModelSerializer):
 class UserInfoSerializer2(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
-    user_avatar = UserAvatarSerializer(many = True)
+    user_avatar = UserAvatarSerializer1(many = True)
 
     def get_age(self, obj):
         today = date.today()
@@ -53,7 +53,7 @@ class UserInfoSerializer1(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
     pendding = serializers.SerializerMethodField()
-    user_avatar = UserAvatarSerializer(many = True)
+    user_avatar = UserAvatarSerializer1(many = True)
 
     def get_pendding(self, obj):
         try:
