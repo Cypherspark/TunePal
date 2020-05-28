@@ -122,7 +122,7 @@ class LocationSerializer(serializers.ModelSerializer):
         return ulocation
 
 class UserInfoSerializer(serializers.ModelSerializer):
-    # user_avatar = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    user_avatar = UserAvatarSerializer(many = True)
     # serializers.SerializerMethodField()
     # interest = UserInterestsSerializer(read_only =True)
     location = LocationSerializer(read_only =True)

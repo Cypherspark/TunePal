@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from music.models import Music
 from account.models import CustomUser as User
-from account.models import Friend, Suggest, UserLocation, FriendshipRequest
+from account.models import Friend, Suggest, UserLocation, FriendshipRequest, Avatar
 from TunePal import settings
 from random import seed
 from random import randint
@@ -9,7 +9,10 @@ from datetime import date
 
 seed()
 
-
+class UserAvatarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Avatar
+        fields = ["image"]
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -26,6 +29,7 @@ class UserTopSongserialize(serializers.ModelSerializer):
 class UserInfoSerializer2(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
+    user_avatar = UserAvatarSerializer(many = True)
 
     def get_age(self, obj):
         today = date.today()
@@ -49,6 +53,7 @@ class UserInfoSerializer1(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
     pendding = serializers.SerializerMethodField()
+    user_avatar = UserAvatarSerializer(many = True)
 
     def get_pendding(self, obj):
         try:
