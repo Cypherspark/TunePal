@@ -6,6 +6,10 @@ from TunePal import settings
 from random import seed
 from random import randint
 from datetime import date
+import json
+from django.http import JsonResponse
+import math
+import geopy.distance
 
 from math import sin, cos, sqrt, atan2, radians
 
@@ -45,24 +49,20 @@ class UserInfoSerializer2(serializers.ModelSerializer):
 
 
     def get_location(self, obj):
-        try:
-            dlon = self.context['request'].user.location.longitude - obj.location.longitude
-            dlat = self.context['request'].user.location.latitude - obj.location.latitude
-            R = 6373.0
-
-
-            a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
-            c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-            distance = R * c
-        except:
+        if hasattr(obj.location, 'longitude') and hasattr(self.context['request'].user.location, 'longitude')  :
+            coords_1 = (self.context['request'].user.location.latitude, self.context['request'].user.location.longitude)
+            coords_2 = (obj.location.latitude, obj.location.longitude)
+            distance = round(geopy.distance.vincenty(coords_1, coords_2).km)
+        else:
             distance = None
+        return distance
 
-        return distinct
-            
+
     class Meta:
         model = User
         fields = ["gender","location","nickname","username","user_avatar","age"]
+
+
 
 
 class UserInfoSerializer1(serializers.ModelSerializer):
@@ -91,19 +91,16 @@ class UserInfoSerializer1(serializers.ModelSerializer):
         return age
 
 
-    def get_location(self, obj):
-        try:
-            dlon = self.context['request'].user.location.longitude - obj.location.longitude
-            dlat = self.context['request'].user.location.latitude - obj.location.latitude
-            R = 6373.0
-
-            a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
-            c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-            distance = R * c
-        except:
+    def get_location(self, obj) :
+        if hasattr(obj.location, 'longitude') and hasattr(self.context['request'].user.location, 'longitude')  :
+            coords_1 = (self.context['request'].user.location.latitude, self.context['request'].user.location.longitude)
+            coords_2 = (obj.location.latitude, obj.location.longitude)
+            distance = round(geopy.distance.vincenty(coords_1, coords_2).km)
+        else:
             distance = None
         return distance
+
+
 
     class Meta:
         model = User
