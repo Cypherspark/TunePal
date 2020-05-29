@@ -9,7 +9,7 @@ from channels.db import database_sync_to_async
 from datetime import datetime
 
 @database_sync_to_async
-def get_message(message_ID):
+def make_seen(message_ID):
     messageObject = Message.objects.get(message_ID)
     messageObject.is_seen = True
     messageObject.save()
