@@ -23,7 +23,7 @@ class UserLocation(models.Model):
 
 
 class Avatar(models.Model):
-    image = models.ImageField(upload_to="images/", blank=True ,null = False)
+    image = models.ImageField(upload_to="images/", blank=True ,null = True)
 
 class CustomUser(AbstractUser):
     first_name = None
