@@ -124,9 +124,9 @@ def friends(request,id,sp):
                      f= Friend.objects.create(username = user.username,nickname = user.nickname,gender = user.gender,spotify_token = user.spotify_token)
                      Activeuser.friends.add(f)
 
-def SendEmail(request,recepient,html,usernameofn_f,usernameofowner):
+def SendEmail(request,recepient,html,usernameofn_f,usernameofowner,subject):
     if request.method == 'GET':
-        subject = 'Welcome to TunePal'
+        subject = subject
         html_message = render_to_string(html,{'usernameofn_f':usernameofn_f,'usernameofowner' :usernameofowner})
         message = strip_tags(html_message)
         message1 =EmailMultiAlternatives(subject,
