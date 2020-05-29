@@ -96,6 +96,20 @@ class MessageSerializer(serializers.ModelSerializer):
         u.save()
         return u
 
+class FriendInfoSerializer(serializers.ModelSerializer):
+    user_avatar = serializers.SerializerMethodField()
+
+    def get_user_avatar(self, obj ):
+        user = self.context['request'].user
+        serializer = UserAvatarSerializer(user.user_avatar,many = True)
+        try:
+            avatar = serializer.data[-1]
+        except:
+            avatar = None
+        return avatar
+    class Meta:
+        model = User
+        fields = ["username","nickname","user_avatar"]
 
     #def create(self, validated_data):
     #     user =  self.context['request'].user
