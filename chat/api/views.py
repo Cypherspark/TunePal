@@ -34,7 +34,7 @@ def simple_chat(request, userparameter=None):
                 userparameter = '/'.join(e for e in userparameter if e.isalnum())
                 selected_conv = Conversation.objects.filter(id=int(userparameter))[0]
                 # users = selected_conv.members.all()
-                M = Message.objects.filter(conversation_id = int(userparameter)).order_by('-date')
+                M = Message.objects.filter(conversation_id = int(userparameter)).order_by('date')
                 message_list = MessageSerializer(M, many=True, context={'request': request})
                 for message in M:
                     if message.sender_id.id != request.user.id:
