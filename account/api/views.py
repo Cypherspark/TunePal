@@ -233,7 +233,8 @@ class UpdateImage(APIView):
         user = get_object_or_404(CustomUser, id=request.user.id)
         serializer = SetUserAvatarSerializer(data = request.data)
         if serializer.is_valid():
-            u = serializer.save()
+            profile_pic = Avatar(image = request.data["image"])
+            profile_pic.save()
             user.user_avatar.add(u)
             user.save()
             return Response("done")
