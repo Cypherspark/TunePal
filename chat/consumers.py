@@ -5,8 +5,14 @@ from chat.models import Conversation,Message
 from account.models import CustomUser as User
 from chat.api.serializers import MessageSerializer
 from rest_framework import serializers
-
+from channels.db import database_sync_to_async
 from datetime import datetime
+
+@database_sync_to_async
+def make_seen(message_ID):
+    messageObject = Message.objects.get(message_ID)
+    messageObject.is_seen = True
+    messageObject.save()
 
 class ChatConsumer(WebsocketConsumer):
     
@@ -66,9 +72,7 @@ class ChatConsumer(WebsocketConsumer):
         nickname = event['nickame']
         is_me = (username == self.user.username)
         if not is_me:
-            messageObject = Message.objects.get(event['messageID'])
-            messageObject.is_seen = True
-            messageObject.save()
+            make_seen(int(event['messageID']))
         # Send message to WebSocket
         self.send(text_data=json.dumps({
             "conversation_id": self.room_name,
