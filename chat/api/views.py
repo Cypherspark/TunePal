@@ -30,6 +30,7 @@ def simple_chat(request, userparameter=None):
             )
 
         else:
+            print(userparameter)
             try:
                 userparameter = '/'.join(e for e in userparameter if e.isalnum())
                 selected_conv = Conversation.objects.filter(id=int(userparameter))[0]
