@@ -32,7 +32,7 @@ def simple_chat(request, userparameter=None):
         else:
             print(userparameter)
             try:
-                userparameter = '/'.join(e for e in userparameter if e.isalnum())
+                userparameter = userparameter.strip("/")
                 selected_conv = Conversation.objects.filter(id=int(userparameter))[0]
                 # users = selected_conv.members.all()
                 M = Message.objects.filter(conversation_id = int(userparameter)).order_by('date')
