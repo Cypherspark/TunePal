@@ -114,6 +114,10 @@ def all_inboxes(request):
 @api_view(['GET'])
 def User_Friend_Info(request):
     user = get_object_or_404(CustomUser, id = request.user.id)
-    friend = Friend.objects.get(current_user = user)
-    serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
-    return Response(serializer_class.data)
+    try:
+        friend = Friend.objects.get(current_user = user)
+        serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
+        return Response(serializer_class.data)
+    except Exception as e:
+         serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
+         return Response([])
