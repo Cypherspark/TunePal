@@ -66,7 +66,7 @@ class ChatConsumer(WebsocketConsumer):
         nickname = event['nickame']
         is_me = (username == self.user.username)
         if not is_me:
-            messageObject = Message.objects.get(event['messageID'])
+            messageObject = Message.objects.get(int(event['messageID']))
             messageObject.is_seen = True
             messageObject.save()
         # Send message to WebSocket
