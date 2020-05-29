@@ -13,9 +13,15 @@ def calculateAge(birthDate):
 
 
 class SetUserAvatarSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(allow_empty_file=False)
     class Meta:
         model = Avatar
         fields = ["image"]
+
+    def create(self, validated_data):
+        profile_pic = Avatar(image = validated_data.get("image"))
+        profile_pic.save()
+        return profile_pic
 
 
 class UserAvatarSerializer(serializers.ModelSerializer):
