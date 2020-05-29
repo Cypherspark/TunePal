@@ -17,6 +17,8 @@ from math import sin, cos, sqrt, atan2, radians
 seed()
 
 class UserAvatarSerializer1(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+   
     class Meta:
         model = Avatar
         fields = ["image","id"]
@@ -36,7 +38,16 @@ class UserTopSongserialize(serializers.ModelSerializer):
 class UserInfoSerializer2(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
-    user_avatar = UserAvatarSerializer1(many = True)
+    user_avatar = serializers.SerializerMethodField()
+
+    def get_user_avatar(self, obj ):
+        user = self.context['request'].user
+        serializer = UserAvatarSerializer1(user.user_avatar,many = True)
+        try:
+            avatar = serializer.data[-1]
+        except:
+            avatar = None
+        return avatar
 
     def get_age(self, obj):
         today = date.today()
@@ -69,7 +80,16 @@ class UserInfoSerializer1(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
     pendding = serializers.SerializerMethodField()
-    user_avatar = UserAvatarSerializer1(many = True)
+    user_avatar = serializers.SerializerMethodField()
+
+    def get_user_avatar(self, obj ):
+        user = self.context['request'].user
+        serializer = UserAvatarSerializer1(user.user_avatar,many = True)
+        try:
+            avatar = serializer.data[-1]
+        except:
+            avatar = None
+        return avatar
 
     def get_pendding(self, obj):
         try:
