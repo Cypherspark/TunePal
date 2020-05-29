@@ -24,11 +24,6 @@ class UserAvatarSerializer(serializers.ModelSerializer):
         fields = ["image","id"]
 
 
-class SetUserAvatarSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Avatar
-        fields = ["image"]
-
 class UserSignupSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(
