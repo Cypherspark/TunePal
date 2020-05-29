@@ -133,7 +133,8 @@ class Friend_Request(APIView):
         owner = request.user
         FR = FriendshipRequest(from_user=owner, to_user=n_f)
         FR.save()
-        SendEmail(request,str(n_f.email),"friend.html",n_f.username,owner.username)
+        subject = "TunePal - New Request"
+        SendEmail(request,str(n_f.email),"friend.html",n_f.username,owner.username,subject)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -172,7 +173,8 @@ class Add_Or_Reject_Friends(APIView):
         owner = request.user
 
         if verb == "accept":
-            SendEmail(request,str(n_f.email),"accept.html",n_f.username,owner.username)
+            subject = "TunePal - Request Result"
+            SendEmail(request,str(n_f.email),"accept.html",n_f.username,owner.username,subject)
             FriendshipRequest.accept(owner, n_f)
             c = Conversation()
             c.save()
@@ -184,7 +186,8 @@ class Add_Or_Reject_Friends(APIView):
 
 
         elif verb == "decline":
-            SendEmail(request,str(n_f.email),"decline.html",n_f.username,owner.username)
+            subject = "TunePal - Request Result"
+            SendEmail(request,str(n_f.email),"decline.html",n_f.username,owner.username,subject)
             FriendshipRequest.decline(owner, n_f)
 
             return Response(
