@@ -14,7 +14,7 @@ class ChatConsumer(WebsocketConsumer):
         
         self.user = self.scope["user"]
         print("-------> i'm ",self.user)
-        print(self.scope["header"])
+        print(self.scope["headers"])
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
 
