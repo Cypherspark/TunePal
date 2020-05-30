@@ -3,6 +3,8 @@ from rest_framework import serializers
 from account.models import CustomUser as User,Avatar
 from account.models import UserLocation
 from TunePal import settings
+from drf_extra_fields.fields import Base64ImageField
+
 
 
 
@@ -13,7 +15,7 @@ def calculateAge(birthDate):
 
 
 class SetUserAvatarSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField()
+    image = Base64ImageField()
     class Meta:
         model = Avatar
         fields = ["image"]
