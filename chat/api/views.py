@@ -122,3 +122,16 @@ def User_Friend_Info(request):
     except Exception as e:
          serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
          return Response([])
+
+
+def Make_Group(request,map):
+    group = Conversation.objects.create(name = map["name"])
+    admin = group.admin.add(request.user)
+
+    # SendEmail(request,str(member.email),"friend.html",member.username,admin.username)
+    for x in map["users"] :
+    # if request.user in admin :
+        member = CustomUser.objects.get(username = x)
+        group.members.add(member)
+        group.save()
+    return Response("Done")
