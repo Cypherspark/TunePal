@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from account.models import CustomUser,Friend
 from django.shortcuts import get_object_or_404
 
+import ast
+
 
 @permission_classes([IsAuthenticated])
 @csrf_exempt
@@ -122,15 +124,12 @@ def User_Friend_Info(request):
     except Exception as e:
          serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
          return Response([])
-
-
-def Make_Group(request,map):
-    group = Conversation.objects.create(name = map["name"])
-    admin = group.admin.add(request.user)
-
-    # SendEmail(request,str(member.email),"friend.html",member.username,admin.username)
-    for x in map["users"] :
-    # if request.user in admin :
+@api_view(['GET'])
+def Make_Group(request):
+    group = Conversation.objects.create(name = request.data["name"])
+    group.members.add(request.user)
+    l = ast.literal_eval(request.data["users"])
+    for x in l :
         member = CustomUser.objects.get(username = x)
         group.members.add(member)
         group.save()
