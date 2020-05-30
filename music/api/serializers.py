@@ -45,7 +45,8 @@ class UserInfoSerializer2(serializers.ModelSerializer):
         serializer = UserAvatarSerializer1(user.user_avatar,many = True)
         try:
             avatar = serializer.data[-1]
-        except:
+        except Exception as e:
+            print(str(e))
             avatar = None
         return avatar
 
@@ -87,7 +88,8 @@ class UserInfoSerializer1(serializers.ModelSerializer):
         serializer = UserAvatarSerializer1(user.user_avatar,many = True)
         try:
             avatar = serializer.data[-1]
-        except:
+        except Exception as e:
+            print(str(e))
             avatar = None
         return avatar
 
