@@ -20,7 +20,7 @@ class UserProfileSerilizer(serializers.ModelSerializer):
 
     def get_user_avatar(self, obj ):
         user = obj
-        serializer = UserAvatarSerializer(user.user_avatar, many = True,context={ 'request':context['request']})
+        serializer = UserAvatarSerializer(user.user_avatar, many = True,context={ 'request':self.context['request']})
         try:
             avatar = serializer.data[-1]
         except:
@@ -101,7 +101,7 @@ class FriendInfoSerializer(serializers.ModelSerializer):
 
     def get_user_avatar(self, obj ):
         user = obj
-        serializer = UserAvatarSerializer(user.user_avatar, many = True, context={ 'request':context['request']})
+        serializer = UserAvatarSerializer(user.user_avatar, many = True, context={ 'request':self.context['request']})
         try:
             avatar = serializer.data[-1]
         except:
