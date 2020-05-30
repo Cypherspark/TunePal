@@ -235,7 +235,7 @@ class UpdateImage(APIView):
         if serializer.is_valid():
             profile_pic = Avatar(image = request.data["image"])
             profile_pic.save()
-            user.user_avatar.add(u)
+            user.user_avatar.add(profile_pic)
             user.save()
             return Response("done")
         else:
