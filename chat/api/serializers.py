@@ -100,7 +100,7 @@ class FriendInfoSerializer(serializers.ModelSerializer):
     user_avatar = serializers.SerializerMethodField()
 
     def get_user_avatar(self, obj ):
-        user = self.context['request'].user
+        user = obj
         serializer = UserAvatarSerializer(user.user_avatar,many = True)
         try:
             avatar = serializer.data[-1]
