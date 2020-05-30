@@ -124,11 +124,13 @@ def User_Friend_Info(request):
     except Exception as e:
          serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
          return Response([])
-@api_view(['GET'])
+@api_view(['POST'])
 def Make_Group(request):
-    group = Conversation.objects.create(name = request.data["name"])
+    l =  str(request.data["name"]).split(",")
+    group = Conversation.objects.create(name = l[0])
     group.members.add(request.user)
-    l = ast.literal_eval(request.data["users"])
+    group.is_group = True
+    l.remove(group.name)
     for x in l :
         member = CustomUser.objects.get(username = x)
         group.members.add(member)
