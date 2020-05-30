@@ -18,7 +18,7 @@ seed()
 
 class UserAvatarSerializer1(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
-   
+
     class Meta:
         model = Avatar
         fields = ["image","id"]
@@ -41,7 +41,7 @@ class UserInfoSerializer2(serializers.ModelSerializer):
     user_avatar = serializers.SerializerMethodField()
 
     def get_user_avatar(self, obj ):
-        user = self.context['request'].user
+        user = obj
         serializer = UserAvatarSerializer1(user.user_avatar,many = True)
         try:
             avatar = serializer.data[-1]
@@ -84,7 +84,7 @@ class UserInfoSerializer1(serializers.ModelSerializer):
     user_avatar = serializers.SerializerMethodField()
 
     def get_user_avatar(self, obj ):
-        user = self.context['request'].user
+        user = obj
         serializer = UserAvatarSerializer1(user.user_avatar,many = True)
         try:
             avatar = serializer.data[-1]
