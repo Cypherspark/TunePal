@@ -103,7 +103,7 @@ class FriendInfoSerializer(serializers.ModelSerializer):
         user = obj
         serializer = UserAvatarSerializer(user.user_avatar,many = True)
         try:
-            avatar = serializer.data[-1]
+            avatar =  "http://tunepal.pythonanywhere.com/"+serializer.data[-1]
         except:
             avatar = None
         return avatar
