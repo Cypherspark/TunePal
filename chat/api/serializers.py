@@ -22,7 +22,7 @@ class UserProfileSerilizer(serializers.ModelSerializer):
         user = obj
         serializer = UserAvatarSerializer(user.user_avatar, many = True,context={ 'request':self.context['request']})
         try:
-            avatar = serializer.data[-1]
+            avatar = serializer.data[-1]["image"]
         except:
             avatar = None
         return avatar
@@ -103,7 +103,7 @@ class FriendInfoSerializer(serializers.ModelSerializer):
         user = obj
         serializer = UserAvatarSerializer(user.user_avatar, many = True, context={ 'request':self.context['request']})
         try:
-            avatar = serializer.data[-1]
+            avatar = serializer.data[-1]["image"]
         except:
             avatar = None
         return avatar
