@@ -17,8 +17,6 @@ from math import sin, cos, sqrt, atan2, radians
 seed()
 
 class UserAvatarSerializer1(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-
     class Meta:
         model = Avatar
         fields = ["image","id"]
