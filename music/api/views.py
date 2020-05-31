@@ -131,12 +131,14 @@ class Friend_Request(APIView):
         username  = request.GET['username']
         n_f = get_object_or_404(User, username=username)
         owner = request.user
-        if 
-        FR = FriendshipRequest(from_user=owner, to_user=n_f)
-        FR.save()
-        subject = "TunePal - New Request"
-        SendEmail(request,str(n_f.email),"friend.html",n_f.username,owner.username,subject)
-        return Response(status=status.HTTP_200_OK)
+        if not FriendshipRequest.objects.filter(to_user=n_f, from_user=owner).exists():
+            FR = FriendshipRequest(from_user=owner, to_user=n_f)
+            FR.save()
+            subject = "TunePal - New Request"
+            SendEmail(request,str(n_f.email),"friend.html",n_f.username,owner.username,subject)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 
