@@ -131,6 +131,7 @@ class Friend_Request(APIView):
         username  = request.GET['username']
         n_f = get_object_or_404(User, username=username)
         owner = request.user
+        if 
         FR = FriendshipRequest(from_user=owner, to_user=n_f)
         FR.save()
         subject = "TunePal - New Request"
@@ -150,7 +151,7 @@ class Friend_Request_View(APIView):
     def get(self, request):
         querylist = FriendshipRequest.objects.all()
         owner = request.user
-        FR = querylist.filter(to_user=request.user)
+        FR = querylist.filter(to_user=request.user).values('from_user').distinct()
         FR = FR.filter(accepted= False)
         serializer = FriendshipInfoSerializer(FR,many=True,context={'request':request})
         return Response(serializer.data,status=status.HTTP_200_OK)

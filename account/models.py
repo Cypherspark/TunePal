@@ -81,10 +81,10 @@ class FriendshipRequest(models.Model):
 
     @classmethod
     def accept(cls, owner, n_f):
-        friendshipRequest, created = cls.objects.get_or_create(
+        friendshipRequest = cls.objects.filter(
             from_user = n_f,
             to_user = owner
-        )
+        )[0]
         Friend.make_friend(n_f, owner)
         Suggest.remove_suggest(n_f, owner)
         friendshipRequest.accepted = True
@@ -92,10 +92,10 @@ class FriendshipRequest(models.Model):
 
     @classmethod
     def decline(cls, owner, n_f):
-        friendshipRequest, created = cls.objects.get_or_create(
+        friendshipRequest = cls.objects.filter(
             from_user = n_f,
             to_user = owner
-        )
+        )[0]
         Suggest.remove_suggest(n_f, owner)
         friendshipRequest.delete()
 
