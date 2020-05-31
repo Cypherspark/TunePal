@@ -91,7 +91,7 @@ class UserInfoSerializer1(serializers.ModelSerializer):
 
     def get_pendding(self, obj):
         try:
-            relation = FriendshipRequest.objects.filter(to_user=obj, from_user=self.context['request'].user)
+            relation = FriendshipRequest.objects.filter(to_user=obj, from_user=self.context['request'].user)[0]
             status = True
         except:
             status = False
