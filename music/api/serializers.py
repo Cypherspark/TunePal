@@ -42,11 +42,10 @@ class UserInfoSerializer2(serializers.ModelSerializer):
 
     def get_user_avatar(self, obj ):
         user = obj
-        serializer = UserAvatarSerializer1(user.user_avatar,many = True)
+        serializer = UserAvatarSerializer(user.user_avatar, many = True,context={ 'request':self.context['request']})
         try:
-            avatar = serializer.data[-1]
-        except Exception as e:
-            print(str(e))
+            avatar = serializer.data[-1]["image"]
+        except:
             avatar = None
         return avatar
 
@@ -85,11 +84,10 @@ class UserInfoSerializer1(serializers.ModelSerializer):
 
     def get_user_avatar(self, obj ):
         user = obj
-        serializer = UserAvatarSerializer1(user.user_avatar,many = True)
+        serializer = UserAvatarSerializer(user.user_avatar, many = True,context={ 'request':self.context['request']})
         try:
-            avatar = serializer.data[-1]
-        except Exception as e:
-            print(str(e))
+            avatar = serializer.data[-1]["image"]
+        except:
             avatar = None
         return avatar
 
