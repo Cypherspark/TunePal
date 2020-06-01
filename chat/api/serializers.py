@@ -63,7 +63,7 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Conversation
-        fields = ['members','id','is_group','new_messages','last_message']
+        fields = ['members','name','id','is_group','new_messages','last_message']
         extra_kwargs = {'is_group':  {'required': False},'new_messages':  {'required': False},'last_message':{'required': False}}
 
 
@@ -110,6 +110,22 @@ class FriendInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["username","nickname","user_avatar"]
+class Memberserializers(serializers.ModelSerializer):
+    user_avatar = serializers.SerializerMethodField()
+
+    def get_user_avatar(self, obj ):
+        user = obj
+        serializer = UserAvatarSerializer(user.user_avatar, many = True, context={ 'request':self.context['request']})
+        try:
+            avatar = serializer.data[-1]["image"]
+        except:
+            avatar = None
+        return avatar
+    class Meta:
+        model = User
+        fields = ["username","nickname","user_avatar"]
+
+
 
     #def create(self, validated_data):
     #     user =  self.context['request'].user
