@@ -125,6 +125,7 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = UserLocation
         fields = '__all__'
+        extra_kwargs = {'latitude':  {'write_only': True},'longitude':  {'write_only': True}}
     def create(self, validated_data):
         ulocation = UserLocation(
             latitude = validated_data.get("latitude"),
