@@ -4,7 +4,8 @@ from . import views
 
 urlpatterns = [
     url(r'^makegroup/$',views.Make_Group,name="makegroup"),
-
+    url(r'^groupinfo/$',views.User_Groups,name='group_info'),
+    url(r'^usergroup/$',views.User_Groups,name='usergroup'),
     url(r'^friendinfo/$',views.User_Friend_Info,name='User_Friend_Info'),
     path('', views.simple_chat, name='conv'),
     url(r'^inbox/$',views.all_inboxes,name='new-messages'),
