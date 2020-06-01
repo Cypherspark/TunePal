@@ -177,12 +177,17 @@ class Add_Members(APIView):
     def post(self,request):
         l =  str(request.data["addedusers"]).split(",")
         group = Conversation.objects.get(id = request.data["id"])
-        print(request.data["id"])
-        group.members.add(request.user)
-        group.is_group = True
         for x in l :
             member = CustomUser.objects.get(username = x)
             group.members.add(member)
             group.save()
-
         return Response("Users added")
+
+class Leave_Group(APIView):
+    def post(self,request):
+        group = Conversation.objects.get(id = request.data["id"])
+        member = CustomUser.objects.get(id = request.user.id)
+        group.members.remove(member)
+        group.save()
+
+        return Response("User lefted")
