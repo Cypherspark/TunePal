@@ -136,3 +136,17 @@ def Make_Group(request):
         group.members.add(member)
         group.save()
     return Response("Done")
+@api_view(['GET'])
+def Info_Groups(request):
+    c = Conversation.objects.filter(members__id = request.user.id,is_group = True)
+    conversation_list = ConversationSerializer(c, many=True, context={'request': request})
+
+    return Response({"conversations": conversation_list.data})
+
+@api_view(['GET'])
+def User_Groups(request):
+    c = Conversation.objects.get(id = request.data["id"])
+    users = c.members
+    conversation_list = Memberserializers(users,many = True,context={'request': request})
+
+    return Response({"conversations": conversation_list.data})
