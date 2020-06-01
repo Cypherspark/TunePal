@@ -151,8 +151,8 @@ def Group_member(request):
     conversation_list = Memberserializers(users,many = True,context={'request': request})
     return Response({"conversations": conversation_list.data})
 
-class Add_Member(APIView):
-    def get(self,request):
+class Show_friemd_to_add(APIView):
+    def post(self,request):
         print(request.data)
         user = get_object_or_404(CustomUser, id = request.user.id)
         group = Conversation.objects.get(id = request.data["id"])
@@ -173,3 +173,16 @@ class Add_Member(APIView):
         except Exception as e:
              serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
              return Response(["fcdx"])
+class Add_Members(APIView):
+    def post(self,request):
+        l =  str(request.data["addedusers"]).split(",")
+        group = Conversation.objects.get(id = request.data["id"])
+        print(request.data["id"])
+        group.members.add(request.user)
+        group.is_group = True
+        for x in l :
+            member = CustomUser.objects.get(username = x)
+            group.members.add(member)
+            group.save()
+
+        return Response("Users added")
