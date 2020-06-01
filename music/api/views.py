@@ -184,7 +184,7 @@ class Add_Or_Reject_Friends(APIView):
                 user_list = [owner.id, n_f.id]
                 convs = Conversation.objects.annotate(count=Count('members')).filter(count=2)
                 for member_id in user_list:
-                convs = convs.filter(members__id=member_id)
+                    convs = convs.filter(members__id=member_id)
                 if not convs.exists():
                     c = Conversation()
                     c.save()
