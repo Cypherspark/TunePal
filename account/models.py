@@ -87,13 +87,12 @@ class FriendshipRequest(models.Model):
         )[0]
         Friend.make_friend(n_f, owner)
         Suggest.remove_suggest(n_f, owner)
+        Suggest.remove_suggest(owner,n_f)
         friendshipRequest.accepted = True
         friendshipRequest.save()
         if cls.objects.filter(from_user = owner,to_user = n_f).exists():
             cls.objects.filter(from_user = owner,to_user = n_f).delete()
-        nfSuggest = Suggest.objects.get(s_current_user=n_f)
-        if owner in nfSuggest.s_users.all():
-            Suggest.remove_suggest(n_f,owner)
+        
 
     @classmethod
     def decline(cls, owner, n_f):
