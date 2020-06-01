@@ -12,6 +12,8 @@ from django.shortcuts import get_object_or_404
 
 import ast
 
+from rest_framework.views import APIView
+
 
 @permission_classes([IsAuthenticated])
 @csrf_exempt
@@ -119,10 +121,9 @@ def User_Friend_Info(request):
     user = get_object_or_404(CustomUser, id = request.user.id)
     try:
         friend = Friend.objects.get(current_user = user)
-        serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
+        serializer_class = FriendInfoSerializer(friend.users.all(),context={'request': request},many = True)
         return Response(serializer_class.data)
     except Exception as e:
-         serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
          return Response([])
 @api_view(['POST'])
 def Make_Group(request):
@@ -143,10 +144,32 @@ def Info_Groups(request):
 
     return Response({"conversations": conversation_list.data})
 
-@api_view(['GET'])
-def User_Groups(request):
+@api_view(['POST'])
+def Group_member(request):
     c = Conversation.objects.get(id = request.data["id"])
     users = c.members
     conversation_list = Memberserializers(users,many = True,context={'request': request})
-
     return Response({"conversations": conversation_list.data})
+
+class Add_Member(APIView):
+    def get(self,request):
+        print(request.data)
+        user = get_object_or_404(CustomUser, id = request.user.id)
+        group = Conversation.objects.get(id = request.data["id"])
+        try:
+            friend = Friend.objects.get(current_user = user)
+            print(friend.users.all())
+            serializer_class = FriendInfoSerializer(friend.users.all(),context={'request': request},many = True)
+            l = []
+            for x in friend.users.all():
+
+                if x not in group.members.all():
+                    m = FriendInfoSerializer(x,context={'request': request})
+                    l.append(m.data)
+
+                    # l.append(x)
+
+            return Response(l)
+        except Exception as e:
+             serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
+             return Response(["fcdx"])
