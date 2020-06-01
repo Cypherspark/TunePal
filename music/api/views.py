@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.db.models import Count
+
 
 import os
 import json
@@ -178,8 +180,12 @@ class Add_Or_Reject_Friends(APIView):
             subject = "TunePal - Request Result"
             SendEmail(request,str(n_f.email),"accept.html",n_f.username,owner.username,subject)
             FriendshipRequest.accept(owner, n_f)
-            if not Conversation.objects.filter(members__in=[owner.id, n_f.id]).exists():
-                if CustomUser.objects.filter(id = n_f.id).exists():
+            if CustomUser.objects.filter(id = n_f.id).exists():
+                user_list = [owner.id, n_f.id]
+                convs = Conversation.objects.annotate(count=Count('members')).filter(count=2)
+                for member_id in user_list:
+                convs = convs.filter(members__id=member_id)
+                if not convs.exists():
                     c = Conversation()
                     c.save()
                     c.members.add(owner,n_f)
