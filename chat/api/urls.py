@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^groupmember/$',views.Group_member,name='groupmember'),
     url(r'^showfriends/$',views.Show_friemd_to_add.as_view(),name='Show_friemd_to_add'),
     url(r'^addmember/$',views.Add_Members.as_view(),name='addmember'),
+    url(r'^leavegroup/$',views.Leave_Group.as_view(),name='leavegroup'),
     url(r'^friendinfo/$',views.User_Friend_Info,name='User_Friend_Info'),
     path('', views.simple_chat, name='conv'),
     url(r'^inbox/$',views.all_inboxes,name='new-messages'),
