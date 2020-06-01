@@ -151,10 +151,9 @@ class Friend_Request_View(APIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        querylist = FriendshipRequest.objects.all()
         owner = request.user
-        FR = querylist.filter(to_user=request.user).values('from_user').distinct()
-        FR = FR.filter(accepted= False)
+        querylist = FriendshipRequest.objects.filter(to_user = owner)
+        FR = querylist.filter(accepted= False)
         serializer = FriendshipInfoSerializer(FR,many=True,context={'request':request})
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -179,9 +178,15 @@ class Add_Or_Reject_Friends(APIView):
             subject = "TunePal - Request Result"
             SendEmail(request,str(n_f.email),"accept.html",n_f.username,owner.username,subject)
             FriendshipRequest.accept(owner, n_f)
-            c = Conversation()
-            c.save()
-            c.members.add(owner,n_f)
+            if not Conversation.objects.filter(members__in=[owner.id, n_f.id]).exists():
+                if CustomUser.objects.filter(id = n_f.id).exists():
+                    c = Conversation()
+                    c.save()
+                    c.members.add(owner,n_f)
+                else:
+                    return Response ({"message":"Bad Request"},
+                            status=status.HTTP_400_BAD_REQUEST
+                            )
             return Response(
                 {"message":"let's start your conversation"},
                 status=status.HTTP_200_OK
