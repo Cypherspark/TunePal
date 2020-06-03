@@ -79,6 +79,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message,
                 'username': self.user.username,
                 'nickame': self.user.nickname
+                'conversation_id': ID
                 
             }
         )
@@ -93,6 +94,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         date = date1.replace(" ", "T") + "Z"
         username = event['username']
         nickname = event['nickame']
+        conversation_id = event['conversation_id']
+
         is_me = (username == self.user.username)
         if not is_me:
             make_seen(int(event['messageID']))
@@ -102,5 +105,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "date" : date,
             'is_client': is_me,
             "sender_id" : {"nickname":nickname} ,
-            "text": message,            
+            "text": message,
+            "conversation_id":conversation_id           
         }))    

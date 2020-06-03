@@ -1,6 +1,7 @@
 from django.db import models
 from account.models import CustomUser as User
 from django.utils.translation import ugettext_lazy as _
+from datetime import datetime
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -36,9 +37,12 @@ class Message(models.Model):
         """
         notification = {
             'type': 'chat_message',
-            'message': '{}'.format(self.id), 
-            'text': self.text, 
-            'conversation_id': self.conversation_id.id          
+            'message': self.text,
+            "date" : f"{datetime.now()}",
+            "messageID" : self.id,
+            'conversation_id': self.conversation_id.id
+            'username': self.sender_id.username,
+            'nickame': self.sender_id.nickname         
         }
 
         channel_layer = get_channel_layer()
