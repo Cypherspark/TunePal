@@ -1,6 +1,7 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 from chat.models import Conversation,Message
 from account.models import CustomUser as User
 from chat.api.serializers import MessageSerializer
@@ -24,7 +25,7 @@ def get_user_id(userName):
     return User.objects.get(username = userName).id
 
 
-class ChatConsumer(WebsocketConsumer):
+class ChatConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
         
@@ -40,29 +41,29 @@ class ChatConsumer(WebsocketConsumer):
         # self.room_group_name = 'chat_%s' % self.room_name
         self.room_group_name =  "{}".format(user_id)
         # Join room group
-        self.channel_layer.group_add(
+        await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
 
 
-        self.accept()
+        await self.accept()
 
-    def disconnect(self, close_code):
+    async def disconnect(self, close_code):
         # Leave room group
-        async_to_sync(self.channel_layer.group_discard)(
+        await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
 
     # Receive message from WebSocket
-    def receive(self, text_data):
+    async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['text']
         c = Conversation.objects.get(id = self.room_name)
         messageObject = Message.objects.create(sender_id =self.user,conversation_id = c ,text = message,date = datetime.now() )
         # Send message to room group
-        async_to_sync(self.channel_layer.group_send)(
+        await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "messageID" : messageObject.id,
@@ -79,7 +80,7 @@ class ChatConsumer(WebsocketConsumer):
   
 
     # Receive message from room group
-    def chat_message(self, event):
+    async def chat_message(self, event):
         message = event['message']
         date1 = event['date']
         date = date1.replace(" ", "T") + "Z"
@@ -89,7 +90,7 @@ class ChatConsumer(WebsocketConsumer):
         if not is_me:
             make_seen(int(event['messageID']))
         # Send message to WebSocket
-        self.send(text_data=json.dumps({
+        await self.send(text_data=json.dumps({
             "conversation_id": self.room_name,
             "date" : date,
             'is_client': is_me,
