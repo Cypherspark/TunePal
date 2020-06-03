@@ -34,8 +34,9 @@ class ChatConsumer(WebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         user_id = self.scope['url_route']['kwargs']['room_name']
         self.user = get_user(user_id)
-        user_id = get_user_id(user_id) 
+        # user_id = get_user_id(user_id) 
         print("-------> i'm ",self.user)
+        print("?????????????",user_id)
         # self.room_group_name = 'chat_%s' % self.room_name
         self.room_group_name =  "{}".format(user_id)
         # Join room group
