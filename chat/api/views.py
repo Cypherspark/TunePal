@@ -24,7 +24,7 @@ def simple_chat(request, userparameter=None):
     if request.method == 'GET':
 
         if  userparameter == None:
-                c = Conversation.objects.filter(members__id = request.user.id)
+                c = Conversation.objects.filter(members__id = request.user.id, is_group = False)
                 conversation_list = ConversationSerializer(c, many=True, context={'request': request})
 
                 return Response(
