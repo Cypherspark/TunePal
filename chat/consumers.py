@@ -49,7 +49,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print("-------> i'm ", self.user)
         # self.room_group_name = 'chat_%s' % self.room_name
         self.room_group_name =  "{}".format(user_id)
-        # Join room group
+        # Join room groupis_group
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
@@ -77,11 +77,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         #     self.room_group_name,
         #     {
         #         "messageID" : messageID,
-        #         "date" : f"'websocket': AuthMiddlewareStack(
-        URLRouter(
-            chat.routing.websocket_urlpatterns
-        )
-    ),{datetime.now()}",
+        #         "date" : f"",
         #         'type': 'chat_message',
         #         'message': message,
         #         'username': self.user.username,
