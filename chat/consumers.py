@@ -21,6 +21,12 @@ def get_user(userName):
     return User.objects.get(username = userName).username
 
 @database_sync_to_async
+def make_message(message , ID):
+    c = Conversation.objects.get(id = ID)
+    messageObject = Message.objects.create(sender_id =self.user,conversation_id = c ,text = message,date = datetime.now() )
+    return messageObject.id
+
+@database_sync_to_async
 def get_user_id(userName):
     return User.objects.get(username = userName).id
 
@@ -62,13 +68,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = text_data_json['text']
         ID = text_data_json['id']
 
-        c = Conversation.objects.get(id = ID)
-        messageObject = Message.objects.create(sender_id =self.user,conversation_id = c ,text = message,date = datetime.now() )
+        messageID = await make_message(message, ID)
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                "messageID" : messageObject.id,
+                "messageID" : messageID,
                 "date" : f"{datetime.now()}",
                 'type': 'chat_message',
                 'message': message,
