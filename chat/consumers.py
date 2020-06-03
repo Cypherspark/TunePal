@@ -7,6 +7,7 @@ from chat.api.serializers import MessageSerializer
 from rest_framework import serializers
 from channels.db import database_sync_to_async
 from datetime import datetime
+ 
 
 @database_sync_to_async
 def make_seen(message_ID):
@@ -14,16 +15,23 @@ def make_seen(message_ID):
     messageObject.is_seen = True
     messageObject.save()
 
+@database_sync_to_async
+def get_user(userName):
+    return User.objects.get(username = userName)
+
 class ChatConsumer(WebsocketConsumer):
     
     def connect(self):
         
-        self.user = self.scope["user"]
+        # self.user = self.scope["user"]
         print("-------> i'm ",self.user)
         print(self.scope["headers"])
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
-
+        user_id = self.scope['url_route']['kwargs']['room_name']
+        self.user = get_user(user_id)
+        user_id = self.user.id 
+        # self.room_group_name = 'chat_%s' % self.room_name
+        self.room_group_name =  "{}".format(user_id)
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
