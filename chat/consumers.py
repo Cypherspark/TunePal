@@ -101,7 +101,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         is_me = (username == self.user.username)
         if not is_me:
-            await make_seen(int(event['messageID']))
+            pass
+            # await make_seen(int(event['messageID']))
         info = await GroupInfo(int(conversation_id))
         is_group = info[0]
         name = info[1]
