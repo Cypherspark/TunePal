@@ -26,15 +26,15 @@ def get_user_id(userName):
 
 class ChatConsumer(WebsocketConsumer):
     
-    def connect(self):
+    async def connect(self):
         
         # self.user = self.scope["user"]
         # print("-------> i'm ",self.user)
         # print(self.scope["headers"])
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         user_id = self.scope['url_route']['kwargs']['room_name']
-        self.user = get_user(user_id)
-        # user_id = get_user_id(user_id) 
+        self.user = await get_user(user_id)
+        user_id = await get_user_id(user_id) 
         print("-------> i'm ", self.user)
         print("?????????????", user_id)
         # self.room_group_name = 'chat_%s' % self.room_name
