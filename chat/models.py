@@ -38,7 +38,7 @@ class Message(models.Model):
             'type': 'chat_message',
             'message': '{}'.format(self.id), 
             'text': self.text, 
-            'conversation_id': self.conversation_id          
+            'conversation_id': self.conversation_id.id          
         }
 
         channel_layer = get_channel_layer()
