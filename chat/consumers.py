@@ -78,7 +78,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'chat_message',
                 'message': message,
                 'username': self.user.username,
-                'nickame': self.user.nickname
+                'nickame': self.user.nickname,
                 'conversation_id': ID
                 
             }

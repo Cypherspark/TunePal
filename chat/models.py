@@ -40,7 +40,7 @@ class Message(models.Model):
             'message': self.text,
             "date" : f"{datetime.now()}",
             "messageID" : self.id,
-            'conversation_id': self.conversation_id.id
+            'conversation_id': self.conversation_id.id,
             'username': self.sender_id.username,
             'nickame': self.sender_id.nickname         
         }
