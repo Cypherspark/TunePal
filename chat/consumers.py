@@ -27,8 +27,11 @@ def make_message(user ,message , ID):
     return messageObject.id
 
 @database_sync_to_async
-def get_user_id(userName):
-    return User.objects.get(username = userName).id
+def GroupInfo(userName):
+    c = Conversation.objects.get(id = ID)
+    flag = c.is_group
+    name = c.name
+    return [flag, name]
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -74,7 +77,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         #     self.room_group_name,
         #     {
         #         "messageID" : messageID,
-        #         "date" : f"{datetime.now()}",
+        #         "date" : f"'websocket': AuthMiddlewareStack(
+        URLRouter(
+            chat.routing.websocket_urlpatterns
+        )
+    ),{datetime.now()}",
         #         'type': 'chat_message',
         #         'message': message,
         #         'username': self.user.username,
@@ -98,10 +105,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         is_me = (username == self.user.username)
         if not is_me:
-            make_seen(int(event['messageID']))
+            await make_seen(int(event['messageID']))
+        info = GroupInfo(int(conversation_id))
+        is_group = info[0]
+        name = info[1]
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
-            "conversation_id": conversation_id,
+            "group_name" : name,
+            "is_group": is_group,
             "date" : date,
             'is_client': is_me,
             "sender_id" : {"nickname":nickname} ,
