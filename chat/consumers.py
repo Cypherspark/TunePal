@@ -35,15 +35,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
         
-        # self.user = self.scope["user"]
+        self.user = self.scope["user"]
         # print("-------> i'm ",self.user)
         # print(self.scope["headers"])
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        user_id = self.scope['url_route']['kwargs']['room_name']
-        self.user = await get_user(user_id)
-        print("----ddddddd---> i'm ", user_id)
+        # self.room_name = self.scope['url_route']['kwargs']['room_name']
+        # user_id = self.scope['url_route']['kwargs']['room_name']
+        # self.user = await get_user(user_id)
+        # print("----ddddddd---> i'm ", user_id)
         user_id = self.user.id 
-        # print("-------> i'm ", self.user)
+        print("-------> i'm ", self.user)
         # self.room_group_name = 'chat_%s' % self.room_name
         self.room_group_name =  "{}".format(user_id)
         # Join room group
