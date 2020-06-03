@@ -143,13 +143,19 @@ def Info_Groups(request):
     conversation_list = ConversationSerializer(c, many=True, context={'request': request})
 
     return Response({"conversations": conversation_list.data})
-
+from django.db.models import Case, When
 @api_view(['POST'])
 def Group_member(request):
+
     c = Conversation.objects.get(id = request.data["id"])
-    users = c.members
-    conversation_list = Memberserializers(users,many = True,context={'request': request})
-    return Response({"conversations": conversation_list.data})
+    users = c.members.all()
+    users = list(users)
+    for x in range(len(users)):
+        if users[x].username == request.user.username:
+            users[0],users[x] = users[x],users[0]
+    member_list = Memberserializers(users,many = True,context={'request': request})
+
+    return Response({"members": member_list.data})
 
 class Show_friemd_to_add(APIView):
     def post(self,request):
@@ -190,7 +196,7 @@ class Leave_Group(APIView):
         group.members.remove(member)
         group.save()
 
-        return Response("User lefted")
+        return Response("User left")
 class Change_Group_Name(APIView):
         def post(self,request):
             group = Conversation.objects.get(id = request.data["id"])
