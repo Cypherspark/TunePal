@@ -47,6 +47,7 @@ class Message(models.Model):
 
         async_to_sync(channel_layer.group_send)("{}".format(self.sender_id.id), notification)
         for person in self.conversation_id.members.exclude(id = self.user.id).values_list('id', flat=True):
+            print("person: " ,person)
             async_to_sync(channel_layer.group_send)("{}".format(self.person), notification)
 
     def save(self, *args, **kwargs):
