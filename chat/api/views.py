@@ -191,3 +191,9 @@ class Leave_Group(APIView):
         group.save()
 
         return Response("User lefted")
+class Change_Group_Name(APIView):
+        def post(self,request):
+            group = Conversation.objects.get(id = request.data["id"])
+            group.name = request.data["name"]
+            group.save()
+            return Response("name updated")
