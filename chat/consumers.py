@@ -27,7 +27,7 @@ def make_message(user ,message , ID):
     return messageObject.id
 
 @database_sync_to_async
-def GroupInfo(userName):
+def GroupInfo(ID):
     c = Conversation.objects.get(id = ID)
     flag = c.is_group
     name = c.name
@@ -102,7 +102,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         is_me = (username == self.user.username)
         if not is_me:
             await make_seen(int(event['messageID']))
-        info = GroupInfo(int(conversation_id))
+        info = await GroupInfo(int(conversation_id))
         is_group = info[0]
         name = info[1]
         # Send message to WebSocket
