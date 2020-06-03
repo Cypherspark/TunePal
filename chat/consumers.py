@@ -19,6 +19,11 @@ def make_seen(message_ID):
 def get_user(userName):
     return User.objects.get(username = userName)
 
+@database_sync_to_async
+def get_user_id(userName):
+    return User.objects.get(username = userName).id
+
+
 class ChatConsumer(WebsocketConsumer):
     
     def connect(self):
@@ -29,7 +34,7 @@ class ChatConsumer(WebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         user_id = self.scope['url_route']['kwargs']['room_name']
         self.user = get_user(user_id)
-        user_id = self.user.id 
+        user_id = get_user_id(user_id) 
         print("-------> i'm ",self.user)
         # self.room_group_name = 'chat_%s' % self.room_name
         self.room_group_name =  "{}".format(user_id)
