@@ -46,7 +46,7 @@ class Message(models.Model):
         # print("user.id {}".format(self.conversation_id.id))
 
         async_to_sync(channel_layer.group_send)("{}".format(self.sender_id.id), notification)
-        for person in self.conversation_id.members.exclude(id = self.user.id).values_list('id', flat=True):
+        for person in self.conversation_id.members.exclude(id = self.sender_id.id).values_list('id', flat=True):
             print("person: " ,person)
             async_to_sync(channel_layer.group_send)("{}".format(self.person), notification)
 
