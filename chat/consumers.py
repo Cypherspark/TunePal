@@ -12,7 +12,7 @@ from datetime import datetime
 
 @database_sync_to_async
 def make_seen(message_ID):
-    messageObject = Message.objects.get(message_ID)
+    messageObject = Message.objects.get(id = message_ID)
     messageObject.is_seen = True
     messageObject.save()
 
