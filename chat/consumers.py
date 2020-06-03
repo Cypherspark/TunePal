@@ -60,6 +60,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['text']
+        ID = text_data_json['id']
+
         c = Conversation.objects.get(id = self.room_name)
         messageObject = Message.objects.create(sender_id =self.user,conversation_id = c ,text = message,date = datetime.now() )
         # Send message to room group
