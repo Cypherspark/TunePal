@@ -18,7 +18,7 @@ def make_seen(message_ID):
 
 @database_sync_to_async
 def get_user(userName):
-    return User.objects.get(username = userName).username
+    return User.objects.get(username = userName)
 
 @database_sync_to_async
 def make_message(user ,message , ID):
