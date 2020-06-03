@@ -101,7 +101,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             make_seen(int(event['messageID']))
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
-            "conversation_id": self.room_name,
+            "conversation_id": conversation_id,
             "date" : date,
             'is_client': is_me,
             "sender_id" : {"nickname":nickname} ,
