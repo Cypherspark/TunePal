@@ -41,7 +41,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         user_id = self.scope['url_route']['kwargs']['room_name']
         self.user = await get_user(user_id)
-        user_id = await get_user_id(user_id) 
+        user_id = self.user.id 
         print("-------> i'm ", self.user)
         print("?????????????", user_id)
         # self.room_group_name = 'chat_%s' % self.room_name
