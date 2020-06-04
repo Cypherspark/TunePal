@@ -106,7 +106,9 @@ class SuggestUserView(APIView):
         except:
             try:
                 random.seed()
-                slist = random.sample(list(User.objects.exclude(id = request.user.id)),4)
+                friendList  = Friend.objects.filter(user = request.user).values_list("id",flat=True)
+                # slist = random.sample(list(User.objects.exclude(id = request.user.id).exclude(id__in = friendList)),4)
+                slist = list(User.objects.exclude(id = request.user.id).exclude(id__in = friendList))
                 suggetionlist = Suggest(s_current_user = request.user)
                 suggetionlist.save()
                 suggetionlist.s_users.add(*slist)

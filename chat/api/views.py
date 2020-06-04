@@ -125,6 +125,9 @@ def User_Friend_Info(request):
         return Response(serializer_class.data)
     except Exception as e:
          return Response([])
+
+
+
 @api_view(['POST'])
 def Make_Group(request):
     l =  str(request.data["name"]).split(",")
@@ -137,13 +140,17 @@ def Make_Group(request):
         group.members.add(member)
         group.save()
     return Response("Done")
+
+
 @api_view(['GET'])
 def Info_Groups(request):
     c = Conversation.objects.filter(members__id = request.user.id,is_group = True)
     conversation_list = ConversationSerializer(c, many=True, context={'request': request})
 
     return Response({"conversations": conversation_list.data})
-from django.db.models import Case, When
+
+
+
 @api_view(['POST'])
 def Group_member(request):
 
@@ -156,6 +163,8 @@ def Group_member(request):
     member_list = Memberserializers(users,many = True,context={'request': request})
 
     return Response({"members": member_list.data})
+
+    
 
 class Show_friemd_to_add(APIView):
     def post(self,request):
@@ -179,6 +188,9 @@ class Show_friemd_to_add(APIView):
         except Exception as e:
              serializer_class = FriendInfoSerializer(friend.users,context={'request': request},many = True)
              return Response(["fcdx"])
+
+
+
 class Add_Members(APIView):
     def post(self,request):
         l =  str(request.data["addedusers"]).split(",")
@@ -189,6 +201,7 @@ class Add_Members(APIView):
             group.save()
         return Response("Users added")
 
+
 class Leave_Group(APIView):
     def post(self,request):
         group = Conversation.objects.get(id = request.data["id"])
@@ -197,6 +210,9 @@ class Leave_Group(APIView):
         group.save()
 
         return Response("User left")
+
+
+
 class Change_Group_Name(APIView):
         def post(self,request):
             group = Conversation.objects.get(id = request.data["id"])
