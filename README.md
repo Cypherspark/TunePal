@@ -1,24 +1,12 @@
 # TunePal
-
-### deployment
-the project has been deployed on pythonanywhere .
-[http://tunepal.pythonanywhere.com](http://tunepal.pythonanywhere.com)
+Django Backend of an music dating app 
 
 
-### available urls:
-docs and other info about api are here:
-[http://tunepal.pythonanywhere.com/swagger/](http://tunepal.pythonanywhere.com/swagger/)
-
-
-### masoud sprint3 todolist
-- [ ] deploy on vps + docker + postgres + nginx
-- [ ] user top songs and artists + celery + redis
-- [ ] django channels chatroom 
+### Main features of project
+- connect to spotify and get user spotify info
+- realtime chat with django channels
+- requesting to find new friends
+- notify users with sending email 
 
 
 
-
-
-
-
-all great things are simple =))
