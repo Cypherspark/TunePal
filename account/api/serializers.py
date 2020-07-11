@@ -6,10 +6,25 @@ from TunePal import settings
 
 
 
+
 def calculateAge(birthDate):
     today = date.today()
     age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
     return age
+
+
+class SetUserAvatarSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
+    class Meta:
+        model = Avatar
+        fields = ["image"]
+
+
+class UserAvatarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Avatar
+        fields = ["image","id"]
+
 
 class UserSignupSerializer(serializers.ModelSerializer):
 
@@ -110,6 +125,7 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = UserLocation
         fields = '__all__'
+        extra_kwargs = {'latitude':  {'write_only': True},'longitude':  {'write_only': True}}
     def create(self, validated_data):
         ulocation = UserLocation(
             latitude = validated_data.get("latitude"),
@@ -122,7 +138,7 @@ class LocationSerializer(serializers.ModelSerializer):
         return ulocation
 
 class UserInfoSerializer(serializers.ModelSerializer):
-    # user_avatar = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    user_avatar = UserAvatarSerializer(many = True)
     # serializers.SerializerMethodField()
     # interest = UserInterestsSerializer(read_only =True)
     location = LocationSerializer(read_only =True)
@@ -137,10 +153,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 
 
-class UserAvatarSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Avatar
-        fields = ["image"]
+
 
 
 # class UserInterestsSerializer(serializers.ModelSerializer):

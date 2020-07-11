@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.db.models import Count
+
 
 import os
 import json
@@ -104,7 +106,9 @@ class SuggestUserView(APIView):
         except:
             try:
                 random.seed()
-                slist = random.sample(list(User.objects.exclude(id = request.user.id)),4)
+                friendList  = Friend.objects.filter(user = request.user).values_list("id",flat=True)
+                # slist = random.sample(list(User.objects.exclude(id = request.user.id).exclude(id__in = friendList)),4)
+                slist = list(User.objects.exclude(id = request.user.id).exclude(id__in = friendList))
                 suggetionlist = Suggest(s_current_user = request.user)
                 suggetionlist.save()
                 suggetionlist.s_users.add(*slist)
@@ -131,10 +135,14 @@ class Friend_Request(APIView):
         username  = request.GET['username']
         n_f = get_object_or_404(User, username=username)
         owner = request.user
-        FR = FriendshipRequest(from_user=owner, to_user=n_f)
-        FR.save()
-        SendEmail(request,str(n_f.email),"friend.html",n_f.username,owner.username)
-        return Response(status=status.HTTP_200_OK)
+        if not FriendshipRequest.objects.filter(to_user=n_f, from_user=owner).exists():
+            FR = FriendshipRequest(from_user=owner, to_user=n_f)
+            FR.save()
+            subject = "TunePal - New Request"
+            SendEmail(request,str(n_f.email),"friend.html",n_f.username,owner.username,subject)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -147,10 +155,9 @@ class Friend_Request_View(APIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def get(self, request):
-        querylist = FriendshipRequest.objects.all()
         owner = request.user
-        FR = querylist.filter(to_user=request.user)
-        FR = FR.filter(accepted= False)
+        querylist = FriendshipRequest.objects.filter(to_user = owner)
+        FR = querylist.filter(accepted= False)
         serializer = FriendshipInfoSerializer(FR,many=True,context={'request':request})
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -172,11 +179,22 @@ class Add_Or_Reject_Friends(APIView):
         owner = request.user
 
         if verb == "accept":
-            SendEmail(request,str(n_f.email),"accept.html",n_f.username,owner.username)
+            subject = "TunePal - Request Result"
+            SendEmail(request,str(n_f.email),"accept.html",n_f.username,owner.username,subject)
             FriendshipRequest.accept(owner, n_f)
-            c = Conversation()
-            c.save()
-            c.members.add(owner,n_f)
+            if CustomUser.objects.filter(id = n_f.id).exists():
+                user_list = [owner.id, n_f.id]
+                convs = Conversation.objects.annotate(count=Count('members')).filter(count=2)
+                for member_id in user_list:
+                    convs = convs.filter(members__id=member_id)
+                if not convs.exists():
+                    c = Conversation()
+                    c.save()
+                    c.members.add(owner,n_f)
+                else:
+                    return Response ({"message":"Bad Request"},
+                            status=status.HTTP_400_BAD_REQUEST
+                            )
             return Response(
                 {"message":"let's start your conversation"},
                 status=status.HTTP_200_OK
@@ -184,7 +202,8 @@ class Add_Or_Reject_Friends(APIView):
 
 
         elif verb == "decline":
-            SendEmail(request,str(n_f.email),"decline.html",n_f.username,owner.username)
+            subject = "TunePal - Request Result"
+            SendEmail(request,str(n_f.email),"decline.html",n_f.username,owner.username,subject)
             FriendshipRequest.decline(owner, n_f)
 
             return Response(
@@ -246,7 +265,8 @@ class User_Top_Music(GenericAPIView, UpdateModelMixin):
                     dict["image_url"] = result["album"]["images"][0]['url']
                     dict["spotify_url"] = result["external_urls"]["spotify"]
                     dict["preview_url"] = result["preview_url"]
-                    list.append(dict)
+                    if dict != {}:
+                        list.append(dict)
                 list.append(context)
             return Response(list)
         except:

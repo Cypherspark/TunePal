@@ -23,7 +23,7 @@ class UserLocation(models.Model):
 
 
 class Avatar(models.Model):
-    image = models.ImageField(upload_to="images/", blank=True,null = True)
+    image = models.ImageField(upload_to="images/", blank=True ,null = True)
 
 class CustomUser(AbstractUser):
     first_name = None
@@ -81,21 +81,25 @@ class FriendshipRequest(models.Model):
 
     @classmethod
     def accept(cls, owner, n_f):
-        friendshipRequest, created = cls.objects.get_or_create(
+        friendshipRequest = cls.objects.filter(
             from_user = n_f,
             to_user = owner
-        )
+        )[0]
         Friend.make_friend(n_f, owner)
         Suggest.remove_suggest(n_f, owner)
+        Suggest.remove_suggest(owner,n_f)
         friendshipRequest.accepted = True
         friendshipRequest.save()
+        if cls.objects.filter(from_user = owner,to_user = n_f).exists():
+            cls.objects.filter(from_user = owner,to_user = n_f).delete()
+        
 
     @classmethod
     def decline(cls, owner, n_f):
-        friendshipRequest, created = cls.objects.get_or_create(
+        friendshipRequest = cls.objects.filter(
             from_user = n_f,
             to_user = owner
-        )
+        )[0]
         Suggest.remove_suggest(n_f, owner)
         friendshipRequest.delete()
 

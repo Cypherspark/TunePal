@@ -223,21 +223,30 @@ class UserAvatarView(APIView):
     @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserAvatarSerializer)})
     @permission_classes([IsAuthenticated])
     def get(self, request ):
-        user = get_object_or_404(CustomUser,username = request.data["username"] )
+        user = get_object_or_404(CustomUser,username = request.GET  ["username"] )
         serializer = UserAvatarSerializer(user.user_avatar,many =True)
         return Response(serializer.data)
 
 class UpdateImage(APIView):
+    @swagger_auto_schema(tags=['Profile'],responses={200: openapi.Response('ok', UserAvatarSerializer)})
     def put(self, request):
         user = get_object_or_404(CustomUser, id=request.user.id)
-        image = Avatar.objects.create(image = request.data['user_avatar'])
-        user.user_avatar.add(image)
-        user.save()
-        return Response("done")
+        serializer = SetUserAvatarSerializer(data = request.data)
+        if serializer.is_valid():
+            profile_pic = Avatar(image = request.data["image"])
+            profile_pic.save()
+            user.user_avatar.add(profile_pic)
+            user.save()
+            return Response("done")
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
 class RemoveImage(APIView):
     def get(self,request):
         user = get_object_or_404(CustomUser, id=request.user.id)
-        image = Avatar.objects.get(id = int(request.data['id']))
+        image = Avatar.objects.get(id = int(request.GET['id']))
         user.user_avatar.remove(image)
         user.save()
         return Response("done")
