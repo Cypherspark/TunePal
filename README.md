@@ -1,5 +1,5 @@
 # TunePal
-Django Backend of an music dating app 
+Django Backend of a music dating app 
 
 
 ### Main features of project
