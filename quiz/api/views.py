@@ -235,8 +235,6 @@ class question(APIView):
 
 class quiz(GenericAPIView):
     queryset = QuizImage.objects.all()
-    list1=list(queryset)
-    print(list1)
     def get(self,request):
         questions = []
         random.seed()

@@ -25,8 +25,6 @@ from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 from core.views import index
-import os
-from django.views.generic import TemplateView
 
 
 
@@ -44,13 +42,6 @@ schema_view = get_schema_view(
 )
 
 
-files_in_root = []
-for file in os.listdir(os.path.join(settings.BASE_DIR, '../TunePal-Front/build')):
-    files_in_root.append(file)
-precache_manifest_path = [f for f in files_in_root if ("precache-manifest" in f)][0]
-
-    
-
 urlpatterns = [
     # path('asset-manifest.json', (TemplateView.as_view(template_name="asset-manifest.json",
     #                                                   content_type='application/manifest+json', )),
@@ -66,7 +57,7 @@ urlpatterns = [
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('api/account/', include('account.api.urls')),
     path('api/chat/', include('chat.api.urls')),
     path('api/spotify/', include('music.api.urls')),
