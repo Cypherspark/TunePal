@@ -44,9 +44,9 @@ from django.template.loader import render_to_string
 from TunePal.settings import EMAIL_HOST_USER
 
 
-SPOTIPY_CLIENT_ID = 'c42e107d3ae641e4af9e08e7d7a55b9b'
-SPOTIPY_CLIENT_SECRET = 'cd1e4e0aa3684e34ae12b313ebea1074'
-SPOTIPY_REDIRECT_URI = 'https://mytunepal.ir/spotifyresult/'
+SPOTIPY_CLIENT_ID = 'ef5b232e63904bb387a6757ef33d0366'
+SPOTIPY_CLIENT_SECRET = 'd8aea77bf7e84cc5bf184a9da2cc64bf'
+SPOTIPY_REDIRECT_URI = 'http://185.3.125.17/spotifyresult/'
 SCOPE = 'user-top-read user-read-currently-playing user-read-playback-state user-library-read'
 CACHE = '.spotipyoauthcache'
 
