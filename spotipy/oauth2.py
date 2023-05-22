@@ -26,6 +26,8 @@ import six.moves.urllib.parse as urllibparse
 from account.models import CustomUser
 from django.shortcuts import get_object_or_404
 
+from dotenv import load_dotenv
+load_dotenv()
 
 class SpotifyOauthError(Exception):
     pass
